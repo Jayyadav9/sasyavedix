@@ -56,6 +56,17 @@ function SellPage() {
     mutationFn: async () => {
       const { data: auth } = await supabase.auth.getUser();
       if (!auth.user) throw new Error("Not signed in");
+
+      let imagePath: string | null = null;
+      if (photo) {
+        const path = `listings/${auth.user.id}/${Date.now()}-${photo.name.replace(/\s+/g, "-")}`;
+        const { error: upErr } = await supabase.storage
+          .from("crop-images")
+          .upload(path, photo, { upsert: false });
+        if (upErr) throw upErr;
+        imagePath = path;
+      }
+
       const { error } = await supabase.from("crop_listings").insert({
         farmer_id: auth.user.id,
         crop: form.crop,
@@ -65,6 +76,7 @@ function SellPage() {
         location: form.location,
         harvest_date: form.harvest_date || null,
         quality_grade: form.quality_grade,
+        image_url: imagePath,
         notes: form.notes || null,
       });
       if (error) throw error;

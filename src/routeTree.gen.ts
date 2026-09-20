@@ -22,6 +22,8 @@ import { Route as AuthenticatedSellRouteImport } from './routes/_authenticated/s
 import { Route as AuthenticatedSoilRouteImport } from './routes/_authenticated/soil'
 import { Route as AuthenticatedVarietiesRouteImport } from './routes/_authenticated/varieties'
 import { Route as AuthenticatedWeatherRouteImport } from './routes/_authenticated/weather'
+import { Route as AuthenticatedBuyerBrowseRouteImport } from './routes/_authenticated/buyer/browse'
+import { Route as AuthenticatedBuyerOffersRouteImport } from './routes/_authenticated/buyer/offers'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -87,6 +89,18 @@ const AuthenticatedWeatherRoute = AuthenticatedWeatherRouteImport.update({
   path: '/weather',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedBuyerBrowseRoute =
+  AuthenticatedBuyerBrowseRouteImport.update({
+    id: '/buyer/browse',
+    path: '/buyer/browse',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedBuyerOffersRoute =
+  AuthenticatedBuyerOffersRouteImport.update({
+    id: '/buyer/offers',
+    path: '/buyer/offers',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -101,6 +115,8 @@ export interface FileRoutesByFullPath {
   '/soil': typeof AuthenticatedSoilRoute
   '/varieties': typeof AuthenticatedVarietiesRoute
   '/weather': typeof AuthenticatedWeatherRoute
+  '/buyer/browse': typeof AuthenticatedBuyerBrowseRoute
+  '/buyer/offers': typeof AuthenticatedBuyerOffersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -115,6 +131,8 @@ export interface FileRoutesByTo {
   '/soil': typeof AuthenticatedSoilRoute
   '/varieties': typeof AuthenticatedVarietiesRoute
   '/weather': typeof AuthenticatedWeatherRoute
+  '/buyer/browse': typeof AuthenticatedBuyerBrowseRoute
+  '/buyer/offers': typeof AuthenticatedBuyerOffersRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -131,6 +149,8 @@ export interface FileRoutesById {
   '/_authenticated/soil': typeof AuthenticatedSoilRoute
   '/_authenticated/varieties': typeof AuthenticatedVarietiesRoute
   '/_authenticated/weather': typeof AuthenticatedWeatherRoute
+  '/_authenticated/buyer/browse': typeof AuthenticatedBuyerBrowseRoute
+  '/_authenticated/buyer/offers': typeof AuthenticatedBuyerOffersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -147,6 +167,8 @@ export interface FileRouteTypes {
     | '/soil'
     | '/varieties'
     | '/weather'
+    | '/buyer/browse'
+    | '/buyer/offers'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -161,6 +183,8 @@ export interface FileRouteTypes {
     | '/soil'
     | '/varieties'
     | '/weather'
+    | '/buyer/browse'
+    | '/buyer/offers'
   id:
     | '__root__'
     | '/'
@@ -176,6 +200,8 @@ export interface FileRouteTypes {
     | '/_authenticated/soil'
     | '/_authenticated/varieties'
     | '/_authenticated/weather'
+    | '/_authenticated/buyer/browse'
+    | '/_authenticated/buyer/offers'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -276,6 +302,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedWeatherRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/buyer/browse': {
+      id: '/_authenticated/buyer/browse'
+      path: '/buyer/browse'
+      fullPath: '/buyer/browse'
+      preLoaderRoute: typeof AuthenticatedBuyerBrowseRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/buyer/offers': {
+      id: '/_authenticated/buyer/offers'
+      path: '/buyer/offers'
+      fullPath: '/buyer/offers'
+      preLoaderRoute: typeof AuthenticatedBuyerOffersRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
@@ -291,6 +331,8 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedSoilRoute: typeof AuthenticatedSoilRoute
   AuthenticatedVarietiesRoute: typeof AuthenticatedVarietiesRoute
   AuthenticatedWeatherRoute: typeof AuthenticatedWeatherRoute
+  AuthenticatedBuyerBrowseRoute: typeof AuthenticatedBuyerBrowseRoute
+  AuthenticatedBuyerOffersRoute: typeof AuthenticatedBuyerOffersRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -305,6 +347,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSoilRoute: AuthenticatedSoilRoute,
   AuthenticatedVarietiesRoute: AuthenticatedVarietiesRoute,
   AuthenticatedWeatherRoute: AuthenticatedWeatherRoute,
+  AuthenticatedBuyerBrowseRoute: AuthenticatedBuyerBrowseRoute,
+  AuthenticatedBuyerOffersRoute: AuthenticatedBuyerOffersRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
