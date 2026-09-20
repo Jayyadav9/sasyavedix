@@ -11,8 +11,26 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/community")({
+  head: () => ({
+    meta: [
+      { title: "Farmer Community — SasyaVediX" },
+      {
+        name: "description",
+        content:
+          "Ask questions, share farming tips and reply to other farmers in Hindi or English on the SasyaVediX community feed.",
+      },
+      { property: "og:title", content: "Farmer Community — SasyaVediX" },
+      {
+        property: "og:description",
+        content: "A Hindi/English question-and-answer feed for Indian farmers.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: CommunityPage,
 });
+
 
 function timeAgo(iso: string, lang: string) {
   const mins = Math.max(0, Math.floor((Date.now() - new Date(iso).getTime()) / 60000));
