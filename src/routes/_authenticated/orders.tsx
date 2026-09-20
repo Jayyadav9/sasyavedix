@@ -277,15 +277,20 @@ function OrdersPage() {
                       {t("markDelivered")}
                     </Button>
                   )}
-                  {o.status === "delivered" && (
-                    <Button
-                      size="sm"
-                      onClick={() => advance.mutate({ order: o, status: "paid" })}
-                    >
+                  {(o.status === "delivered" || o.status === "dispatched") && (
+                    <Button size="sm" onClick={() => setPayFor(payFor === o.id ? null : o.id)}>
                       <IndianRupee className="mr-2 h-4 w-4" />
-                      {t("markPaid")}
+                      {t("recordPayment")}
                     </Button>
                   )}
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setInvoiceFor(invoiceFor === o.id ? null : o.id)}
+                  >
+                    <FileText className="mr-2 h-4 w-4" />
+                    {t("viewInvoice")}
+                  </Button>
                   {o.status !== "paid" && o.status !== "cancelled" && (
                     <Button
                       size="sm"
@@ -296,7 +301,72 @@ function OrdersPage() {
                     </Button>
                   )}
                 </div>
+
+                {(paidFor(o.id) > 0 || o.status === "paid") && (
+                  <p className="text-sm text-muted-foreground">
+                    {t("paid")} ₹{paidFor(o.id).toLocaleString("en-IN")} · {t("balance")} ₹
+                    {Math.max(Number(o.total_amount) - paidFor(o.id), 0).toLocaleString("en-IN")}
+                  </p>
+                )}
+
+                {payFor === o.id && (
+                  <form
+                    className="grid gap-3 rounded-2xl border border-border bg-card/60 p-3 sm:grid-cols-4"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      recordPayment.mutate({ order: o, form: e.currentTarget });
+                    }}
+                  >
+                    <div>
+                      <Label htmlFor={`amount-${o.id}`}>{t("amount")}</Label>
+                      <Input
+                        id={`amount-${o.id}`}
+                        name="amount"
+                        type="number"
+                        min="1"
+                        required
+                        defaultValue={Math.max(Number(o.total_amount) - paidFor(o.id), 0)}
+                        className="mt-1"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor={`method-${o.id}`}>{t("method")}</Label>
+                      <select
+                        id={`method-${o.id}`}
+                        name="method"
+                        className="mt-1 h-10 w-full rounded-xl border border-border bg-card px-3 text-sm"
+                      >
+                        <option value="upi">UPI</option>
+                        <option value="cash">{lang === "hi" ? "नकद" : "Cash"}</option>
+                        <option value="bank">{lang === "hi" ? "बैंक ट्रांसफर" : "Bank transfer"}</option>
+                        <option value="cheque">{lang === "hi" ? "चेक" : "Cheque"}</option>
+                      </select>
+                    </div>
+                    <div>
+                      <Label htmlFor={`reference-${o.id}`}>{t("reference")}</Label>
+                      <Input id={`reference-${o.id}`} name="reference" className="mt-1" />
+                    </div>
+                    <div className="flex items-end">
+                      <Button type="submit" className="w-full" disabled={recordPayment.isPending}>
+                        {recordPayment.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        {t("save")}
+                      </Button>
+                    </div>
+                  </form>
+                )}
+
+                {invoiceFor === o.id && (
+                  <Invoice
+                    order={o}
+                    payments={(payments.data ?? []).filter((p) => p.order_id === o.id)}
+                    sellerName={profile.data?.full_name}
+                    sellerPlace={
+                      [profile.data?.village, profile.data?.district].filter(Boolean).join(", ") || null
+                    }
+                  />
+                )}
               </li>
+
             ))}
           </ul>
         )}
