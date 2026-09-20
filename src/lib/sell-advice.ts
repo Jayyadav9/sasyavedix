@@ -28,7 +28,7 @@ export function sellAdvice(
   if (!rows.length) return null;
 
   // Best price on the most recent day
-  const lastDay = rows[rows.length - 1].observed_on;
+  const lastDay = rows[rows.length - 1]!.observed_on;
   const todayRows = rows.filter((r) => r.observed_on === lastDay);
   const best = todayRows.reduce((m, r) => (r.price > m.price ? r : m));
 

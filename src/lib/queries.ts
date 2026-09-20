@@ -415,7 +415,7 @@ export const mspQuery = queryOptions({
       cacheSave("msp_rates", data ?? []);
       return (data ?? []) as MspRate[];
     } catch {
-      return cacheRead<MspRate[]>("msp_rates") ?? [];
+      return cacheRead<MspRate[]>("msp_rates")?.value ?? [];
     }
   },
 });
