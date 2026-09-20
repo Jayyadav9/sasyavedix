@@ -12,6 +12,7 @@ import {
 } from "recharts";
 
 import { useLang } from "@/lib/i18n";
+import { LOCATIONS, findLocation } from "@/lib/locations";
 import {
   latestByCropMandi,
   marketPricesQuery,
