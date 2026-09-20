@@ -41,3 +41,12 @@
 ## Open
 - data.gov.in API key not supplied yet — mandi prices still use the 60-day sample history
 
+
+## Phase 6 — done
+- Notifications + alerts page (price alerts, offer/order notifications, bell with unread count)
+- Crop calendar with sowing-to-harvest task reminders (10 crop templates)
+- Payments recorded against orders + printable sale invoice (SVX invoice numbers)
+- Voice: speak questions to the assistant, hear answers read aloud
+- Offline: cached mandi prices, varieties and schemes with an offline badge
+
+Open: data.gov.in API key not supplied — mandi prices still use the 60-day sample history.
