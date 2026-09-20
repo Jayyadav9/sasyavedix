@@ -141,6 +141,16 @@ const dict = {
   },
   speak: { en: "Speak", hi: "बोलें" },
   listening: { en: "Listening…", hi: "सुन रहा हूं…" },
+  sellAdvisor: { en: "Sell advisor", hi: "बिक्री सलाह" },
+  sellNow: { en: "Sell now", hi: "अभी बेचें" },
+  waitBetter: { en: "Wait for better rates", hi: "बेहतर भाव की प्रतीक्षा करें" },
+  holdSteady: { en: "Market steady — sell when you need", hi: "बाज़ार स्थिर — ज़रूरत पर बेचें" },
+  mspLabel: { en: "MSP", hi: "MSP" },
+  emailMe: { en: "Also email me", hi: "मुझे ईमेल भी करें" },
+  selectCropHint: {
+    en: "Pick a crop above to see sell advice and MSP comparison.",
+    hi: "बिक्री सलाह और MSP तुलना के लिए ऊपर फसल चुनें।",
+  },
 } as const;
 
 
