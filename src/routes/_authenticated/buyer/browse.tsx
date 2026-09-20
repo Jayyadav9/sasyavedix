@@ -179,7 +179,7 @@ function BrowsePage() {
                       {l.variety ? ` · ${l.variety}` : ""}
                     </h2>
                     {(() => {
-                      const r = avgRating(reviews.data ?? [], l.farmer_id);
+                      const r = summaryFor(reviews.data ?? [], l.farmer_id);
                       return r ? (
                         <span
                           title={t("trustScore")}
