@@ -99,7 +99,7 @@ function BrowsePage() {
   const qc = useQueryClient();
   const listings = useQuery(browseListingsQuery);
   const prices = useQuery(marketPricesQuery);
-  const reviews = useQuery(reviewsQuery);
+  const reviews = useQuery(ratingSummaryQuery);
   const [q, setQ] = useState("");
   const [openId, setOpenId] = useState<string | null>(null);
   const [form, setForm] = useState({ price: "", quantity: "", message: "" });
