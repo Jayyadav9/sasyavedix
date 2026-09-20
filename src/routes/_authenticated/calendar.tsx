@@ -1,11 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { CalendarDays, CheckCircle2, Circle, Sprout, Trash2 } from "lucide-react";
+import { CalendarDays, CheckCircle2, Circle, Sprout, Trash2, Wheat } from "lucide-react";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useLang } from "@/lib/i18n";
-import { cropPlansQuery, cropTasksQuery, type CropTask } from "@/lib/queries";
+import {
+  cropPlansQuery,
+  cropTasksQuery,
+  latestByCropMandi,
+  marketPricesQuery,
+  varietiesQuery,
+  type CropTask,
+} from "@/lib/queries";
 import { CROP_TEMPLATES, TASK_KIND_LABEL, addDays, templateFor, type TaskKind } from "@/lib/calendar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -40,6 +47,8 @@ function CalendarPage() {
   const qc = useQueryClient();
   const plans = useQuery(cropPlansQuery);
   const tasks = useQuery(cropTasksQuery);
+  const varieties = useQuery(varietiesQuery);
+  const prices = useQuery(marketPricesQuery);
 
   const createPlan = useMutation({
     mutationFn: async (form: HTMLFormElement) => {
@@ -274,6 +283,39 @@ function CalendarPage() {
                   <p className="mt-1 text-xs text-muted-foreground">
                     {doneCount}/{planTasks.length} {t("done")}
                   </p>
+                  {(() => {
+                    if (!p.area_acres) return null;
+                    const vs = (varieties.data ?? []).filter(
+                      (x) => x.crop.toLowerCase() === p.crop.toLowerCase(),
+                    );
+                    const v =
+                      (p.variety
+                        ? vs.find(
+                            (x) => x.name_en.toLowerCase() === String(p.variety).toLowerCase(),
+                          )
+                        : null) ?? vs[0];
+                    const yieldQ =
+                      v?.yield_quintal_per_acre != null
+                        ? Number(v.yield_quintal_per_acre) * Number(p.area_acres)
+                        : null;
+                    if (yieldQ == null) return null;
+                    const mandi = latestByCropMandi(prices.data ?? [])
+                      .filter((x) => x.crop.toLowerCase() === p.crop.toLowerCase())
+                      .sort((a, b) => b.price - a.price)[0];
+                    return (
+                      <p className="mt-2 flex items-center gap-1.5 rounded-xl bg-muted/50 px-3 py-1.5 text-xs font-medium">
+                        <Wheat className="h-3.5 w-3.5 text-primary" />
+                        {t("expectedYield")}: ~{Math.round(yieldQ).toLocaleString("en-IN")}{" "}
+                        {t("quintal")}
+                        {mandi && (
+                          <span className="text-primary">
+                            · {t("expectedValue")}: ₹
+                            {Math.round(yieldQ * mandi.price).toLocaleString("en-IN")}
+                          </span>
+                        )}
+                      </p>
+                    );
+                  })()}
                 </li>
               );
             })}

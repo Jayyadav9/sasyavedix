@@ -137,6 +137,32 @@ function WeatherPage() {
               },
             ]
           : []),
+        ...(d.current.relative_humidity_2m >= 80 &&
+        d.current.temperature_2m >= 20 &&
+        d.current.temperature_2m <= 34
+          ? [
+              {
+                icon: AlertTriangle,
+                tone: "text-warning",
+                text:
+                  lang === "hi"
+                    ? `नमी ${Math.round(d.current.relative_humidity_2m)}% — फफूंद रोग (रतुआ, झुलसा) और कीटों का खतरा ज्यादा। फसल का निरीक्षण करें; लक्षण दिखें तो फसल की फोटो से जांच कराएं।`
+                    : `Humidity ${Math.round(d.current.relative_humidity_2m)}% — high risk of fungal disease (rust, blight) and pests. Scout the crop; photograph any spotted leaves on the Crop Analysis page.`,
+              },
+            ]
+          : []),
+        ...(rain3 >= 20
+          ? [
+              {
+                icon: CloudRain,
+                tone: "text-warning",
+                text:
+                  lang === "hi"
+                    ? "भारी बारिश के बाद खेत में पानी खड़ा रहे तो कीटनाशक/खाद का छिड़काव बाद में करें — पहले जल निकासी करें।"
+                    : "After heavy rain, drain standing water before any spray or top-dressing — waterlogged roots cannot absorb nutrients.",
+              },
+            ]
+          : []),
       ]
     : [];
 

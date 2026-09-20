@@ -1,12 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { ImageIcon, Loader2, MapPin, Search } from "lucide-react";
+import { ImageIcon, Loader2, MapPin, Search, Star } from "lucide-react";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useLang } from "@/lib/i18n";
-import { browseListingsQuery, latestByCropMandi, marketPricesQuery } from "@/lib/queries";
+import {
+  avgRating,
+  browseListingsQuery,
+  latestByCropMandi,
+  marketPricesQuery,
+  reviewsQuery,
+} from "@/lib/queries";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -92,6 +98,7 @@ function BrowsePage() {
   const qc = useQueryClient();
   const listings = useQuery(browseListingsQuery);
   const prices = useQuery(marketPricesQuery);
+  const reviews = useQuery(reviewsQuery);
   const [q, setQ] = useState("");
   const [openId, setOpenId] = useState<string | null>(null);
   const [form, setForm] = useState({ price: "", quantity: "", message: "" });
@@ -165,10 +172,28 @@ function BrowsePage() {
               <article key={l.id} className="glass-card lift-hover space-y-3 rounded-3xl p-4">
                 <ListingPhoto path={l.image_url} />
                 <div>
-                  <h2 className="font-display text-lg font-bold">
-                    {l.crop}
-                    {l.variety ? ` · ${l.variety}` : ""}
-                  </h2>
+                  <div className="flex items-start justify-between gap-2">
+                    <h2 className="font-display text-lg font-bold">
+                      {l.crop}
+                      {l.variety ? ` · ${l.variety}` : ""}
+                    </h2>
+                    {(() => {
+                      const r = avgRating(reviews.data ?? [], l.farmer_id);
+                      return r ? (
+                        <span
+                          title={t("trustScore")}
+                          className="flex shrink-0 items-center gap-1 rounded-full bg-muted/60 px-2.5 py-1 text-xs font-semibold"
+                        >
+                          <Star className="h-3.5 w-3.5 fill-accent text-accent" />
+                          {r.avg.toFixed(1)} ({r.count})
+                        </span>
+                      ) : (
+                        <span className="shrink-0 rounded-full bg-muted/60 px-2.5 py-1 text-xs text-muted-foreground">
+                          {t("newSeller")}
+                        </span>
+                      );
+                    })()}
+                  </div>
                   <p className="flex items-center gap-1 text-sm text-muted-foreground">
                     <MapPin className="h-3.5 w-3.5" />
                     {l.location} · {l.quantity} {l.unit} · Grade {l.quality_grade ?? "A"}

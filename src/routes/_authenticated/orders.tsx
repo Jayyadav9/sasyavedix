@@ -1,12 +1,20 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { FileText, Handshake, IndianRupee, Loader2, PackageCheck, Truck } from "lucide-react";
+import { FileText, Handshake, IndianRupee, Loader2, PackageCheck, Star, Truck } from "lucide-react";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/lib/useAuth";
 import { useLang } from "@/lib/i18n";
-import { offersQuery, ordersQuery, paymentsQuery, profileQuery, type Order } from "@/lib/queries";
+import {
+  offersQuery,
+  ordersQuery,
+  paymentsQuery,
+  profileQuery,
+  reviewsQuery,
+  type Order,
+} from "@/lib/queries";
 import { OrderTrack } from "@/components/order-track";
 import { Invoice } from "@/components/invoice";
 import { Button } from "@/components/ui/button";
@@ -57,13 +65,41 @@ type OfferRow = {
 
 function OrdersPage() {
   const { t, lang } = useLang();
+  const { user } = useAuth();
+  const uid = user?.id ?? null;
   const qc = useQueryClient();
   const offers = useQuery(offersQuery);
   const orders = useQuery(ordersQuery);
   const payments = useQuery(paymentsQuery);
   const profile = useQuery(profileQuery);
+  const reviews = useQuery(reviewsQuery);
   const [invoiceFor, setInvoiceFor] = useState<string | null>(null);
   const [payFor, setPayFor] = useState<string | null>(null);
+  const [rateFor, setRateFor] = useState<string | null>(null);
+  const [stars, setStars] = useState(5);
+
+  const submitReview = useMutation({
+    mutationFn: async ({ order, form }: { order: Order; form: HTMLFormElement }) => {
+      if (!uid) throw new Error("not signed in");
+      const fd = new FormData(form);
+      const ratee = order.farmer_id === uid ? order.buyer_id : order.farmer_id;
+      const { error } = await supabase.from("reviews").insert({
+        order_id: order.id,
+        rater_id: uid,
+        ratee_id: ratee,
+        rating: stars,
+        comment: String(fd.get("comment") ?? "").trim() || null,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success(t("ratedThanks"));
+      setRateFor(null);
+      setStars(5);
+      qc.invalidateQueries({ queryKey: ["reviews"] });
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Could not save the rating"),
+  });
 
   const pending = ((offers.data ?? []) as OfferRow[]).filter((o) => o.status === "pending");
 
@@ -291,6 +327,28 @@ function OrdersPage() {
                     <FileText className="mr-2 h-4 w-4" />
                     {t("viewInvoice")}
                   </Button>
+                  {["dispatched", "delivered", "paid"].includes(o.status) &&
+                    uid &&
+                    (() => {
+                      const mine = (reviews.data ?? []).find(
+                        (r) => r.order_id === o.id && r.rater_id === uid,
+                      );
+                      return mine ? (
+                        <span className="flex items-center gap-1 rounded-full bg-muted/60 px-3 py-1.5 text-xs font-semibold">
+                          <Star className="h-3.5 w-3.5 fill-accent text-accent" />
+                          {t("yourRating")}: {mine.rating}/5
+                        </span>
+                      ) : (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setRateFor(rateFor === o.id ? null : o.id)}
+                        >
+                          <Star className="mr-2 h-4 w-4" />
+                          {t("rateParty")}
+                        </Button>
+                      );
+                    })()}
                   {o.status !== "paid" && o.status !== "cancelled" && (
                     <Button
                       size="sm"
@@ -301,6 +359,44 @@ function OrdersPage() {
                     </Button>
                   )}
                 </div>
+
+                {rateFor === o.id && (
+                  <form
+                    className="flex flex-wrap items-end gap-3 rounded-2xl border border-border bg-card/60 p-3"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      submitReview.mutate({ order: o, form: e.currentTarget });
+                    }}
+                  >
+                    <div>
+                      <Label>{t("yourRating")}</Label>
+                      <div className="mt-1 flex gap-1">
+                        {[1, 2, 3, 4, 5].map((n) => (
+                          <button
+                            key={n}
+                            type="button"
+                            aria-label={`${n} star`}
+                            onClick={() => setStars(n)}
+                          >
+                            <Star
+                              className={`h-6 w-6 ${
+                                n <= stars ? "fill-accent text-accent" : "text-muted-foreground"
+                              }`}
+                            />
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="min-w-48 flex-1">
+                      <Label htmlFor={`comment-${o.id}`}>{t("notes")}</Label>
+                      <Input id={`comment-${o.id}`} name="comment" className="mt-1" />
+                    </div>
+                    <Button type="submit" disabled={submitReview.isPending}>
+                      {submitReview.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                      {t("submitRating")}
+                    </Button>
+                  </form>
+                )}
 
                 {(paidFor(o.id) > 0 || o.status === "paid") && (
                   <p className="text-sm text-muted-foreground">

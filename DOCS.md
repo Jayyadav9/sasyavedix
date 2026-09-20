@@ -83,3 +83,15 @@ price history for 12 crop/mandi pairs, so every chart works before any live data
 - `src/lib/sell-advice.ts`: rule-based sell/wait/hold advisor from price history + MSP.
 - `src/lib/alert-email.functions.ts`: price-alert emails via Resend; requires `RESEND_API_KEY` secret, otherwise in-app alerts only.
 - `price_alerts.notify_email`: per-alert email toggle.
+
+## Phase 8 additions
+- `farmer_groups`, `group_members`, `group_pools`, `pool_contributions` (member-only RLS) — collective selling pools on the Farmer Groups page.
+- `loans`, `insurance_policies` (farmer-only RLS) — Loans & Insurance page.
+- `src/lib/eligibility.ts`: per-scheme eligibility hints from the farmer's profile.
+
+## Phase 9 additions
+- `farm_expenses` (farmer-only RLS) — Expenses & Profit page: total cost vs sold value, profit, profit per acre.
+- `reviews` (parties write, everyone reads) — 1-5 star ratings on completed orders; `avgRating()` powers the buyer-side trust badge.
+- Weather advisories: pest/fungal-risk rule (humidity ≥ 80% and 20-34 °C) and heavy-rain drainage rule.
+- Crop calendar shows expected yield (variety yield_quintal_per_acre x area) and expected income at the best mandi rate.
+- Profiles RLS tightened: buyers read only profiles of farmers they share an offer or order with.

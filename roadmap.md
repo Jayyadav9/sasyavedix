@@ -71,3 +71,15 @@
 - Launch prep: schemes re-seeded with richer entries (12 → 6 detailed ones with
   benefits, eligibility and official links), 8 new crop varieties, all verified
   end to end in the browser
+
+## Phase 9 — done
+- Expenses & Profit page: per-crop costs (seed/fertiliser/diesel/labour/spray/
+  irrigation), total cost vs sold value, profit and profit per acre
+- Ratings & trust: both parties rate a deal (1-5 stars + note) once dispatched;
+  seller trust score badge on every buyer listing ("New seller" until rated)
+- Smart advisories: pest/fungal-risk warning from humidity+temperature, heavy-rain
+  drainage advice added to weather page
+- Yield estimates: each crop plan card shows expected quintal (variety yield x area)
+  and expected income at the best current mandi rate
+- Security: buyers can now only read profiles of farmers they have an offer or
+  order with (was: all farmers)
