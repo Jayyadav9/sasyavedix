@@ -133,6 +133,11 @@ function MarketPage() {
     return out.sort((a, b) => (sortDesc ? b.price - a.price : a.price - b.price));
   }, [rows, crop, variety, location, search, sortDesc]);
 
+  const advice = useMemo(
+    () => (crop === "All" ? null : sellAdvice(crop, data ?? [], msp.data ?? [])),
+    [crop, data, msp.data],
+  );
+
   const stats = useMemo(() => {
     if (!filtered.length) return null;
     const p = filtered.map((r) => Number(r.price));
