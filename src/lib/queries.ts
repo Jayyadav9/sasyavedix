@@ -548,3 +548,56 @@ export const insuranceQuery = queryOptions({
     return data as InsurancePolicy[];
   },
 });
+
+export type Review = {
+  id: string;
+  order_id: string;
+  rater_id: string;
+  ratee_id: string;
+  rating: number;
+  comment: string | null;
+  created_at: string;
+};
+
+export const reviewsQuery = queryOptions({
+  queryKey: ["reviews"],
+  queryFn: async () => {
+    const { data, error } = await supabase.from("reviews").select("*");
+    if (error) throw error;
+    return data as Review[];
+  },
+});
+
+/** Average rating (1-5) received by a user, or null when unrated. */
+export function avgRating(reviews: Review[], userId: string): { avg: number; count: number } | null {
+  const got = reviews.filter((r) => r.ratee_id === userId);
+  if (got.length === 0) return null;
+  return {
+    avg: got.reduce((s, r) => s + r.rating, 0) / got.length,
+    count: got.length,
+  };
+}
+
+export type FarmExpense = {
+  id: string;
+  farmer_id: string;
+  crop: string;
+  category: string;
+  amount: number;
+  spent_on: string;
+  acres: number | null;
+  notes: string | null;
+  created_at: string;
+};
+
+export const farmExpensesQuery = queryOptions({
+  queryKey: ["farm_expenses"],
+  queryFn: async () => {
+    const { data, error } = await supabase
+      .from("farm_expenses")
+      .select("*")
+      .order("spent_on", { ascending: false });
+    if (error) throw error;
+    return data as FarmExpense[];
+  },
+});

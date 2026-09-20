@@ -192,6 +192,27 @@ const dict = {
   claimPaid: { en: "Claim paid", hi: "दावा मिला" },
   likelyEligible: { en: "Likely eligible", hi: "पात्र होने की संभावना" },
   checkEligibility: { en: "Eligibility for you", hi: "आपके लिए पात्रता" },
+  expenses: { en: "Expenses & Profit", hi: "खर्च और मुनाफा" },
+  expensesHint: {
+    en: "Track seed, fertiliser, diesel and labour costs per crop, and see profit after every sale.",
+    hi: "बीज, खाद, डीजल और मजदूरी का खर्च फसलवार रखें और हर बिक्री के बाद मुनाफा देखें।",
+  },
+  category: { en: "Category", hi: "श्रेणी" },
+  spentOn: { en: "Date", hi: "तारीख" },
+  addExpense: { en: "Add expense", hi: "खर्च जोड़ें" },
+  noExpenses: { en: "No expenses recorded yet.", hi: "अभी कोई खर्च दर्ज नहीं।" },
+  totalCost: { en: "Total cost", hi: "कुल खर्च" },
+  soldValue: { en: "Sold value", hi: "बिक्री राशि" },
+  profit: { en: "Profit", hi: "मुनाफा" },
+  profitPerAcre: { en: "Profit per acre", hi: "प्रति एकड़ मुनाफा" },
+  rateParty: { en: "Rate this deal", hi: "इस सौदे को रेट करें" },
+  yourRating: { en: "Your rating", hi: "आपकी रेटिंग" },
+  submitRating: { en: "Submit rating", hi: "रेटिंग भेजें" },
+  ratedThanks: { en: "Thanks — rating saved", hi: "धन्यवाद — रेटिंग दर्ज हुई" },
+  trustScore: { en: "Trust score", hi: "विश्वास स्कोर" },
+  newSeller: { en: "New seller", hi: "नया विक्रेता" },
+  expectedYield: { en: "Expected yield", hi: "अनुमानित उपज" },
+  expectedValue: { en: "Expected value", hi: "अनुमानित आय" },
 } as const;
 
 
