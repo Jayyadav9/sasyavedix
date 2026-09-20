@@ -147,7 +147,7 @@ function FieldsPage() {
             <SelectContent>
               {SOIL_TYPES.map((s) => (
                 <SelectItem key={s} value={s}>
-                  {t(`soil_${s}`)}
+                  {t(`soil_${s}` as never)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -162,7 +162,7 @@ function FieldsPage() {
             <SelectContent>
               {IRRIGATION.map((s) => (
                 <SelectItem key={s} value={s}>
-                  {t(`irr_${s}`)}
+                  {t(`irr_${s}` as never)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -221,10 +221,10 @@ function FieldsPage() {
                 </div>
                 <div className="flex flex-wrap gap-1.5 text-xs">
                   {f.soil_type && (
-                    <span className="rounded-full bg-secondary px-2.5 py-1">{t(`soil_${f.soil_type}`)}</span>
+                    <span className="rounded-full bg-secondary px-2.5 py-1">{t(`soil_${f.soil_type}` as never)}</span>
                   )}
                   {f.irrigation && (
-                    <span className="rounded-full bg-secondary px-2.5 py-1">{t(`irr_${f.irrigation}`)}</span>
+                    <span className="rounded-full bg-secondary px-2.5 py-1">{t(`irr_${f.irrigation}` as never)}</span>
                   )}
                   <span className="rounded-full bg-secondary px-2.5 py-1">
                     {t("spent")}: ₹{s.spent.toLocaleString("en-IN")}
