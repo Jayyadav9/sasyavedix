@@ -42,7 +42,9 @@ function SchemesPage() {
         </div>
       ) : (
         <div className="grid gap-4 md:grid-cols-2">
-          {(data ?? []).map((s) => (
+          {(data ?? []).map((s) => {
+            const elig = checkEligibility(s, profile.data);
+            return (
             <article key={s.id} className="glass-card lift-hover rounded-3xl p-5">
               <div className="flex items-start justify-between gap-3">
                 <h2 className="font-display text-xl font-bold">
