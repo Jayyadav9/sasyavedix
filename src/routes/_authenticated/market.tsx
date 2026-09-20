@@ -57,8 +57,35 @@ function Select({
 }
 
 function MarketPage() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const { data, isLoading } = useQuery(marketPricesQuery);
+  const qc = useQueryClient();
+  const refresh = useMutation({
+    mutationFn: () => syncMandiPrices(),
+    onSuccess: (res) => {
+      if (!res.configured) {
+        toast.info(
+          lang === "hi"
+            ? "लाइव मंडी फ़ीड अभी जुड़ी नहीं है।"
+            : "The live mandi feed is not connected yet.",
+        );
+        return;
+      }
+      if (res.inserted === 0) {
+        toast.info(
+          lang === "hi" ? "आज आपके जिलों के भाव नहीं मिले।" : "No fresh rates for your districts.",
+        );
+        return;
+      }
+      qc.invalidateQueries({ queryKey: ["market_prices"] });
+      toast.success(
+        lang === "hi" ? `${res.inserted} भाव अपडेट हुए` : `${res.inserted} rates updated`,
+      );
+    },
+    onError: () =>
+      toast.error(lang === "hi" ? "भाव नहीं मिल सके" : "Could not fetch today's rates"),
+  });
+
   const [search, setSearch] = useState("");
   const [crop, setCrop] = useState("All");
   const [variety, setVariety] = useState("All");
