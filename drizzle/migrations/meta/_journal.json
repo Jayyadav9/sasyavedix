@@ -8,6 +8,13 @@
       "when": 1789885331665,
       "tag": "0000_sasyavedix_core_schema",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1789885871094,
+      "tag": "0001_soil_tests_and_crop_image_policies",
+      "breakpoints": true
     }
   ]
 }

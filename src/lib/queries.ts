@@ -88,3 +88,54 @@ export function latestByCropMandi(rows: MarketPrice[]) {
   }
   return [...seen.values()];
 }
+
+export type CropAnalysisRow = {
+  id: string;
+  crop: string;
+  image_url: string | null;
+  health_score: number | null;
+  status: string | null;
+  diagnosis: string | null;
+  recommendations: unknown;
+  created_at: string;
+};
+
+export const analysesQuery = queryOptions({
+  queryKey: ["crop_analysis"],
+  queryFn: async (): Promise<CropAnalysisRow[]> => {
+    const { data, error } = await supabase
+      .from("crop_analysis")
+      .select("id, crop, image_url, health_score, status, diagnosis, recommendations, created_at")
+      .order("created_at", { ascending: false })
+      .limit(20);
+    if (error) throw error;
+    return (data ?? []) as CropAnalysisRow[];
+  },
+});
+
+export type SoilTest = {
+  id: string;
+  sample_date: string;
+  location: string | null;
+  ph: number;
+  nitrogen: number;
+  phosphorus: number;
+  potassium: number;
+  organic_carbon: number | null;
+  ec: number | null;
+  target_crop: string | null;
+  notes: string | null;
+  created_at: string;
+};
+
+export const soilTestsQuery = queryOptions({
+  queryKey: ["soil_tests"],
+  queryFn: async (): Promise<SoilTest[]> => {
+    const { data, error } = await supabase
+      .from("soil_tests")
+      .select("*")
+      .order("sample_date", { ascending: false });
+    if (error) throw error;
+    return (data ?? []) as SoilTest[];
+  },
+});

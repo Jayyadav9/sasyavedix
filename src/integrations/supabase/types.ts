@@ -309,6 +309,62 @@ export type Database = {
         }
         Relationships: []
       }
+      soil_tests: {
+        Row: {
+          created_at: string
+          ec: number | null
+          farmer_id: string
+          id: string
+          location: string | null
+          nitrogen: number
+          notes: string | null
+          organic_carbon: number | null
+          ph: number
+          phosphorus: number
+          potassium: number
+          sample_date: string
+          target_crop: string | null
+        }
+        Insert: {
+          created_at?: string
+          ec?: number | null
+          farmer_id: string
+          id?: string
+          location?: string | null
+          nitrogen: number
+          notes?: string | null
+          organic_carbon?: number | null
+          ph: number
+          phosphorus: number
+          potassium: number
+          sample_date?: string
+          target_crop?: string | null
+        }
+        Update: {
+          created_at?: string
+          ec?: number | null
+          farmer_id?: string
+          id?: string
+          location?: string | null
+          nitrogen?: number
+          notes?: string | null
+          organic_carbon?: number | null
+          ph?: number
+          phosphorus?: number
+          potassium?: number
+          sample_date?: string
+          target_crop?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "soil_tests_farmer_id_fkey"
+            columns: ["farmer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
