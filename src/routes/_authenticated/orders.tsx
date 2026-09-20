@@ -359,7 +359,7 @@ function OrdersPage() {
                   <Invoice
                     order={o}
                     payments={(payments.data ?? []).filter((p) => p.order_id === o.id)}
-                    sellerName={profile.data?.full_name}
+                    sellerName={profile.data?.full_name ?? null}
                     sellerPlace={
                       [profile.data?.village, profile.data?.district].filter(Boolean).join(", ") || null
                     }
