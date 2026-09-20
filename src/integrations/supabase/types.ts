@@ -120,6 +120,107 @@ export type Database = {
           },
         ]
       }
+      crop_plans: {
+        Row: {
+          area_acres: number | null
+          created_at: string
+          crop: string
+          farmer_id: string
+          harvest_date: string | null
+          id: string
+          notes: string | null
+          sowing_date: string
+          status: string
+          variety: string | null
+        }
+        Insert: {
+          area_acres?: number | null
+          created_at?: string
+          crop: string
+          farmer_id: string
+          harvest_date?: string | null
+          id?: string
+          notes?: string | null
+          sowing_date: string
+          status?: string
+          variety?: string | null
+        }
+        Update: {
+          area_acres?: number | null
+          created_at?: string
+          crop?: string
+          farmer_id?: string
+          harvest_date?: string | null
+          id?: string
+          notes?: string | null
+          sowing_date?: string
+          status?: string
+          variety?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crop_plans_farmer_id_fkey"
+            columns: ["farmer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      crop_tasks: {
+        Row: {
+          created_at: string
+          done: boolean
+          done_on: string | null
+          due_date: string
+          farmer_id: string
+          id: string
+          kind: string
+          plan_id: string
+          title_en: string
+          title_hi: string
+        }
+        Insert: {
+          created_at?: string
+          done?: boolean
+          done_on?: string | null
+          due_date: string
+          farmer_id: string
+          id?: string
+          kind?: string
+          plan_id: string
+          title_en: string
+          title_hi: string
+        }
+        Update: {
+          created_at?: string
+          done?: boolean
+          done_on?: string | null
+          due_date?: string
+          farmer_id?: string
+          id?: string
+          kind?: string
+          plan_id?: string
+          title_en?: string
+          title_hi?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crop_tasks_farmer_id_fkey"
+            columns: ["farmer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crop_tasks_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "crop_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       crop_varieties: {
         Row: {
           created_at: string
@@ -231,6 +332,45 @@ export type Database = {
         }
         Relationships: []
       }
+      notifications: {
+        Row: {
+          body_en: string | null
+          body_hi: string | null
+          created_at: string
+          id: string
+          kind: string
+          link: string | null
+          read: boolean
+          title_en: string
+          title_hi: string
+          user_id: string
+        }
+        Insert: {
+          body_en?: string | null
+          body_hi?: string | null
+          created_at?: string
+          id?: string
+          kind?: string
+          link?: string | null
+          read?: boolean
+          title_en: string
+          title_hi: string
+          user_id: string
+        }
+        Update: {
+          body_en?: string | null
+          body_hi?: string | null
+          created_at?: string
+          id?: string
+          kind?: string
+          link?: string | null
+          read?: boolean
+          title_en?: string
+          title_hi?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       offers: {
         Row: {
           buyer_id: string
@@ -299,6 +439,7 @@ export type Database = {
           farmer_id: string
           farmer_note: string | null
           id: string
+          invoice_no: string | null
           listing_id: string | null
           offer_id: string | null
           payment_method: string | null
@@ -320,6 +461,7 @@ export type Database = {
           farmer_id: string
           farmer_note?: string | null
           id?: string
+          invoice_no?: string | null
           listing_id?: string | null
           offer_id?: string | null
           payment_method?: string | null
@@ -341,6 +483,7 @@ export type Database = {
           farmer_id?: string
           farmer_note?: string | null
           id?: string
+          invoice_no?: string | null
           listing_id?: string | null
           offer_id?: string | null
           payment_method?: string | null
@@ -380,6 +523,97 @@ export type Database = {
             columns: ["offer_id"]
             isOneToOne: false
             referencedRelation: "offers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payments: {
+        Row: {
+          amount: number
+          buyer_id: string
+          created_at: string
+          farmer_id: string
+          id: string
+          method: string
+          note: string | null
+          order_id: string
+          paid_on: string
+          reference: string | null
+        }
+        Insert: {
+          amount: number
+          buyer_id: string
+          created_at?: string
+          farmer_id: string
+          id?: string
+          method?: string
+          note?: string | null
+          order_id: string
+          paid_on?: string
+          reference?: string | null
+        }
+        Update: {
+          amount?: number
+          buyer_id?: string
+          created_at?: string
+          farmer_id?: string
+          id?: string
+          method?: string
+          note?: string | null
+          order_id?: string
+          paid_on?: string
+          reference?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      price_alerts: {
+        Row: {
+          active: boolean
+          created_at: string
+          crop: string
+          direction: string
+          farmer_id: string
+          id: string
+          last_notified_on: string | null
+          market: string | null
+          target_price: number
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          crop: string
+          direction?: string
+          farmer_id: string
+          id?: string
+          last_notified_on?: string | null
+          market?: string | null
+          target_price: number
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          crop?: string
+          direction?: string
+          farmer_id?: string
+          id?: string
+          last_notified_on?: string | null
+          market?: string | null
+          target_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "price_alerts_farmer_id_fkey"
+            columns: ["farmer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
