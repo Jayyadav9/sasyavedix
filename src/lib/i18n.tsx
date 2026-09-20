@@ -220,6 +220,7 @@ const dict = {
   totalSpent: { en: "Total spent", hi: "कुल खर्च" },
   ordersPlaced: { en: "Orders placed", hi: "किए गए ऑर्डर" },
   purchasesByCrop: { en: "Purchases by crop", hi: "फसल के अनुसार खरीद" },
+  costPerQuintal: { en: "Cost per quintal", hi: "प्रति क्विंटल लागत" },
 } as const;
 
 

@@ -100,3 +100,8 @@ price history for 12 crop/mandi pairs, so every chart works before any live data
 - `crop_plans.actual_yield_quintal` + `harvested_on` — record the real harvest per plan; status becomes `harvested`.
 - `src/lib/csv.ts` — `downloadCsv()` helper; CSV export buttons on Expenses & Profit and Orders.
 - Buyer Offers & Orders page shows a spending summary (orders placed, total spent, purchases by crop).
+
+## Phase 11 additions
+- Calendar: due/overdue `crop_tasks` create `notifications` rows (kind `task`, body tagged `[task:<id>]` for dedupe).
+- Expenses: cost-per-quintal card from `farm_expenses` ÷ `crop_plans.actual_yield_quintal`.
+- Buyer orders page: invoice view (`Invoice` component + `payments` + seller profile readable via the deal-sharing policy).
