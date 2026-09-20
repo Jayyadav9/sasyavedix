@@ -419,3 +419,132 @@ export const mspQuery = queryOptions({
     }
   },
 });
+
+export type FarmerGroup = {
+  id: string;
+  name: string;
+  village: string | null;
+  district: string | null;
+  created_by: string;
+  created_at: string;
+};
+
+export const groupsQuery = queryOptions({
+  queryKey: ["farmer_groups"],
+  queryFn: async () => {
+    const { data, error } = await supabase
+      .from("farmer_groups")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (error) throw error;
+    return data as FarmerGroup[];
+  },
+});
+
+export type GroupMember = {
+  id: string;
+  group_id: string;
+  farmer_id: string;
+  created_at: string;
+};
+
+export const groupMembersQuery = queryOptions({
+  queryKey: ["group_members"],
+  queryFn: async () => {
+    const { data, error } = await supabase.from("group_members").select("*");
+    if (error) throw error;
+    return data as GroupMember[];
+  },
+});
+
+export type GroupPool = {
+  id: string;
+  group_id: string;
+  crop: string;
+  variety: string | null;
+  expected_price: number | null;
+  status: string;
+  created_by: string;
+  created_at: string;
+};
+
+export const groupPoolsQuery = queryOptions({
+  queryKey: ["group_pools"],
+  queryFn: async () => {
+    const { data, error } = await supabase
+      .from("group_pools")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (error) throw error;
+    return data as GroupPool[];
+  },
+});
+
+export type PoolContribution = {
+  id: string;
+  pool_id: string;
+  farmer_id: string;
+  quantity: number;
+  created_at: string;
+};
+
+export const poolContributionsQuery = queryOptions({
+  queryKey: ["pool_contributions"],
+  queryFn: async () => {
+    const { data, error } = await supabase.from("pool_contributions").select("*");
+    if (error) throw error;
+    return data as PoolContribution[];
+  },
+});
+
+export type Loan = {
+  id: string;
+  farmer_id: string;
+  kind: string;
+  bank: string | null;
+  sanctioned: number | null;
+  outstanding: number | null;
+  interest_pct: number | null;
+  due_date: string | null;
+  status: string;
+  notes: string | null;
+  created_at: string;
+};
+
+export const loansQuery = queryOptions({
+  queryKey: ["loans"],
+  queryFn: async () => {
+    const { data, error } = await supabase
+      .from("loans")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (error) throw error;
+    return data as Loan[];
+  },
+});
+
+export type InsurancePolicy = {
+  id: string;
+  farmer_id: string;
+  crop: string;
+  season: string;
+  area_acres: number | null;
+  sum_insured: number | null;
+  premium: number | null;
+  insurer: string | null;
+  status: string;
+  claim_note: string | null;
+  created_at: string;
+};
+
+export const insuranceQuery = queryOptions({
+  queryKey: ["insurance_policies"],
+  queryFn: async () => {
+    const { data, error } = await supabase
+      .from("insurance_policies")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (error) throw error;
+    return data as InsurancePolicy[];
+  },
+});
