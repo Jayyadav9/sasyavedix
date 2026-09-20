@@ -148,14 +148,24 @@ export function AppShell({ children }: { children: ReactNode }) {
       )}
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-20 flex items-center gap-3 border-b border-border bg-background/85 px-4 py-3 backdrop-blur lg:hidden">
-          <Button variant="ghost" size="icon" onClick={() => setOpen(true)}>
+        <header className="sticky top-0 z-20 flex items-center gap-3 border-b border-border bg-background/85 px-4 py-3 backdrop-blur">
+          <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setOpen(true)}>
             <Menu className="h-5 w-5" />
           </Button>
-          <span className="font-display text-lg font-bold">{t("appName")}</span>
+          <span className="font-display text-lg font-bold lg:hidden">{t("appName")}</span>
+          <div className="ml-auto flex items-center gap-3">
+            {!online && (
+              <span className="flex items-center gap-1.5 rounded-full bg-muted px-3 py-1 text-xs font-semibold text-muted-foreground">
+                <WifiOff className="h-3.5 w-3.5" />
+                {t("offline")}
+              </span>
+            )}
+            <NotificationBell />
+          </div>
         </header>
         <main className="flex-1 px-4 py-6 sm:px-8 sm:py-8">{children}</main>
       </div>
+
     </div>
   );
 }
