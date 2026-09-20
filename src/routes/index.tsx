@@ -58,7 +58,7 @@ function AuthPage() {
           password,
           options: {
             emailRedirectTo: window.location.origin,
-            data: { full_name: fullName || email.split("@")[0] },
+            data: { full_name: fullName || email.split("@")[0], role },
           },
         });
         if (err) throw err;
@@ -162,15 +162,33 @@ function AuthPage() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {mode === "signup" && (
-              <div className="space-y-1.5">
-                <Label htmlFor="name">{t("fullName")}</Label>
-                <Input
-                  id="name"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  placeholder="Jay Yadav"
-                />
-              </div>
+              <>
+                <div className="grid grid-cols-2 gap-2 rounded-2xl bg-muted/60 p-1">
+                  {(["farmer", "buyer"] as const).map((r) => (
+                    <button
+                      key={r}
+                      type="button"
+                      onClick={() => setRole(r)}
+                      className={`rounded-xl px-3 py-2 text-sm font-semibold transition-colors ${
+                        role === r
+                          ? "bg-primary text-primary-foreground shadow-sm"
+                          : "text-muted-foreground"
+                      }`}
+                    >
+                      {r === "farmer" ? t("iAmFarmer") : t("iAmBuyer")}
+                    </button>
+                  ))}
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="name">{t("fullName")}</Label>
+                  <Input
+                    id="name"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    placeholder="Jay Yadav"
+                  />
+                </div>
+              </>
             )}
             <div className="space-y-1.5">
               <Label htmlFor="email">{t("email")}</Label>
