@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { ImageIcon, Loader2, MapPin, Search, Star } from "lucide-react";
+import { ImageIcon, Loader2, MapPin, Search, Share2, Star } from "lucide-react";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -219,6 +219,30 @@ function BrowsePage() {
                   )}
                 </div>
                 {l.notes && <p className="text-sm text-muted-foreground">{l.notes}</p>}
+
+                <div className="flex justify-end">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    aria-label={t("shareOnWhatsApp")}
+                    onClick={() => {
+                      const text = [
+                        `🌾 ${l.crop}${l.variety ? ` · ${l.variety}` : ""} — SasyaVediX`,
+                        `${l.quantity} ${l.unit} · Grade ${l.quality_grade ?? "A"} · ${l.location}`,
+                        l.expected_price
+                          ? `₹${Number(l.expected_price).toLocaleString("en-IN")}/${l.unit}`
+                          : null,
+                      ]
+                        .filter(Boolean)
+                        .join("\n");
+                      window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank", "noopener");
+                    }}
+                  >
+                    <Share2 className="h-4 w-4" />
+                    {t("share")}
+                  </Button>
+                </div>
 
                 {openId === l.id ? (
                   <form
