@@ -44,6 +44,7 @@ function SellPage() {
     quality_grade: "A",
     notes: "",
   });
+  const [photo, setPhoto] = useState<File | null>(null);
 
   const cropOptions = [...new Set((prices.data ?? []).map((p) => p.crop))];
   const suggested = form.crop
@@ -204,6 +205,19 @@ function SellPage() {
                 ))}
               </select>
             </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <Label htmlFor="photo">{t("photo")}</Label>
+            <Input
+              id="photo"
+              type="file"
+              accept="image/*"
+              onChange={(e) => setPhoto(e.target.files?.[0] ?? null)}
+            />
+            <p className="text-xs text-muted-foreground">
+              Buyers see this photo with your listing.
+            </p>
           </div>
 
           <div className="space-y-1.5">
