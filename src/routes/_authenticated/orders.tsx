@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Download, FileText, Handshake, IndianRupee, Loader2, PackageCheck, Star, Truck } from "lucide-react";
+import { Download, FileText, Handshake, IndianRupee, Loader2, MessageCircle, PackageCheck, Send, Star, Truck } from "lucide-react";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -13,6 +13,7 @@ import {
   paymentsQuery,
   profileQuery,
   reviewsQuery,
+  orderMessagesQuery,
   type Order,
 } from "@/lib/queries";
 import { OrderTrack } from "@/components/order-track";
@@ -78,6 +79,7 @@ function OrdersPage() {
   const [payFor, setPayFor] = useState<string | null>(null);
   const [rateFor, setRateFor] = useState<string | null>(null);
   const [dispatchFor, setDispatchFor] = useState<string | null>(null);
+  const [chatFor, setChatFor] = useState<string | null>(null);
   const [stars, setStars] = useState(5);
 
   const submitReview = useMutation({
@@ -403,6 +405,14 @@ function OrdersPage() {
                     <FileText className="mr-2 h-4 w-4" />
                     {t("viewInvoice")}
                   </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setChatFor(chatFor === o.id ? null : o.id)}
+                  >
+                    <MessageCircle className="mr-2 h-4 w-4" />
+                    {t("chat")}
+                  </Button>
                   {["dispatched", "delivered", "paid"].includes(o.status) &&
                     uid &&
                     (() => {
@@ -560,6 +570,10 @@ function OrdersPage() {
                       [profile.data?.village, profile.data?.district].filter(Boolean).join(", ") || null
                     }
                   />
+                )}
+
+                {chatFor === o.id && uid && (
+                  <OrderChat orderId={o.id} uid={uid} senderName={profile.data?.full_name ?? null} />
                 )}
               </li>
 
