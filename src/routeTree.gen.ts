@@ -17,6 +17,7 @@ import { Route as AuthenticatedAnalyticsRouteImport } from './routes/_authentica
 import { Route as AuthenticatedAssistantRouteImport } from './routes/_authenticated/assistant'
 import { Route as AuthenticatedCalendarRouteImport } from './routes/_authenticated/calendar'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedEquipmentRouteImport } from './routes/_authenticated/equipment'
 import { Route as AuthenticatedExpensesRouteImport } from './routes/_authenticated/expenses'
 import { Route as AuthenticatedFinanceRouteImport } from './routes/_authenticated/finance'
 import { Route as AuthenticatedGroupsRouteImport } from './routes/_authenticated/groups'
@@ -68,6 +69,11 @@ const AuthenticatedCalendarRoute = AuthenticatedCalendarRouteImport.update({
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedEquipmentRoute = AuthenticatedEquipmentRouteImport.update({
+  id: '/equipment',
+  path: '/equipment',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedExpensesRoute = AuthenticatedExpensesRouteImport.update({
@@ -146,6 +152,7 @@ export interface FileRoutesByFullPath {
   '/assistant': typeof AuthenticatedAssistantRoute
   '/calendar': typeof AuthenticatedCalendarRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/equipment': typeof AuthenticatedEquipmentRoute
   '/expenses': typeof AuthenticatedExpensesRoute
   '/finance': typeof AuthenticatedFinanceRoute
   '/groups': typeof AuthenticatedGroupsRoute
@@ -168,6 +175,7 @@ export interface FileRoutesByTo {
   '/assistant': typeof AuthenticatedAssistantRoute
   '/calendar': typeof AuthenticatedCalendarRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/equipment': typeof AuthenticatedEquipmentRoute
   '/expenses': typeof AuthenticatedExpensesRoute
   '/finance': typeof AuthenticatedFinanceRoute
   '/groups': typeof AuthenticatedGroupsRoute
@@ -192,6 +200,7 @@ export interface FileRoutesById {
   '/_authenticated/assistant': typeof AuthenticatedAssistantRoute
   '/_authenticated/calendar': typeof AuthenticatedCalendarRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/equipment': typeof AuthenticatedEquipmentRoute
   '/_authenticated/expenses': typeof AuthenticatedExpensesRoute
   '/_authenticated/finance': typeof AuthenticatedFinanceRoute
   '/_authenticated/groups': typeof AuthenticatedGroupsRoute
@@ -216,6 +225,7 @@ export interface FileRouteTypes {
     | '/assistant'
     | '/calendar'
     | '/dashboard'
+    | '/equipment'
     | '/expenses'
     | '/finance'
     | '/groups'
@@ -238,6 +248,7 @@ export interface FileRouteTypes {
     | '/assistant'
     | '/calendar'
     | '/dashboard'
+    | '/equipment'
     | '/expenses'
     | '/finance'
     | '/groups'
@@ -261,6 +272,7 @@ export interface FileRouteTypes {
     | '/_authenticated/assistant'
     | '/_authenticated/calendar'
     | '/_authenticated/dashboard'
+    | '/_authenticated/equipment'
     | '/_authenticated/expenses'
     | '/_authenticated/finance'
     | '/_authenticated/groups'
@@ -337,6 +349,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/equipment': {
+      id: '/_authenticated/equipment'
+      path: '/equipment'
+      fullPath: '/equipment'
+      preLoaderRoute: typeof AuthenticatedEquipmentRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/expenses': {
@@ -440,6 +459,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAssistantRoute: typeof AuthenticatedAssistantRoute
   AuthenticatedCalendarRoute: typeof AuthenticatedCalendarRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedEquipmentRoute: typeof AuthenticatedEquipmentRoute
   AuthenticatedExpensesRoute: typeof AuthenticatedExpensesRoute
   AuthenticatedFinanceRoute: typeof AuthenticatedFinanceRoute
   AuthenticatedGroupsRoute: typeof AuthenticatedGroupsRoute
@@ -462,6 +482,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAssistantRoute: AuthenticatedAssistantRoute,
   AuthenticatedCalendarRoute: AuthenticatedCalendarRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedEquipmentRoute: AuthenticatedEquipmentRoute,
   AuthenticatedExpensesRoute: AuthenticatedExpensesRoute,
   AuthenticatedFinanceRoute: AuthenticatedFinanceRoute,
   AuthenticatedGroupsRoute: AuthenticatedGroupsRoute,
