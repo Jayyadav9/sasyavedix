@@ -14,7 +14,301 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      crop_analysis: {
+        Row: {
+          created_at: string
+          crop: string | null
+          diagnosis: string | null
+          estimated_price: number | null
+          farmer_id: string
+          health_score: number | null
+          id: string
+          image_url: string | null
+          recommendations: Json
+          status: string | null
+        }
+        Insert: {
+          created_at?: string
+          crop?: string | null
+          diagnosis?: string | null
+          estimated_price?: number | null
+          farmer_id: string
+          health_score?: number | null
+          id?: string
+          image_url?: string | null
+          recommendations?: Json
+          status?: string | null
+        }
+        Update: {
+          created_at?: string
+          crop?: string | null
+          diagnosis?: string | null
+          estimated_price?: number | null
+          farmer_id?: string
+          health_score?: number | null
+          id?: string
+          image_url?: string | null
+          recommendations?: Json
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crop_analysis_farmer_id_fkey"
+            columns: ["farmer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      crop_listings: {
+        Row: {
+          created_at: string
+          crop: string
+          expected_price: number | null
+          farmer_id: string
+          harvest_date: string | null
+          id: string
+          image_url: string | null
+          location: string
+          notes: string | null
+          quality_grade: string | null
+          quantity: number
+          status: string
+          unit: string
+          variety: string | null
+        }
+        Insert: {
+          created_at?: string
+          crop: string
+          expected_price?: number | null
+          farmer_id: string
+          harvest_date?: string | null
+          id?: string
+          image_url?: string | null
+          location: string
+          notes?: string | null
+          quality_grade?: string | null
+          quantity: number
+          status?: string
+          unit?: string
+          variety?: string | null
+        }
+        Update: {
+          created_at?: string
+          crop?: string
+          expected_price?: number | null
+          farmer_id?: string
+          harvest_date?: string | null
+          id?: string
+          image_url?: string | null
+          location?: string
+          notes?: string | null
+          quality_grade?: string | null
+          quantity?: number
+          status?: string
+          unit?: string
+          variety?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crop_listings_farmer_id_fkey"
+            columns: ["farmer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      crop_varieties: {
+        Row: {
+          created_at: string
+          crop: string
+          duration_days: number | null
+          id: string
+          name_en: string
+          name_hi: string
+          notes_en: string | null
+          notes_hi: string | null
+          season: string | null
+          water_need: string | null
+          yield_quintal_per_acre: number | null
+        }
+        Insert: {
+          created_at?: string
+          crop: string
+          duration_days?: number | null
+          id?: string
+          name_en: string
+          name_hi: string
+          notes_en?: string | null
+          notes_hi?: string | null
+          season?: string | null
+          water_need?: string | null
+          yield_quintal_per_acre?: number | null
+        }
+        Update: {
+          created_at?: string
+          crop?: string
+          duration_days?: number | null
+          id?: string
+          name_en?: string
+          name_hi?: string
+          notes_en?: string | null
+          notes_hi?: string | null
+          season?: string | null
+          water_need?: string | null
+          yield_quintal_per_acre?: number | null
+        }
+        Relationships: []
+      }
+      crops: {
+        Row: {
+          category: string
+          created_at: string
+          emoji: string
+          id: string
+          name_en: string
+          name_hi: string
+          season: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          emoji?: string
+          id?: string
+          name_en: string
+          name_hi: string
+          season?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          emoji?: string
+          id?: string
+          name_en?: string
+          name_hi?: string
+          season?: string
+        }
+        Relationships: []
+      }
+      market_prices: {
+        Row: {
+          created_at: string
+          crop: string
+          id: string
+          location: string
+          market: string
+          observed_on: string
+          price: number
+          source: string
+          unit: string
+          variety: string | null
+        }
+        Insert: {
+          created_at?: string
+          crop: string
+          id?: string
+          location: string
+          market: string
+          observed_on?: string
+          price: number
+          source?: string
+          unit?: string
+          variety?: string | null
+        }
+        Update: {
+          created_at?: string
+          crop?: string
+          id?: string
+          location?: string
+          market?: string
+          observed_on?: string
+          price?: number
+          source?: string
+          unit?: string
+          variety?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          district: string | null
+          full_name: string
+          id: string
+          land_acres: number | null
+          language: string
+          phone: string | null
+          state: string | null
+          village: string | null
+        }
+        Insert: {
+          created_at?: string
+          district?: string | null
+          full_name?: string
+          id: string
+          land_acres?: number | null
+          language?: string
+          phone?: string | null
+          state?: string | null
+          village?: string | null
+        }
+        Update: {
+          created_at?: string
+          district?: string | null
+          full_name?: string
+          id?: string
+          land_acres?: number | null
+          language?: string
+          phone?: string | null
+          state?: string | null
+          village?: string | null
+        }
+        Relationships: []
+      }
+      schemes: {
+        Row: {
+          active: boolean
+          benefit: string | null
+          category: string
+          created_at: string
+          description_en: string
+          description_hi: string
+          eligibility: string | null
+          id: string
+          link: string | null
+          name_en: string
+          name_hi: string
+        }
+        Insert: {
+          active?: boolean
+          benefit?: string | null
+          category?: string
+          created_at?: string
+          description_en: string
+          description_hi: string
+          eligibility?: string | null
+          id?: string
+          link?: string | null
+          name_en: string
+          name_hi: string
+        }
+        Update: {
+          active?: boolean
+          benefit?: string | null
+          category?: string
+          created_at?: string
+          description_en?: string
+          description_hi?: string
+          eligibility?: string | null
+          id?: string
+          link?: string | null
+          name_en?: string
+          name_hi?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
