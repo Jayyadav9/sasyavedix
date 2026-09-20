@@ -12,6 +12,7 @@ import {
   cropTasksQuery,
   latestByCropMandi,
   marketPricesQuery,
+  notificationsQuery,
   varietiesQuery,
   type CropTask,
 } from "@/lib/queries";
