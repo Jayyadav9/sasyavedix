@@ -7,12 +7,13 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useLang } from "@/lib/i18n";
 import {
-  avgRating,
   browseListingsQuery,
   latestByCropMandi,
   marketPricesQuery,
-  reviewsQuery,
+  ratingSummaryQuery,
+  summaryFor,
 } from "@/lib/queries";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -98,7 +99,7 @@ function BrowsePage() {
   const qc = useQueryClient();
   const listings = useQuery(browseListingsQuery);
   const prices = useQuery(marketPricesQuery);
-  const reviews = useQuery(reviewsQuery);
+  const reviews = useQuery(ratingSummaryQuery);
   const [q, setQ] = useState("");
   const [openId, setOpenId] = useState<string | null>(null);
   const [form, setForm] = useState({ price: "", quantity: "", message: "" });
@@ -178,7 +179,7 @@ function BrowsePage() {
                       {l.variety ? ` · ${l.variety}` : ""}
                     </h2>
                     {(() => {
-                      const r = avgRating(reviews.data ?? [], l.farmer_id);
+                      const r = summaryFor(reviews.data ?? [], l.farmer_id);
                       return r ? (
                         <span
                           title={t("trustScore")}

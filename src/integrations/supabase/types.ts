@@ -1516,6 +1516,14 @@ export type Database = {
         Args: { _farmer_id: string; _group_id: string }
         Returns: boolean
       }
+      rating_summary: {
+        Args: never
+        Returns: {
+          avg_rating: number
+          review_count: number
+          user_id: string
+        }[]
+      }
     }
     Enums: {
       app_role: "farmer" | "buyer" | "admin"
