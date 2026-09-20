@@ -55,9 +55,8 @@ function EquipmentPage() {
   };
 
   const addMachine = useMutation({
-    mutationFn: async (form: HTMLFormElement) => {
+    mutationFn: async (fd: FormData) => {
       if (!uid) throw new Error("Not signed in");
-      const fd = new FormData(form);
       const { error } = await supabase.from("equipment").insert({
         owner_id: uid,
         name: String(fd.get("name")).trim(),
