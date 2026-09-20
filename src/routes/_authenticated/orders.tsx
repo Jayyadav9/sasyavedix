@@ -345,11 +345,36 @@ function OrdersPage() {
 
                 <OrderTrack status={o.status} />
 
+                {(o.dispatched_on || o.delivered_on || o.vehicle_no) && (
+                  <div className="flex flex-wrap gap-x-5 gap-y-1 rounded-2xl bg-muted/50 px-4 py-2 text-xs text-muted-foreground">
+                    {o.dispatched_on && (
+                      <span>
+                        {t("dispatchedOn")}: {new Date(o.dispatched_on).toLocaleDateString(lang === "hi" ? "hi-IN" : "en-IN")}
+                      </span>
+                    )}
+                    {o.delivered_on && (
+                      <span>
+                        {t("deliveredOn")}: {new Date(o.delivered_on).toLocaleDateString(lang === "hi" ? "hi-IN" : "en-IN")}
+                      </span>
+                    )}
+                    {o.vehicle_no && (
+                      <span>
+                        {t("vehicleNo")}: {o.vehicle_no}
+                      </span>
+                    )}
+                    {o.driver_phone && (
+                      <span>
+                        {t("driverPhone")}: {o.driver_phone}
+                      </span>
+                    )}
+                  </div>
+                )}
+
                 <div className="flex flex-wrap gap-2">
                   {o.status === "accepted" && (
                     <Button
                       size="sm"
-                      onClick={() => advance.mutate({ order: o, status: "dispatched" })}
+                      onClick={() => setDispatchFor(dispatchFor === o.id ? null : o.id)}
                     >
                       <Truck className="mr-2 h-4 w-4" />
                       {t("markDispatched")}
