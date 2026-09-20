@@ -1,12 +1,20 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { FileText, Handshake, IndianRupee, Loader2, PackageCheck, Truck } from "lucide-react";
+import { FileText, Handshake, IndianRupee, Loader2, PackageCheck, Star, Truck } from "lucide-react";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/lib/useAuth";
 import { useLang } from "@/lib/i18n";
-import { offersQuery, ordersQuery, paymentsQuery, profileQuery, type Order } from "@/lib/queries";
+import {
+  offersQuery,
+  ordersQuery,
+  paymentsQuery,
+  profileQuery,
+  reviewsQuery,
+  type Order,
+} from "@/lib/queries";
 import { OrderTrack } from "@/components/order-track";
 import { Invoice } from "@/components/invoice";
 import { Button } from "@/components/ui/button";
@@ -57,13 +65,41 @@ type OfferRow = {
 
 function OrdersPage() {
   const { t, lang } = useLang();
+  const { user } = useAuth();
+  const uid = user?.id ?? null;
   const qc = useQueryClient();
   const offers = useQuery(offersQuery);
   const orders = useQuery(ordersQuery);
   const payments = useQuery(paymentsQuery);
   const profile = useQuery(profileQuery);
+  const reviews = useQuery(reviewsQuery);
   const [invoiceFor, setInvoiceFor] = useState<string | null>(null);
   const [payFor, setPayFor] = useState<string | null>(null);
+  const [rateFor, setRateFor] = useState<string | null>(null);
+  const [stars, setStars] = useState(5);
+
+  const submitReview = useMutation({
+    mutationFn: async ({ order, form }: { order: Order; form: HTMLFormElement }) => {
+      if (!uid) throw new Error("not signed in");
+      const fd = new FormData(form);
+      const ratee = order.farmer_id === uid ? order.buyer_id : order.farmer_id;
+      const { error } = await supabase.from("reviews").insert({
+        order_id: order.id,
+        rater_id: uid,
+        ratee_id: ratee,
+        rating: stars,
+        comment: String(fd.get("comment") ?? "").trim() || null,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success(t("ratedThanks"));
+      setRateFor(null);
+      setStars(5);
+      qc.invalidateQueries({ queryKey: ["reviews"] });
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Could not save the rating"),
+  });
 
   const pending = ((offers.data ?? []) as OfferRow[]).filter((o) => o.status === "pending");
 
