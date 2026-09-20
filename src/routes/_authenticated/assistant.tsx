@@ -141,7 +141,10 @@ function AssistantPage() {
       })) as { answer: string };
       return res.answer;
     },
-    onSuccess: (answer) => setMessages((m) => [...m, { role: "assistant", content: answer }]),
+    onSuccess: (answer) => {
+      setMessages((m) => [...m, { role: "assistant", content: answer }]);
+      if (voiceOn) speak(answer, lang);
+    },
     onError: () => {
       setMessages((m) => m.slice(0, -1));
       toast.error(
