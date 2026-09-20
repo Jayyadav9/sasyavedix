@@ -203,11 +203,38 @@ function OrdersPage() {
 
   return (
     <div className="mx-auto max-w-5xl space-y-8">
-      <header>
-        <h1 className="font-display text-3xl font-bold">{t("orders")}</h1>
-        <p className="text-muted-foreground">
-          Accept offers, dispatch your crop and track payment.
-        </p>
+      <header className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h1 className="font-display text-3xl font-bold">{t("orders")}</h1>
+          <p className="text-muted-foreground">
+            Accept offers, dispatch your crop and track payment.
+          </p>
+        </div>
+        {(orders.data ?? []).length > 0 && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() =>
+              downloadCsv(
+                "sasyavedix-orders.csv",
+                ["Invoice", "Crop", "Variety", "Quantity (quintal)", "Rate (INR/quintal)", "Total (INR)", "Status", "Date"],
+                (orders.data ?? []).map((o) => [
+                  o.invoice_no,
+                  o.crop,
+                  o.variety,
+                  o.quantity,
+                  o.price_per_quintal,
+                  o.total_amount,
+                  o.status,
+                  new Date(o.created_at).toLocaleDateString("en-IN"),
+                ]),
+              )
+            }
+          >
+            <Download className="mr-2 h-4 w-4" />
+            {t("downloadCSV")}
+          </Button>
+        )}
       </header>
 
       <section>

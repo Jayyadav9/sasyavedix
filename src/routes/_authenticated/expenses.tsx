@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/useAuth";
 import { useLang } from "@/lib/i18n";
 import { farmExpensesQuery, ordersQuery, type FarmExpense } from "@/lib/queries";
+import { downloadCsv } from "@/lib/csv";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
