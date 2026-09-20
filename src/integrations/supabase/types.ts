@@ -299,6 +299,114 @@ export type Database = {
         }
         Relationships: []
       }
+      equipment: {
+        Row: {
+          available: boolean
+          created_at: string
+          description: string | null
+          district: string | null
+          id: string
+          kind: string
+          location: string | null
+          name: string
+          owner_id: string
+          rate_per_day: number
+        }
+        Insert: {
+          available?: boolean
+          created_at?: string
+          description?: string | null
+          district?: string | null
+          id?: string
+          kind?: string
+          location?: string | null
+          name: string
+          owner_id: string
+          rate_per_day: number
+        }
+        Update: {
+          available?: boolean
+          created_at?: string
+          description?: string | null
+          district?: string | null
+          id?: string
+          kind?: string
+          location?: string | null
+          name?: string
+          owner_id?: string
+          rate_per_day?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "equipment_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      equipment_bookings: {
+        Row: {
+          created_at: string
+          days: number
+          equipment_id: string
+          farmer_id: string
+          id: string
+          note: string | null
+          owner_id: string
+          start_date: string
+          status: string
+          total_amount: number
+        }
+        Insert: {
+          created_at?: string
+          days?: number
+          equipment_id: string
+          farmer_id: string
+          id?: string
+          note?: string | null
+          owner_id: string
+          start_date: string
+          status?: string
+          total_amount: number
+        }
+        Update: {
+          created_at?: string
+          days?: number
+          equipment_id?: string
+          farmer_id?: string
+          id?: string
+          note?: string | null
+          owner_id?: string
+          start_date?: string
+          status?: string
+          total_amount?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "equipment_bookings_equipment_id_fkey"
+            columns: ["equipment_id"]
+            isOneToOne: false
+            referencedRelation: "equipment"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "equipment_bookings_farmer_id_fkey"
+            columns: ["farmer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "equipment_bookings_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       farm_expenses: {
         Row: {
           acres: number | null
