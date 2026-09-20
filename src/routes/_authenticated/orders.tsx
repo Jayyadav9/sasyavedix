@@ -1,13 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Handshake, IndianRupee, Loader2, PackageCheck, Truck } from "lucide-react";
+import { useState } from "react";
+import { FileText, Handshake, IndianRupee, Loader2, PackageCheck, Truck } from "lucide-react";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useLang } from "@/lib/i18n";
-import { offersQuery, ordersQuery, type Order } from "@/lib/queries";
+import { offersQuery, ordersQuery, paymentsQuery, profileQuery, type Order } from "@/lib/queries";
 import { OrderTrack } from "@/components/order-track";
+import { Invoice } from "@/components/invoice";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export const Route = createFileRoute("/_authenticated/orders")({
