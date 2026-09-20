@@ -293,6 +293,225 @@ export type Database = {
         }
         Relationships: []
       }
+      farmer_groups: {
+        Row: {
+          created_at: string
+          created_by: string
+          district: string | null
+          id: string
+          name: string
+          village: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          district?: string | null
+          id?: string
+          name: string
+          village?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          district?: string | null
+          id?: string
+          name?: string
+          village?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "farmer_groups_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      group_members: {
+        Row: {
+          created_at: string
+          farmer_id: string
+          group_id: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          farmer_id: string
+          group_id: string
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          farmer_id?: string
+          group_id?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_members_farmer_id_fkey"
+            columns: ["farmer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_members_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "farmer_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      group_pools: {
+        Row: {
+          created_at: string
+          created_by: string
+          crop: string
+          expected_price: number | null
+          group_id: string
+          id: string
+          status: string
+          variety: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          crop: string
+          expected_price?: number | null
+          group_id: string
+          id?: string
+          status?: string
+          variety?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          crop?: string
+          expected_price?: number | null
+          group_id?: string
+          id?: string
+          status?: string
+          variety?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_pools_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_pools_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "farmer_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      insurance_policies: {
+        Row: {
+          area_acres: number | null
+          claim_note: string | null
+          created_at: string
+          crop: string
+          farmer_id: string
+          id: string
+          insurer: string | null
+          premium: number | null
+          season: string
+          status: string
+          sum_insured: number | null
+        }
+        Insert: {
+          area_acres?: number | null
+          claim_note?: string | null
+          created_at?: string
+          crop: string
+          farmer_id: string
+          id?: string
+          insurer?: string | null
+          premium?: number | null
+          season?: string
+          status?: string
+          sum_insured?: number | null
+        }
+        Update: {
+          area_acres?: number | null
+          claim_note?: string | null
+          created_at?: string
+          crop?: string
+          farmer_id?: string
+          id?: string
+          insurer?: string | null
+          premium?: number | null
+          season?: string
+          status?: string
+          sum_insured?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "insurance_policies_farmer_id_fkey"
+            columns: ["farmer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      loans: {
+        Row: {
+          bank: string | null
+          created_at: string
+          due_date: string | null
+          farmer_id: string
+          id: string
+          interest_pct: number | null
+          kind: string
+          notes: string | null
+          outstanding: number | null
+          sanctioned: number | null
+          status: string
+        }
+        Insert: {
+          bank?: string | null
+          created_at?: string
+          due_date?: string | null
+          farmer_id: string
+          id?: string
+          interest_pct?: number | null
+          kind?: string
+          notes?: string | null
+          outstanding?: number | null
+          sanctioned?: number | null
+          status?: string
+        }
+        Update: {
+          bank?: string | null
+          created_at?: string
+          due_date?: string | null
+          farmer_id?: string
+          id?: string
+          interest_pct?: number | null
+          kind?: string
+          notes?: string | null
+          outstanding?: number | null
+          sanctioned?: number | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "loans_farmer_id_fkey"
+            columns: ["farmer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       market_prices: {
         Row: {
           created_at: string
@@ -604,6 +823,45 @@ export type Database = {
           },
         ]
       }
+      pool_contributions: {
+        Row: {
+          created_at: string
+          farmer_id: string
+          id: string
+          pool_id: string
+          quantity: number
+        }
+        Insert: {
+          created_at?: string
+          farmer_id: string
+          id?: string
+          pool_id: string
+          quantity: number
+        }
+        Update: {
+          created_at?: string
+          farmer_id?: string
+          id?: string
+          pool_id?: string
+          quantity?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pool_contributions_farmer_id_fkey"
+            columns: ["farmer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pool_contributions_pool_id_fkey"
+            columns: ["pool_id"]
+            isOneToOne: false
+            referencedRelation: "group_pools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       price_alerts: {
         Row: {
           active: boolean
@@ -816,6 +1074,10 @@ export type Database = {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
+        Returns: boolean
+      }
+      is_group_member: {
+        Args: { _farmer_id: string; _group_id: string }
         Returns: boolean
       }
     }

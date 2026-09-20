@@ -19,7 +19,8 @@ import {
   CalendarDays,
   Bell,
   WifiOff,
-
+  Users,
+  Wallet,
 } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -43,6 +44,8 @@ const FARMER_NAV: { to: string; key: TKey; icon: typeof LayoutDashboard }[] = [
   { to: "/varieties", key: "cropVarieties", icon: Sprout },
   { to: "/soil", key: "soilHealth", icon: FlaskConical },
   { to: "/schemes", key: "schemes", icon: Landmark },
+  { to: "/groups", key: "groups", icon: Users },
+  { to: "/finance", key: "finance", icon: Wallet },
   { to: "/assistant", key: "aiAssistant", icon: Bot },
   { to: "/analytics", key: "analytics", icon: BarChart3 },
   { to: "/profile", key: "myProfile", icon: UserRound },

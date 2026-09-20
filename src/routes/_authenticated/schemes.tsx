@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, CircleCheck, CircleHelp } from "lucide-react";
 
 import { useLang } from "@/lib/i18n";
-import { schemesQuery } from "@/lib/queries";
+import { profileQuery, schemesQuery } from "@/lib/queries";
+import { checkEligibility } from "@/lib/eligibility";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export const Route = createFileRoute("/_authenticated/schemes")({
@@ -24,6 +25,7 @@ export const Route = createFileRoute("/_authenticated/schemes")({
 function SchemesPage() {
   const { t, lang } = useLang();
   const { data, isLoading } = useQuery(schemesQuery);
+  const profile = useQuery(profileQuery);
 
   return (
     <div className="mx-auto max-w-5xl space-y-6">
@@ -40,7 +42,9 @@ function SchemesPage() {
         </div>
       ) : (
         <div className="grid gap-4 md:grid-cols-2">
-          {(data ?? []).map((s) => (
+          {(data ?? []).map((s) => {
+            const elig = checkEligibility(s, profile.data);
+            return (
             <article key={s.id} className="glass-card lift-hover rounded-3xl p-5">
               <div className="flex items-start justify-between gap-3">
                 <h2 className="font-display text-xl font-bold">
@@ -63,6 +67,18 @@ function SchemesPage() {
                   <dd>{s.eligibility}</dd>
                 </div>
               </dl>
+              <div className="mt-3 flex items-start gap-2 rounded-2xl bg-muted/50 px-3 py-2 text-sm">
+                {elig.likely ? (
+                  <CircleCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                ) : (
+                  <CircleHelp className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+                )}
+                <p>
+                  <span className="font-semibold">{t("checkEligibility")}: </span>
+                  {elig.likely && <span className="mr-1 font-semibold text-primary">{t("likelyEligible")} —</span>}
+                  {lang === "hi" ? elig.note_hi : elig.note_en}
+                </p>
+              </div>
               {s.link && (
                 <a
                   href={s.link}
@@ -74,7 +90,8 @@ function SchemesPage() {
                 </a>
               )}
             </article>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

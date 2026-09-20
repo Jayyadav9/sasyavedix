@@ -59,3 +59,15 @@
 ## Open
 - data.gov.in API key not supplied — mandi prices still use the 60-day sample history
 - RESEND_API_KEY not supplied — price alert emails not connected (in-app alerts work)
+
+## Phase 8 — done
+- Farmer Groups: create a group, open a bulk pool per crop, each member adds their
+  quantity; pool card shows total quintal vs the best live mandi rate
+- Loans & Insurance: track Kisan Credit Card / term loans (bank, sanctioned,
+  outstanding, interest, due date) with a total-outstanding summary; crop insurance
+  policies with premium, sum insured and claim status (enrolled/claim filed/paid)
+- Scheme eligibility: every government scheme now shows an "Eligibility for you"
+  check personalised to the farmer's land size and profile
+- Launch prep: schemes re-seeded with richer entries (12 → 6 detailed ones with
+  benefits, eligibility and official links), 8 new crop varieties, all verified
+  end to end in the browser
