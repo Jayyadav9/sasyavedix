@@ -71,6 +71,13 @@
       "when": 1789890701007,
       "tag": "0009_restrict_buyer_profile_reads",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1789890818263,
+      "tag": "0010_crop_plans_actual_yield",
+      "breakpoints": true
     }
   ]
 }
