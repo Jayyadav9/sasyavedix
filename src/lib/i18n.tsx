@@ -279,6 +279,8 @@ const dict = {
   ordersPlaced: { en: "Orders placed", hi: "किए गए ऑर्डर" },
   purchasesByCrop: { en: "Purchases by crop", hi: "फसल के अनुसार खरीद" },
   costPerQuintal: { en: "Cost per quintal", hi: "प्रति क्विंटल लागत" },
+  share: { en: "Share", hi: "शेयर करें" },
+  shareOnWhatsApp: { en: "Share this listing on WhatsApp", hi: "यह लिस्टिंग व्हाट्सऐप पर शेयर करें" },
   community: { en: "Community", hi: "किसान समुदाय" },
   communityHint: { en: "Ask questions and share tips with fellow farmers.", hi: "साथी किसानों से सवाल पूछें और सुझाव साझा करें।" },
   newPost: { en: "Share a question or tip…", hi: "सवाल या सुझाव साझा करें…" },

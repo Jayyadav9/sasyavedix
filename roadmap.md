@@ -140,3 +140,7 @@
 - data.gov.in API key not supplied — mandi prices still use the 60-day sample history
 - RESEND_API_KEY not supplied — price alert emails not connected (in-app alerts work)
 - Publish pending — only on explicit confirmation
+
+## Phase 17 — done
+- Installable app (PWA): manifest.webmanifest, app icons (192/512), theme color, apple touch icon, favicon replaced with SasyaVediX mark
+- WhatsApp share button on every buyer listing card
