@@ -585,6 +585,25 @@ export function avgRating(reviews: Review[], userId: string): { avg: number; cou
   };
 }
 
+/** Public trust scores: aggregate ratings only, no reviewer identities. */
+export type RatingSummary = { user_id: string; avg_rating: number; review_count: number };
+
+export const ratingSummaryQuery = queryOptions({
+  queryKey: ["rating_summary"],
+  queryFn: async () => {
+    const { data, error } = await supabase.rpc("rating_summary");
+    if (error) throw error;
+    return (data ?? []) as RatingSummary[];
+  },
+});
+
+export function summaryFor(rows: RatingSummary[], userId: string): { avg: number; count: number } | null {
+  const row = rows.find((r) => r.user_id === userId);
+  if (!row || !row.review_count) return null;
+  return { avg: Number(row.avg_rating), count: Number(row.review_count) };
+}
+
+
 export type FarmExpense = {
   id: string;
   farmer_id: string;
