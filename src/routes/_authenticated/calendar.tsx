@@ -53,6 +53,40 @@ function CalendarPage() {
   const tasks = useQuery(cropTasksQuery);
   const varieties = useQuery(varietiesQuery);
   const prices = useQuery(marketPricesQuery);
+  const notifs = useQuery(notificationsQuery);
+  const reminded = useRef(false);
+
+  // Turn due/overdue field jobs into notification-bell reminders (once per task).
+  useEffect(() => {
+    if (reminded.current || !tasks.data || !notifs.data) return;
+    const due = tasks.data.filter((tk) => !tk.done && tk.due_date <= TODAY());
+    if (!due.length) return;
+    const already = new Set(
+      notifs.data
+        .filter((n) => n.kind === "task")
+        .map((n) => n.body_en?.match(/\[task:([0-9a-f-]+)\]/)?.[1])
+        .filter(Boolean),
+    );
+    const fresh = due.filter((tk) => !already.has(tk.id));
+    if (!fresh.length) return;
+    reminded.current = true;
+    void (async () => {
+      const { data: auth } = await supabase.auth.getUser();
+      if (!auth.user) return;
+      await supabase.from("notifications").insert(
+        fresh.map((tk) => ({
+          user_id: auth.user!.id,
+          kind: "task",
+          title_en: `Field job due: ${tk.title_en}`,
+          title_hi: `खेत का काम बाकी: ${tk.title_hi}`,
+          body_en: `Was due on ${tk.due_date}. [task:${tk.id}]`,
+          body_hi: `तिथि ${tk.due_date} थी। [task:${tk.id}]`,
+          link: "/calendar",
+        })),
+      );
+      qc.invalidateQueries({ queryKey: ["notifications"] });
+    })();
+  }, [tasks.data, notifs.data, qc]);
 
   const createPlan = useMutation({
     mutationFn: async (form: HTMLFormElement) => {
