@@ -1,11 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { CalendarDays, CheckCircle2, Circle, Sprout, Trash2 } from "lucide-react";
+import { CalendarDays, CheckCircle2, Circle, Sprout, Trash2, Wheat } from "lucide-react";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useLang } from "@/lib/i18n";
-import { cropPlansQuery, cropTasksQuery, type CropTask } from "@/lib/queries";
+import {
+  cropPlansQuery,
+  cropTasksQuery,
+  latestByCropMandi,
+  marketPricesQuery,
+  varietiesQuery,
+  type CropTask,
+} from "@/lib/queries";
 import { CROP_TEMPLATES, TASK_KIND_LABEL, addDays, templateFor, type TaskKind } from "@/lib/calendar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -40,6 +47,8 @@ function CalendarPage() {
   const qc = useQueryClient();
   const plans = useQuery(cropPlansQuery);
   const tasks = useQuery(cropTasksQuery);
+  const varieties = useQuery(varietiesQuery);
+  const prices = useQuery(marketPricesQuery);
 
   const createPlan = useMutation({
     mutationFn: async (form: HTMLFormElement) => {
