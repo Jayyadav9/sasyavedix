@@ -27,6 +27,8 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLang, type TKey } from "@/lib/i18n";
 import { roleQuery } from "@/lib/queries";
+import { useOnline } from "@/lib/offline";
+import { NotificationBell } from "@/components/notification-bell";
 import { Button } from "@/components/ui/button";
 
 const FARMER_NAV: { to: string; key: TKey; icon: typeof LayoutDashboard }[] = [
