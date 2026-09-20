@@ -269,6 +269,21 @@ function CalendarPage() {
             <Label htmlFor="area_acres">{t("area")}</Label>
             <Input id="area_acres" name="area_acres" type="number" step="0.1" min="0" className="mt-1" />
           </div>
+          <div>
+            <Label htmlFor="field_id">{t("selectField")}</Label>
+            <select
+              id="field_id"
+              name="field_id"
+              className="mt-1 h-10 w-full rounded-xl border border-border bg-card px-3 text-sm"
+            >
+              <option value="">—</option>
+              {(fields.data ?? []).map((f) => (
+                <option key={f.id} value={f.id}>
+                  {f.name}
+                </option>
+              ))}
+            </select>
+          </div>
           <div className="flex items-end">
             <Button type="submit" className="w-full" disabled={createPlan.isPending}>
               {t("createPlan")}
