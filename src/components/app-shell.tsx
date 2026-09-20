@@ -29,9 +29,11 @@ import { Button } from "@/components/ui/button";
 const FARMER_NAV: { to: string; key: TKey; icon: typeof LayoutDashboard }[] = [
   { to: "/dashboard", key: "dashboard", icon: LayoutDashboard },
   { to: "/weather", key: "weather", icon: CloudSun },
+  { to: "/calendar", key: "cropCalendar", icon: CalendarDays },
   { to: "/sell", key: "sellCrop", icon: ShoppingBasket },
   { to: "/orders", key: "orders", icon: PackageCheck },
   { to: "/market", key: "marketPrices", icon: LineChart },
+  { to: "/alerts", key: "alerts", icon: Bell },
   { to: "/analysis", key: "cropAnalysis", icon: ScanLine },
   { to: "/varieties", key: "cropVarieties", icon: Sprout },
   { to: "/soil", key: "soilHealth", icon: FlaskConical },
@@ -45,9 +47,11 @@ const FARMER_NAV: { to: string; key: TKey; icon: typeof LayoutDashboard }[] = [
 const BUYER_NAV: { to: string; key: TKey; icon: typeof LayoutDashboard }[] = [
   { to: "/buyer/browse", key: "browseCrops", icon: ShoppingBasket },
   { to: "/buyer/offers", key: "myOffers", icon: Handshake },
+  { to: "/alerts", key: "alerts", icon: Bell },
   { to: "/market", key: "marketPrices", icon: LineChart },
   { to: "/weather", key: "weather", icon: CloudSun },
 ];
+
 
 export function AppShell({ children }: { children: ReactNode }) {
   const { t, lang, setLang } = useLang();
