@@ -45,6 +45,7 @@ const TODAY = () => new Date().toISOString().slice(0, 10);
 function CalendarPage() {
   const { t, lang } = useLang();
   const qc = useQueryClient();
+  const [harvestFor, setHarvestFor] = useState<string | null>(null);
   const plans = useQuery(cropPlansQuery);
   const tasks = useQuery(cropTasksQuery);
   const varieties = useQuery(varietiesQuery);

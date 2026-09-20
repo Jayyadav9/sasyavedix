@@ -338,6 +338,8 @@ export type CropPlan = {
   area_acres: number | null;
   notes: string | null;
   status: string;
+  actual_yield_quintal: number | null;
+  harvested_on: string | null;
   created_at: string;
 };
 
