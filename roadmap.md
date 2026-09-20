@@ -144,3 +144,7 @@
 ## Phase 17 — done
 - Installable app (PWA): manifest.webmanifest, app icons (192/512), theme color, apple touch icon, favicon replaced with SasyaVediX mark
 - WhatsApp share button on every buyer listing card
+
+## Phase 18 — done
+- Real Cabinet-announced MSP 2026-27 (Rabi + Kharif) stored with official PIB source links; market page shows tappable Government MSP strip
+- Official sources cards on Market Prices: Agmarknet, e-NAM, Farmers Portal MSP, data.gov.in Mandi API, PIB (EN/HI)
