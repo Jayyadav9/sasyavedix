@@ -74,14 +74,14 @@ function EquipmentPage() {
       const { error } = await supabase.from("equipment_logs").insert({
         equipment_id: logFor,
         owner_id: uid,
-        used_on: String(fd.get("used_on")) || undefined,
+        used_on: String(fd.get("used_on")) || new Date().toISOString().slice(0, 10),
         hours: fd.get("hours") ? Number(fd.get("hours")) : null,
         note: String(fd.get("note") ?? "").trim() || null,
       });
       if (error) throw error;
     },
     onSuccess: () => {
-      toast.success(t("saved"));
+      toast.success(lang === "hi" ? "रजिस्टर में जुड़ गया" : "Log entry saved");
       setLogFor(null);
       qc.invalidateQueries({ queryKey: ["equipment_logs"] });
     },
