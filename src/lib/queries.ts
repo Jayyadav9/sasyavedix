@@ -411,16 +411,27 @@ export type MspRate = {
   season: string;
   msp: number;
   year: string;
+  source_url?: string | null;
 };
 
 export const mspQuery = queryOptions({
   queryKey: ["msp_rates"],
   queryFn: async (): Promise<MspRate[]> => {
     try {
-      const { data, error } = await supabase.from("msp_rates").select("*");
+      const { data, error } = await supabase
+        .from("msp_rates")
+        .select("*")
+        .order("year", { ascending: false });
       if (error) throw error;
-      cacheSave("msp_rates", data ?? []);
-      return (data ?? []) as MspRate[];
+      const seen = new Set<string>();
+      const latest = (data ?? []).filter((r) => {
+        const key = (r.crop ?? "").toLowerCase();
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      }) as MspRate[];
+      cacheSave("msp_rates", latest);
+      return latest;
     } catch {
       return cacheRead<MspRate[]>("msp_rates")?.value ?? [];
     }

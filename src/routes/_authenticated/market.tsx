@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { Search, ArrowUpDown, Loader2, RefreshCw, Scale, TrendingUp, TrendingDown, Pause } from "lucide-react";
+import { Search, ArrowUpDown, Loader2, RefreshCw, Scale, TrendingUp, TrendingDown, Pause, ExternalLink, Landmark } from "lucide-react";
 import { toast } from "sonner";
 
 import { useLang } from "@/lib/i18n";
@@ -12,6 +12,7 @@ import {
   type MarketPrice,
 } from "@/lib/queries";
 import { sellAdvice } from "@/lib/sell-advice";
+import { OFFICIAL_SOURCES } from "@/lib/sources";
 import { syncMandiPrices } from "@/lib/mandi.functions";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -214,6 +215,39 @@ function MarketPage() {
         )}
       </div>
 
+      {msp.data && msp.data.length > 0 && (
+        <section className="glass-card rounded-3xl p-5">
+          <div className="mb-3 flex items-center gap-2">
+            <Landmark className="h-5 w-5 text-primary" />
+            <div>
+              <h2 className="font-display text-lg font-bold">{t("govtMsp")}</h2>
+              <p className="text-xs text-muted-foreground">{t("govtMspHint")}</p>
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {msp.data.map((m) => (
+              <a
+                key={m.id}
+                href={m.source_url ?? "https://farmer.gov.in/mspstatements.aspx"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center gap-2 rounded-2xl bg-muted/60 px-4 py-2 text-sm transition hover:bg-muted"
+              >
+                <span className="font-medium">{m.crop}</span>
+                <span className="font-display font-bold text-primary">
+                  ₹{Number(m.msp).toLocaleString("en-IN")}
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  {m.season} {m.year}
+                </span>
+                <ExternalLink className="h-3.5 w-3.5 text-muted-foreground opacity-0 transition group-hover:opacity-100" />
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+
       {crop !== "All" && advice && (
         <section className="glass-card rounded-3xl p-5">
           <div className="flex flex-wrap items-center justify-between gap-4">
@@ -318,6 +352,35 @@ function MarketPage() {
           </div>
         )}
       </div>
+
+      <section className="glass-card rounded-3xl p-5">
+        <div className="mb-3 flex items-center gap-2">
+          <Scale className="h-5 w-5 text-primary" />
+          <div>
+            <h2 className="font-display text-lg font-bold">{t("officialSources")}</h2>
+            <p className="text-xs text-muted-foreground">{t("officialSourcesHint")}</p>
+          </div>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {OFFICIAL_SOURCES.map((s) => (
+            <a
+              key={s.url}
+              href={s.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group rounded-2xl border border-border/70 bg-card p-4 transition hover:border-primary/50"
+            >
+              <p className="flex items-center justify-between font-semibold">
+                {lang === "hi" ? s.name_hi : s.name_en}
+                <ExternalLink className="h-4 w-4 text-muted-foreground transition group-hover:text-primary" />
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {lang === "hi" ? s.desc_hi : s.desc_en}
+              </p>
+            </a>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

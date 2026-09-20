@@ -903,6 +903,7 @@ export type Database = {
           msp: number
           season: string
           source: string
+          source_url: string | null
           year: string
         }
         Insert: {
@@ -912,6 +913,7 @@ export type Database = {
           msp: number
           season: string
           source?: string
+          source_url?: string | null
           year?: string
         }
         Update: {
@@ -921,6 +923,7 @@ export type Database = {
           msp?: number
           season?: string
           source?: string
+          source_url?: string | null
           year?: string
         }
         Relationships: []
