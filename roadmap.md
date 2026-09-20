@@ -83,3 +83,9 @@
   and expected income at the best current mandi rate
 - Security: buyers can now only read profiles of farmers they have an offer or
   order with (was: all farmers)
+
+## Phase 10 — in progress
+- [ ] Record harvest: actual yield per crop plan, expected vs actual comparison
+- [ ] Downloadable reports: CSV export of expenses, sales/orders, price history
+- [ ] Buyer dashboard: spending summary (orders placed, total spent, by crop)
+- [ ] Publish (declined once — only when the user explicitly confirms)
