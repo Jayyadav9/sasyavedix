@@ -77,3 +77,9 @@ price history for 12 crop/mandi pairs, so every chart works before any live data
   the handler, and cache results into a table rather than calling on every page view.
 - New page: create a file under `src/routes/_authenticated/`, add a query in `queries.ts`
   and a nav entry in `src/components/app-shell.tsx` with a label in `i18n.tsx`.
+
+## Phase 7 additions
+- `msp_rates` table: 2025-26 MSP per crop (public read). Seeded data; update per season.
+- `src/lib/sell-advice.ts`: rule-based sell/wait/hold advisor from price history + MSP.
+- `src/lib/alert-email.functions.ts`: price-alert emails via Resend; requires `RESEND_API_KEY` secret, otherwise in-app alerts only.
+- `price_alerts.notify_email`: per-alert email toggle.

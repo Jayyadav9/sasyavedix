@@ -49,4 +49,13 @@
 - Voice: speak questions to the assistant, hear answers read aloud
 - Offline: cached mandi prices, varieties and schemes with an offline badge
 
-Open: data.gov.in API key not supplied — mandi prices still use the 60-day sample history.
+## Phase 7 — done
+- Government data: msp_rates table seeded with 2025-26 MSP for 8 crops, public read
+- Sell advisor on Market Prices: pick a crop → sell/wait/hold signal from 30-day trend
+  + MSP comparison, with Hindi/English reasons
+- Phone alerts: "Also email me" option on price alerts; emails sent via Resend when
+  RESEND_API_KEY is configured (best effort, silent fallback to in-app only)
+
+## Open
+- data.gov.in API key not supplied — mandi prices still use the 60-day sample history
+- RESEND_API_KEY not supplied — price alert emails not connected (in-app alerts work)

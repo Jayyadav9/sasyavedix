@@ -332,6 +332,36 @@ export type Database = {
         }
         Relationships: []
       }
+      msp_rates: {
+        Row: {
+          created_at: string
+          crop: string
+          id: string
+          msp: number
+          season: string
+          source: string
+          year: string
+        }
+        Insert: {
+          created_at?: string
+          crop: string
+          id?: string
+          msp: number
+          season: string
+          source?: string
+          year?: string
+        }
+        Update: {
+          created_at?: string
+          crop?: string
+          id?: string
+          msp?: number
+          season?: string
+          source?: string
+          year?: string
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           body_en: string | null
@@ -584,6 +614,7 @@ export type Database = {
           id: string
           last_notified_on: string | null
           market: string | null
+          notify_email: boolean
           target_price: number
         }
         Insert: {
@@ -595,6 +626,7 @@ export type Database = {
           id?: string
           last_notified_on?: string | null
           market?: string | null
+          notify_email?: boolean
           target_price: number
         }
         Update: {
@@ -606,6 +638,7 @@ export type Database = {
           id?: string
           last_notified_on?: string | null
           market?: string | null
+          notify_email?: boolean
           target_price?: number
         }
         Relationships: [
