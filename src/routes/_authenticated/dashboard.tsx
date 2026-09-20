@@ -94,11 +94,24 @@ function StatCard({
 
 function Dashboard() {
   const { t, lang } = useLang();
+  const navigate = useNavigate();
+  const role = useQuery(roleQuery);
   const profile = useQuery(profileQuery);
   const prices = useQuery(marketPricesQuery);
   const schemes = useQuery(schemesQuery);
   const listings = useQuery(myListingsQuery);
-  const weather = useWeather();
+
+  const [locId, setLocId] = useState("indore");
+  useEffect(() => {
+    const stored = window.localStorage.getItem("sasyavedix-location");
+    if (stored && LOCATIONS.some((l) => l.id === stored)) setLocId(stored);
+  }, []);
+  const loc = findLocation(locId);
+  const weather = useWeather(loc);
+
+  useEffect(() => {
+    if (role.data === "buyer") navigate({ to: "/buyer/browse" });
+  }, [role.data, navigate]);
 
   const latest = prices.data ? latestByCropMandi(prices.data) : [];
   const best = [...latest].sort((a, b) => b.price - a.price)[0];
