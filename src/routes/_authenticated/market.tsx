@@ -319,6 +319,35 @@ function MarketPage() {
           </div>
         )}
       </div>
+
+      <section className="glass-card rounded-3xl p-5">
+        <div className="mb-3 flex items-center gap-2">
+          <Scale className="h-5 w-5 text-primary" />
+          <div>
+            <h2 className="font-display text-lg font-bold">{t("officialSources")}</h2>
+            <p className="text-xs text-muted-foreground">{t("officialSourcesHint")}</p>
+          </div>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {OFFICIAL_SOURCES.map((s) => (
+            <a
+              key={s.url}
+              href={s.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group rounded-2xl border border-border/70 bg-card p-4 transition hover:border-primary/50"
+            >
+              <p className="flex items-center justify-between font-semibold">
+                {lang === "hi" ? s.name_hi : s.name_en}
+                <ExternalLink className="h-4 w-4 text-muted-foreground transition group-hover:text-primary" />
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {lang === "hi" ? s.desc_hi : s.desc_en}
+              </p>
+            </a>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }
