@@ -83,3 +83,12 @@
   and expected income at the best current mandi rate
 - Security: buyers can now only read profiles of farmers they have an offer or
   order with (was: all farmers)
+
+## Phase 10 — done
+- Record harvest on any crop plan: actual yield + date saved, "Harvested" badge
+  shown next to the expected-yield estimate (verified in browser)
+- Downloadable CSV reports: expenses report on Expenses & Profit, sales/orders
+  report with invoice numbers on Orders
+- Buyer spending summary on My Offers & Orders: orders placed, total spent,
+  top crops by purchase value
+- Publish still pending — user declined once; only on explicit confirmation

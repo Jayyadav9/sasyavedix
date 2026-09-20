@@ -95,3 +95,8 @@ price history for 12 crop/mandi pairs, so every chart works before any live data
 - Weather advisories: pest/fungal-risk rule (humidity ≥ 80% and 20-34 °C) and heavy-rain drainage rule.
 - Crop calendar shows expected yield (variety yield_quintal_per_acre x area) and expected income at the best mandi rate.
 - Profiles RLS tightened: buyers read only profiles of farmers they share an offer or order with.
+
+## Phase 10 additions
+- `crop_plans.actual_yield_quintal` + `harvested_on` — record the real harvest per plan; status becomes `harvested`.
+- `src/lib/csv.ts` — `downloadCsv()` helper; CSV export buttons on Expenses & Profit and Orders.
+- Buyer Offers & Orders page shows a spending summary (orders placed, total spent, purchases by crop).

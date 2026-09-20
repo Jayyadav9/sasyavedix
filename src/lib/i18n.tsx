@@ -213,6 +213,13 @@ const dict = {
   newSeller: { en: "New seller", hi: "नया विक्रेता" },
   expectedYield: { en: "Expected yield", hi: "अनुमानित उपज" },
   expectedValue: { en: "Expected value", hi: "अनुमानित आय" },
+  recordHarvest: { en: "Record harvest", hi: "कटाई दर्ज करें" },
+  actualYield: { en: "Actual yield", hi: "वास्तविक उपज" },
+  harvested: { en: "Harvested", hi: "कटाई हो गई" },
+  downloadCSV: { en: "Download CSV", hi: "CSV डाउनलोड करें" },
+  totalSpent: { en: "Total spent", hi: "कुल खर्च" },
+  ordersPlaced: { en: "Orders placed", hi: "किए गए ऑर्डर" },
+  purchasesByCrop: { en: "Purchases by crop", hi: "फसल के अनुसार खरीद" },
 } as const;
 
 

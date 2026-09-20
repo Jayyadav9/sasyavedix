@@ -122,11 +122,13 @@ export type Database = {
       }
       crop_plans: {
         Row: {
+          actual_yield_quintal: number | null
           area_acres: number | null
           created_at: string
           crop: string
           farmer_id: string
           harvest_date: string | null
+          harvested_on: string | null
           id: string
           notes: string | null
           sowing_date: string
@@ -134,11 +136,13 @@ export type Database = {
           variety: string | null
         }
         Insert: {
+          actual_yield_quintal?: number | null
           area_acres?: number | null
           created_at?: string
           crop: string
           farmer_id: string
           harvest_date?: string | null
+          harvested_on?: string | null
           id?: string
           notes?: string | null
           sowing_date: string
@@ -146,11 +150,13 @@ export type Database = {
           variety?: string | null
         }
         Update: {
+          actual_yield_quintal?: number | null
           area_acres?: number | null
           created_at?: string
           crop?: string
           farmer_id?: string
           harvest_date?: string | null
+          harvested_on?: string | null
           id?: string
           notes?: string | null
           sowing_date?: string
