@@ -686,3 +686,93 @@ export const farmFieldsQuery = queryOptions({
     return data as FarmField[];
   },
 });
+
+// ---- Phase 15: community, order chat, equipment logs ----
+export type CommunityPost = {
+  id: string;
+  author_id: string;
+  author_name: string | null;
+  body: string;
+  created_at: string;
+};
+
+export const communityPostsQuery = queryOptions({
+  queryKey: ["community_posts"],
+  queryFn: async () => {
+    const { data, error } = await supabase
+      .from("community_posts")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(50);
+    if (error) throw error;
+    return data as CommunityPost[];
+  },
+});
+
+export type CommunityReply = {
+  id: string;
+  post_id: string;
+  author_id: string;
+  author_name: string | null;
+  body: string;
+  created_at: string;
+};
+
+export const communityRepliesQuery = queryOptions({
+  queryKey: ["community_replies"],
+  queryFn: async () => {
+    const { data, error } = await supabase
+      .from("community_replies")
+      .select("*")
+      .order("created_at", { ascending: true })
+      .limit(500);
+    if (error) throw error;
+    return data as CommunityReply[];
+  },
+});
+
+export type OrderMessage = {
+  id: string;
+  order_id: string;
+  sender_id: string;
+  sender_name: string | null;
+  body: string;
+  created_at: string;
+};
+
+export const orderMessagesQuery = (orderId: string) =>
+  queryOptions({
+    queryKey: ["order_messages", orderId],
+    refetchInterval: 15000,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("order_messages")
+        .select("*")
+        .eq("order_id", orderId)
+        .order("created_at", { ascending: true });
+      if (error) throw error;
+      return data as OrderMessage[];
+    },
+  });
+
+export type EquipmentLog = {
+  id: string;
+  equipment_id: string;
+  owner_id: string;
+  used_on: string;
+  hours: number | null;
+  note: string | null;
+  created_at: string;
+};
+
+export const equipmentLogsQuery = queryOptions({
+  queryKey: ["equipment_logs"],
+  queryFn: async () => {
+    const { data, error } = await supabase
+      .from("equipment_logs")
+      .select("*")
+      .order("used_on", { ascending: false });
+    if (error) throw error;
+    return data as EquipmentLog[];
+  },
+});
