@@ -224,6 +224,16 @@ const dict = {
   spent: { en: "Spent", hi: "खर्च" },
   selectField: { en: "Field (optional)", hi: "खेत (वैकल्पिक)" },
   checkEligibility: { en: "Eligibility for you", hi: "आपके लिए पात्रता" },
+  govtMsp: { en: "Government MSP (official)", hi: "सरकारी MSP (आधिकारिक)" },
+  govtMspHint: {
+    en: "Minimum Support Prices announced by the Cabinet (CCEA) — tap a crop to see the official order.",
+    hi: "मंत्रिमंडल (CCEA) द्वारा घोषित न्यूनतम समर्थन मूल्य — आधिकारिक आदेश देखने के लिए फसल पर टैप करें।",
+  },
+  officialSources: { en: "Official sources", hi: "आधिकारिक स्रोत" },
+  officialSourcesHint: {
+    en: "Cross-check rates and advisories on Government of India portals.",
+    hi: "भारत सरकार के पोर्टल पर भाव और सलाह की पुष्टि करें।",
+  },
   equipment: { en: "Equipment rental", hi: "उपकरण किराया" },
   equipmentHint: {
     en: "Hire tractors, harvesters and sprayers by the day, or list your own machine to earn.",
