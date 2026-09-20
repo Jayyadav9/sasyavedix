@@ -277,3 +277,122 @@ export const ORDER_LABELS: Record<string, { en: string; hi: string }> = {
   paid: { en: "Payment received", hi: "भुगतान प्राप्त" },
   cancelled: { en: "Cancelled", hi: "रद्द" },
 };
+
+// ---------------- notifications, alerts, calendar, payments ----------------
+
+export type Notification = {
+  id: string;
+  kind: string;
+  title_en: string;
+  title_hi: string;
+  body_en: string | null;
+  body_hi: string | null;
+  link: string | null;
+  read: boolean;
+  created_at: string;
+};
+
+export const notificationsQuery = queryOptions({
+  queryKey: ["notifications"],
+  queryFn: async (): Promise<Notification[]> => {
+    const { data, error } = await supabase
+      .from("notifications")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(50);
+    if (error) throw error;
+    return (data ?? []) as Notification[];
+  },
+  refetchInterval: 60_000,
+});
+
+export type PriceAlert = {
+  id: string;
+  crop: string;
+  market: string | null;
+  direction: string;
+  target_price: number;
+  active: boolean;
+  created_at: string;
+};
+
+export const priceAlertsQuery = queryOptions({
+  queryKey: ["price_alerts"],
+  queryFn: async (): Promise<PriceAlert[]> => {
+    const { data, error } = await supabase
+      .from("price_alerts")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (error) throw error;
+    return (data ?? []) as PriceAlert[];
+  },
+});
+
+export type CropPlan = {
+  id: string;
+  crop: string;
+  variety: string | null;
+  sowing_date: string;
+  harvest_date: string | null;
+  area_acres: number | null;
+  notes: string | null;
+  status: string;
+  created_at: string;
+};
+
+export const cropPlansQuery = queryOptions({
+  queryKey: ["crop_plans"],
+  queryFn: async (): Promise<CropPlan[]> => {
+    const { data, error } = await supabase
+      .from("crop_plans")
+      .select("*")
+      .order("sowing_date", { ascending: false });
+    if (error) throw error;
+    return (data ?? []) as CropPlan[];
+  },
+});
+
+export type CropTask = {
+  id: string;
+  plan_id: string;
+  kind: string;
+  title_en: string;
+  title_hi: string;
+  due_date: string;
+  done: boolean;
+  done_on: string | null;
+};
+
+export const cropTasksQuery = queryOptions({
+  queryKey: ["crop_tasks"],
+  queryFn: async (): Promise<CropTask[]> => {
+    const { data, error } = await supabase
+      .from("crop_tasks")
+      .select("id, plan_id, kind, title_en, title_hi, due_date, done, done_on")
+      .order("due_date", { ascending: true });
+    if (error) throw error;
+    return (data ?? []) as CropTask[];
+  },
+});
+
+export type Payment = {
+  id: string;
+  order_id: string;
+  amount: number;
+  method: string;
+  reference: string | null;
+  paid_on: string;
+  note: string | null;
+};
+
+export const paymentsQuery = queryOptions({
+  queryKey: ["payments"],
+  queryFn: async (): Promise<Payment[]> => {
+    const { data, error } = await supabase
+      .from("payments")
+      .select("id, order_id, amount, method, reference, paid_on, note")
+      .order("paid_on", { ascending: false });
+    if (error) throw error;
+    return (data ?? []) as Payment[];
+  },
+});
