@@ -13,6 +13,7 @@ import {
   priceAlertsQuery,
   type PriceAlert,
 } from "@/lib/queries";
+import { sendPriceAlertEmail } from "@/lib/alert-email.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -92,6 +93,15 @@ function AlertsPage() {
           body_hi: `${best.market}, ${best.location} — ${best.observed_on}. आपका लक्ष्य ₹${a.target_price} था।`,
           link: "/market",
         });
+        if ((a as PriceAlert & { notify_email?: boolean }).notify_email) {
+          try {
+            await sendPriceAlertEmail({
+              data: { crop: a.crop, price: Number(best.price), market: best.market, target: a.target_price },
+            });
+          } catch {
+            /* email is best effort */
+          }
+        }
         await supabase.from("price_alerts").update({ last_notified_on: today }).eq("id", a.id);
       }
       qc.invalidateQueries({ queryKey: ["notifications"] });
@@ -111,6 +121,7 @@ function AlertsPage() {
         market: String(fd.get("market") ?? "").trim() || null,
         direction: String(fd.get("direction") ?? "above"),
         target_price: Number(fd.get("target_price")),
+        notify_email: fd.get("notify_email") === "on",
       });
       if (error) throw error;
       form.reset();
