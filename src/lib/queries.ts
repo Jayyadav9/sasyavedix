@@ -607,3 +607,54 @@ export const farmExpensesQuery = queryOptions({
     return data as FarmExpense[];
   },
 });
+
+// ---- Phase 13: equipment rentals ----
+export type Equipment = {
+  id: string;
+  owner_id: string;
+  name: string;
+  kind: string;
+  rate_per_day: number;
+  location: string | null;
+  district: string | null;
+  description: string | null;
+  available: boolean;
+  created_at: string;
+};
+
+export const equipmentQuery = queryOptions({
+  queryKey: ["equipment"],
+  queryFn: async () => {
+    const { data, error } = await supabase
+      .from("equipment")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (error) throw error;
+    return data as Equipment[];
+  },
+});
+
+export type EquipmentBooking = {
+  id: string;
+  equipment_id: string;
+  farmer_id: string;
+  owner_id: string;
+  start_date: string;
+  days: number;
+  total_amount: number;
+  note: string | null;
+  status: string;
+  created_at: string;
+};
+
+export const equipmentBookingsQuery = queryOptions({
+  queryKey: ["equipment_bookings"],
+  queryFn: async () => {
+    const { data, error } = await supabase
+      .from("equipment_bookings")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (error) throw error;
+    return data as EquipmentBooking[];
+  },
+});
