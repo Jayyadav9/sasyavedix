@@ -1,4 +1,6 @@
-import type { Scheme } from "@/lib/queries";
+import type { Tables } from "@/integrations/supabase/types";
+
+export type Scheme = Tables<"schemes">;
 
 export type ProfileLike = {
   land_acres?: number | null;

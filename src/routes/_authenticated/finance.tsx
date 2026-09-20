@@ -25,12 +25,12 @@ export const Route = createFileRoute("/_authenticated/finance")({
 });
 
 function FinancePage() {
-  const { auth } = useAuth();
+  const { user } = useAuth();
   const { t, lang } = useLang();
   const qc = useQueryClient();
   const loans = useQuery(loansQuery);
   const insurance = useQuery(insuranceQuery);
-  const uid = auth.status === "authenticated" ? auth.user.id : null;
+  const uid = user?.id ?? null;
 
   const addLoan = useMutation({
     mutationFn: async (form: HTMLFormElement) => {

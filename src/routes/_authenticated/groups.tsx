@@ -33,7 +33,7 @@ export const Route = createFileRoute("/_authenticated/groups")({
 });
 
 function GroupsPage() {
-  const { auth } = useAuth();
+  const { user } = useAuth();
   const { t, lang } = useLang();
   const qc = useQueryClient();
   const groups = useQuery(groupsQuery);
@@ -43,7 +43,7 @@ function GroupsPage() {
   const prices = useQuery(marketPricesQuery);
   const [qtyFor, setQtyFor] = useState<string | null>(null);
 
-  const uid = auth.status === "authenticated" ? auth.user.id : null;
+  const uid = user?.id ?? null;
   const myGroups = (groups.data ?? []).filter(
     (g) => g.created_by === uid || (members.data ?? []).some((m) => m.group_id === g.id && m.farmer_id === uid),
   );
