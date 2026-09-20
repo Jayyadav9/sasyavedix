@@ -588,6 +588,7 @@ export function avgRating(reviews: Review[], userId: string): { avg: number; cou
 export type FarmExpense = {
   id: string;
   farmer_id: string;
+  field_id: string | null;
   crop: string;
   category: string;
   amount: number;
