@@ -293,6 +293,50 @@ export type Database = {
         }
         Relationships: []
       }
+      farm_expenses: {
+        Row: {
+          acres: number | null
+          amount: number
+          category: string
+          created_at: string
+          crop: string
+          farmer_id: string
+          id: string
+          notes: string | null
+          spent_on: string
+        }
+        Insert: {
+          acres?: number | null
+          amount: number
+          category?: string
+          created_at?: string
+          crop: string
+          farmer_id: string
+          id?: string
+          notes?: string | null
+          spent_on?: string
+        }
+        Update: {
+          acres?: number | null
+          amount?: number
+          category?: string
+          created_at?: string
+          crop?: string
+          farmer_id?: string
+          id?: string
+          notes?: string | null
+          spent_on?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "farm_expenses_farmer_id_fkey"
+            columns: ["farmer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       farmer_groups: {
         Row: {
           created_at: string
@@ -944,6 +988,44 @@ export type Database = {
           village?: string | null
         }
         Relationships: []
+      }
+      reviews: {
+        Row: {
+          comment: string | null
+          created_at: string
+          id: string
+          order_id: string
+          ratee_id: string
+          rater_id: string
+          rating: number
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          order_id: string
+          ratee_id: string
+          rater_id: string
+          rating: number
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          order_id?: string
+          ratee_id?: string
+          rater_id?: string
+          rating?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       schemes: {
         Row: {

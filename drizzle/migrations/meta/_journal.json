@@ -57,6 +57,13 @@
       "when": 1789890038051,
       "tag": "0007_phase8_groups_loans_insurance",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1789890410834,
+      "tag": "0008_phase9_reviews_expenses",
+      "breakpoints": true
     }
   ]
 }
