@@ -19,6 +19,7 @@ import { Route as AuthenticatedCalendarRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedEquipmentRouteImport } from './routes/_authenticated/equipment'
 import { Route as AuthenticatedExpensesRouteImport } from './routes/_authenticated/expenses'
+import { Route as AuthenticatedFieldsRouteImport } from './routes/_authenticated/fields'
 import { Route as AuthenticatedFinanceRouteImport } from './routes/_authenticated/finance'
 import { Route as AuthenticatedGroupsRouteImport } from './routes/_authenticated/groups'
 import { Route as AuthenticatedMarketRouteImport } from './routes/_authenticated/market'
@@ -79,6 +80,11 @@ const AuthenticatedEquipmentRoute = AuthenticatedEquipmentRouteImport.update({
 const AuthenticatedExpensesRoute = AuthenticatedExpensesRouteImport.update({
   id: '/expenses',
   path: '/expenses',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedFieldsRoute = AuthenticatedFieldsRouteImport.update({
+  id: '/fields',
+  path: '/fields',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedFinanceRoute = AuthenticatedFinanceRouteImport.update({
@@ -154,6 +160,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/equipment': typeof AuthenticatedEquipmentRoute
   '/expenses': typeof AuthenticatedExpensesRoute
+  '/fields': typeof AuthenticatedFieldsRoute
   '/finance': typeof AuthenticatedFinanceRoute
   '/groups': typeof AuthenticatedGroupsRoute
   '/market': typeof AuthenticatedMarketRoute
@@ -177,6 +184,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/equipment': typeof AuthenticatedEquipmentRoute
   '/expenses': typeof AuthenticatedExpensesRoute
+  '/fields': typeof AuthenticatedFieldsRoute
   '/finance': typeof AuthenticatedFinanceRoute
   '/groups': typeof AuthenticatedGroupsRoute
   '/market': typeof AuthenticatedMarketRoute
@@ -202,6 +210,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/equipment': typeof AuthenticatedEquipmentRoute
   '/_authenticated/expenses': typeof AuthenticatedExpensesRoute
+  '/_authenticated/fields': typeof AuthenticatedFieldsRoute
   '/_authenticated/finance': typeof AuthenticatedFinanceRoute
   '/_authenticated/groups': typeof AuthenticatedGroupsRoute
   '/_authenticated/market': typeof AuthenticatedMarketRoute
@@ -227,6 +236,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/equipment'
     | '/expenses'
+    | '/fields'
     | '/finance'
     | '/groups'
     | '/market'
@@ -250,6 +260,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/equipment'
     | '/expenses'
+    | '/fields'
     | '/finance'
     | '/groups'
     | '/market'
@@ -274,6 +285,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/equipment'
     | '/_authenticated/expenses'
+    | '/_authenticated/fields'
     | '/_authenticated/finance'
     | '/_authenticated/groups'
     | '/_authenticated/market'
@@ -363,6 +375,13 @@ declare module '@tanstack/react-router' {
       path: '/expenses'
       fullPath: '/expenses'
       preLoaderRoute: typeof AuthenticatedExpensesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/fields': {
+      id: '/_authenticated/fields'
+      path: '/fields'
+      fullPath: '/fields'
+      preLoaderRoute: typeof AuthenticatedFieldsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/finance': {
@@ -461,6 +480,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedEquipmentRoute: typeof AuthenticatedEquipmentRoute
   AuthenticatedExpensesRoute: typeof AuthenticatedExpensesRoute
+  AuthenticatedFieldsRoute: typeof AuthenticatedFieldsRoute
   AuthenticatedFinanceRoute: typeof AuthenticatedFinanceRoute
   AuthenticatedGroupsRoute: typeof AuthenticatedGroupsRoute
   AuthenticatedMarketRoute: typeof AuthenticatedMarketRoute
@@ -484,6 +504,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedEquipmentRoute: AuthenticatedEquipmentRoute,
   AuthenticatedExpensesRoute: AuthenticatedExpensesRoute,
+  AuthenticatedFieldsRoute: AuthenticatedFieldsRoute,
   AuthenticatedFinanceRoute: AuthenticatedFinanceRoute,
   AuthenticatedGroupsRoute: AuthenticatedGroupsRoute,
   AuthenticatedMarketRoute: AuthenticatedMarketRoute,
