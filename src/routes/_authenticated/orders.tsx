@@ -103,9 +103,16 @@ function OrdersPage() {
 
   const advance = useMutation({
     mutationFn: async ({ order, status }: { order: Order; status: string }) => {
-      const patch: Record<string, unknown> = { status, updated_at: new Date().toISOString() };
-      if (status === "delivered") patch['delivery_date'] = new Date().toISOString().slice(0, 10);
-      const { error } = await supabase.from("orders").update(patch).eq("id", order.id);
+      const { error } = await supabase
+        .from("orders")
+        .update({
+          status,
+          updated_at: new Date().toISOString(),
+          ...(status === "delivered"
+            ? { delivery_date: new Date().toISOString().slice(0, 10) }
+            : {}),
+        })
+        .eq("id", order.id);
       if (error) throw error;
     },
     onSuccess: () => {

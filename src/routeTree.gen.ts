@@ -16,6 +16,7 @@ import { Route as AuthenticatedAnalyticsRouteImport } from './routes/_authentica
 import { Route as AuthenticatedAssistantRouteImport } from './routes/_authenticated/assistant'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedMarketRouteImport } from './routes/_authenticated/market'
+import { Route as AuthenticatedOrdersRouteImport } from './routes/_authenticated/orders'
 import { Route as AuthenticatedSchemesRouteImport } from './routes/_authenticated/schemes'
 import { Route as AuthenticatedSellRouteImport } from './routes/_authenticated/sell'
 import { Route as AuthenticatedSoilRouteImport } from './routes/_authenticated/soil'
@@ -56,6 +57,11 @@ const AuthenticatedMarketRoute = AuthenticatedMarketRouteImport.update({
   path: '/market',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedOrdersRoute = AuthenticatedOrdersRouteImport.update({
+  id: '/orders',
+  path: '/orders',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedSchemesRoute = AuthenticatedSchemesRouteImport.update({
   id: '/schemes',
   path: '/schemes',
@@ -89,6 +95,7 @@ export interface FileRoutesByFullPath {
   '/assistant': typeof AuthenticatedAssistantRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/market': typeof AuthenticatedMarketRoute
+  '/orders': typeof AuthenticatedOrdersRoute
   '/schemes': typeof AuthenticatedSchemesRoute
   '/sell': typeof AuthenticatedSellRoute
   '/soil': typeof AuthenticatedSoilRoute
@@ -102,6 +109,7 @@ export interface FileRoutesByTo {
   '/assistant': typeof AuthenticatedAssistantRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/market': typeof AuthenticatedMarketRoute
+  '/orders': typeof AuthenticatedOrdersRoute
   '/schemes': typeof AuthenticatedSchemesRoute
   '/sell': typeof AuthenticatedSellRoute
   '/soil': typeof AuthenticatedSoilRoute
@@ -117,6 +125,7 @@ export interface FileRoutesById {
   '/_authenticated/assistant': typeof AuthenticatedAssistantRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/market': typeof AuthenticatedMarketRoute
+  '/_authenticated/orders': typeof AuthenticatedOrdersRoute
   '/_authenticated/schemes': typeof AuthenticatedSchemesRoute
   '/_authenticated/sell': typeof AuthenticatedSellRoute
   '/_authenticated/soil': typeof AuthenticatedSoilRoute
@@ -132,6 +141,7 @@ export interface FileRouteTypes {
     | '/assistant'
     | '/dashboard'
     | '/market'
+    | '/orders'
     | '/schemes'
     | '/sell'
     | '/soil'
@@ -145,6 +155,7 @@ export interface FileRouteTypes {
     | '/assistant'
     | '/dashboard'
     | '/market'
+    | '/orders'
     | '/schemes'
     | '/sell'
     | '/soil'
@@ -159,6 +170,7 @@ export interface FileRouteTypes {
     | '/_authenticated/assistant'
     | '/_authenticated/dashboard'
     | '/_authenticated/market'
+    | '/_authenticated/orders'
     | '/_authenticated/schemes'
     | '/_authenticated/sell'
     | '/_authenticated/soil'
@@ -222,6 +234,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedMarketRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/orders': {
+      id: '/_authenticated/orders'
+      path: '/orders'
+      fullPath: '/orders'
+      preLoaderRoute: typeof AuthenticatedOrdersRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/schemes': {
       id: '/_authenticated/schemes'
       path: '/schemes'
@@ -266,6 +285,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAssistantRoute: typeof AuthenticatedAssistantRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedMarketRoute: typeof AuthenticatedMarketRoute
+  AuthenticatedOrdersRoute: typeof AuthenticatedOrdersRoute
   AuthenticatedSchemesRoute: typeof AuthenticatedSchemesRoute
   AuthenticatedSellRoute: typeof AuthenticatedSellRoute
   AuthenticatedSoilRoute: typeof AuthenticatedSoilRoute
@@ -279,6 +299,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAssistantRoute: AuthenticatedAssistantRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedMarketRoute: AuthenticatedMarketRoute,
+  AuthenticatedOrdersRoute: AuthenticatedOrdersRoute,
   AuthenticatedSchemesRoute: AuthenticatedSchemesRoute,
   AuthenticatedSellRoute: AuthenticatedSellRoute,
   AuthenticatedSoilRoute: AuthenticatedSoilRoute,
