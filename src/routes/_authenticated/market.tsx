@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { Search, ArrowUpDown, Loader2, RefreshCw, Scale, TrendingUp, TrendingDown, Pause } from "lucide-react";
+import { Search, ArrowUpDown, Loader2, RefreshCw, Scale, TrendingUp, TrendingDown, Pause, ExternalLink, Landmark } from "lucide-react";
 import { toast } from "sonner";
 
 import { useLang } from "@/lib/i18n";
@@ -12,6 +12,7 @@ import {
   type MarketPrice,
 } from "@/lib/queries";
 import { sellAdvice } from "@/lib/sell-advice";
+import { OFFICIAL_SOURCES } from "@/lib/sources";
 import { syncMandiPrices } from "@/lib/mandi.functions";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
