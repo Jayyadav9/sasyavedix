@@ -42,9 +42,9 @@ const SOIL_TYPES = ["black", "alluvial", "red", "sandy", "clay", "loamy"];
 const IRRIGATION = ["rainfed", "canal", "borewell", "drip", "sprinkler"];
 
 function FieldsPage() {
-  const { t } = useTranslation();
+  const { t } = useLang();
   const { user } = useAuth();
-  const uid = user?.id ?? null;
+  const uid = user?.id;
   const qc = useQueryClient();
 
   const fields = useQuery(farmFieldsQuery);
@@ -227,7 +227,7 @@ function FieldsPage() {
                     <span className="rounded-full bg-secondary px-2.5 py-1">{t(`irr_${f.irrigation}`)}</span>
                   )}
                   <span className="rounded-full bg-secondary px-2.5 py-1">
-                    {t("spent")}: {formatINR(s.spent)}
+                    {t("spent")}: ₹{s.spent.toLocaleString("en-IN")}
                   </span>
                 </div>
               </div>
