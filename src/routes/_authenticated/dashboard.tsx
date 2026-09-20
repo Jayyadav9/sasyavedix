@@ -1,5 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { Thermometer, TrendingUp, Sprout, Landmark, ArrowRight } from "lucide-react";
 import {
   Area,
@@ -18,6 +19,7 @@ import {
   marketPricesQuery,
   myListingsQuery,
   profileQuery,
+  roleQuery,
   schemesQuery,
 } from "@/lib/queries";
 import { Skeleton } from "@/components/ui/skeleton";
