@@ -207,8 +207,10 @@ function SoilPage() {
             </div>
           ) : (
             <>
+              <SoilCard test={latest} farmer={profile.data?.full_name ?? "Farmer"} />
+
               <div className="glass-card rounded-3xl p-5">
-                <h2 className="font-display text-xl font-semibold">
+
                   {lang === "hi" ? "नवीनतम रिपोर्ट" : "Latest report"}{" "}
                   <span className="text-sm font-normal text-muted-foreground">
                     · {latest.sample_date} {latest.location ? `· ${latest.location}` : ""}

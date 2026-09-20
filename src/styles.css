@@ -184,3 +184,22 @@
     box-shadow: var(--shadow-lift);
   }
 }
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #soil-card,
+  #soil-card * {
+    visibility: visible;
+  }
+  #soil-card {
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 100%;
+    box-shadow: none;
+  }
+  .no-print {
+    display: none !important;
+  }
+}
