@@ -31,7 +31,13 @@
 - Order tracking: accepted -> dispatched -> delivered -> paid, listing auto-marked sold
 - Verified end to end in the browser with test farmer and buyer accounts
 
-## Phase 5 — next
-- Farmer profile page + onboarding (village, land size, default district)
-- Live mandi price API to replace sample data
-- API and setup documentation
+## Phase 5 — done
+- Printable soil health card with ratings and advice
+- Live mandi price sync from data.gov.in ("Fetch today's rates" on Market Prices)
+- Farmer profile page (name, phone, village, district, state, land size, language) with
+  completeness meter + dashboard onboarding prompt
+- DOCS.md: stack, folders, data model, server functions, configuration, how to extend
+
+## Open
+- data.gov.in API key not supplied yet — mandi prices still use the 60-day sample history
+

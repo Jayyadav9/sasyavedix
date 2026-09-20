@@ -172,6 +172,29 @@ function Dashboard() {
         <p className="mt-1 opacity-90">{t("welcomeSub")}</p>
       </header>
 
+      {profile.data && (!profile.data.village || !profile.data.district || !profile.data.land_acres) && (
+        <Link
+          to="/profile"
+          className="glass-card lift-hover flex flex-wrap items-center justify-between gap-3 rounded-3xl border-l-4 border-l-accent p-5"
+        >
+          <div>
+            <p className="font-display text-lg font-semibold">
+              {lang === "hi" ? "अपनी खेती की जानकारी पूरी करें" : "Complete your farm profile"}
+            </p>
+            <p className="text-sm text-muted-foreground">
+              {lang === "hi"
+                ? "गाँव, जिला और जमीन का आकार जोड़ें — सलाह आपके खेत के अनुसार मिलेगी।"
+                : "Add your village, district and land size so the advice fits your field."}
+            </p>
+          </div>
+          <span className="flex items-center gap-1 text-sm font-semibold text-primary">
+            {lang === "hi" ? "अभी भरें" : "Fill it in"} <ArrowRight className="h-4 w-4" />
+          </span>
+        </Link>
+      )}
+
+
+
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
           icon={Thermometer}
