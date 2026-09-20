@@ -36,7 +36,9 @@ const FARMER_NAV: { to: string; key: TKey; icon: typeof LayoutDashboard }[] = [
   { to: "/schemes", key: "schemes", icon: Landmark },
   { to: "/assistant", key: "aiAssistant", icon: Bot },
   { to: "/analytics", key: "analytics", icon: BarChart3 },
+  { to: "/profile", key: "myProfile", icon: UserRound },
 ];
+
 
 const BUYER_NAV: { to: string; key: TKey; icon: typeof LayoutDashboard }[] = [
   { to: "/buyer/browse", key: "browseCrops", icon: ShoppingBasket },
