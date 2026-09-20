@@ -2,6 +2,9 @@
 
 **Smart Farming for Smart India** — a full-stack agri platform that puts complex technology behind the scenes and a simple experience in front of the farmer. Built for Indian farmers and buyers: mandi prices, crop selling, weather, soil health, government schemes, and a voice assistant in Hindi and English.
 
+**Repository**: [github.com/Jayyadav9/pixel-perfect-snapshot](https://github.com/Jayyadav9/pixel-perfect-snapshot) — kept in sync automatically with every change made here.
+
+
 ## What it does
 
 **For farmers**
