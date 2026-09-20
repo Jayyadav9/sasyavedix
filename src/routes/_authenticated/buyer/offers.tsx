@@ -1,12 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Handshake, IndianRupee, PackageCheck } from "lucide-react";
+import { FileText, Handshake, IndianRupee, PackageCheck } from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useLang } from "@/lib/i18n";
-import { offersQuery, ordersQuery, type Order } from "@/lib/queries";
+import { offersQuery, ordersQuery, paymentsQuery, type Order } from "@/lib/queries";
 import { OrderTrack } from "@/components/order-track";
+import { Invoice } from "@/components/invoice";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -44,6 +46,30 @@ function BuyerOffersPage() {
   const qc = useQueryClient();
   const offers = useQuery(offersQuery);
   const orders = useQuery(ordersQuery);
+  const payments = useQuery(paymentsQuery);
+  const [invoiceFor, setInvoiceFor] = useState<{
+    order: Order;
+    seller: string | null;
+    place: string | null;
+  } | null>(null);
+
+  // Buyers may read the profile of a farmer they share an order with (RLS).
+  const viewInvoice = async (order: Order) => {
+    if (invoiceFor?.order.id === order.id) {
+      setInvoiceFor(null);
+      return;
+    }
+    const { data: seller } = await supabase
+      .from("profiles")
+      .select("full_name, village, district")
+      .eq("id", order.farmer_id)
+      .maybeSingle();
+    setInvoiceFor({
+      order,
+      seller: seller?.full_name ?? null,
+      place: [seller?.village, seller?.district].filter(Boolean).join(", ") || null,
+    });
+  };
 
   const confirm = useMutation({
     mutationFn: async ({ order, status }: { order: Order; status: string }) => {
@@ -191,6 +217,20 @@ function BuyerOffersPage() {
                     <IndianRupee className="mr-2 h-4 w-4" />
                     {t("markPaid")}
                   </Button>
+                )}
+                {["dispatched", "delivered", "paid"].includes(o.status) && (
+                  <Button size="sm" variant="outline" onClick={() => void viewInvoice(o)}>
+                    <FileText className="mr-2 h-4 w-4" />
+                    {t("viewInvoice")}
+                  </Button>
+                )}
+                {invoiceFor?.order.id === o.id && (
+                  <Invoice
+                    order={o}
+                    payments={(payments.data ?? []).filter((p) => p.order_id === o.id)}
+                    sellerName={invoiceFor.seller}
+                    sellerPlace={invoiceFor.place}
+                  />
                 )}
               </li>
             ))}
