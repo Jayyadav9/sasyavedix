@@ -106,6 +106,13 @@
       "when": 1789892263765,
       "tag": "0014_0014_community_chat_equipment_logs",
       "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1789892756417,
+      "tag": "0015_restrict_reviews_and_listing_photos",
+      "breakpoints": true
     }
   ]
 }
