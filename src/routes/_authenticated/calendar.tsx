@@ -15,7 +15,7 @@ import {
   notificationsQuery,
   varietiesQuery,
   type CropTask,
-} from "@/lib/queries";
+, farmFieldsQuery } from "@/lib/queries";
 import { CROP_TEMPLATES, TASK_KIND_LABEL, addDays, templateFor, type TaskKind } from "@/lib/calendar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -106,6 +106,7 @@ function CalendarPage() {
           sowing_date: sowing,
           harvest_date: addDays(sowing, tpl.durationDays),
           area_acres: fd.get("area_acres") ? Number(fd.get("area_acres")) : null,
+          field_id: String(fd.get("field_id") ?? "") || null,
         })
         .select("id")
         .single();
