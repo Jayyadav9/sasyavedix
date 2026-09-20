@@ -63,6 +63,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [open, setOpen] = useState(false);
+  const online = useOnline();
   const role = useQuery(roleQuery);
   const NAV = role.isPending ? [] : role.data === "buyer" ? BUYER_NAV : FARMER_NAV;
 
