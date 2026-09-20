@@ -337,6 +337,59 @@ function CalendarPage() {
                       </p>
                     );
                   })()}
+                  {p.actual_yield_quintal != null ? (
+                    <p className="mt-2 flex items-center gap-1.5 rounded-xl bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary">
+                      <CheckCircle2 className="h-3.5 w-3.5" />
+                      {t("harvested")}: {Number(p.actual_yield_quintal).toLocaleString("en-IN")}{" "}
+                      {t("quintal")}
+                      {p.harvested_on &&
+                        ` · ${new Date(`${p.harvested_on}T00:00:00`).toLocaleDateString("en-IN")}`}
+                    </p>
+                  ) : harvestFor === p.id ? (
+                    <form
+                      className="mt-2 flex items-end gap-2"
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        recordHarvest.mutate({ id: p.id, form: e.currentTarget });
+                      }}
+                    >
+                      <div className="flex-1">
+                        <Label htmlFor={`yield-${p.id}`} className="text-xs">
+                          {t("actualYield")} ({t("quintal")})
+                        </Label>
+                        <Input
+                          id={`yield-${p.id}`}
+                          name="actual_yield"
+                          type="number"
+                          step="0.5"
+                          min="0"
+                          required
+                          className="mt-1 h-9"
+                        />
+                      </div>
+                      <Button type="submit" size="sm" disabled={recordHarvest.isPending}>
+                        {t("save")}
+                      </Button>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => setHarvestFor(null)}
+                      >
+                        ✕
+                      </Button>
+                    </form>
+                  ) : (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="mt-2"
+                      onClick={() => setHarvestFor(p.id)}
+                    >
+                      <Wheat className="mr-2 h-4 w-4" />
+                      {t("recordHarvest")}
+                    </Button>
+                  )}
                 </li>
               );
             })}
