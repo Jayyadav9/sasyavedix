@@ -343,6 +343,7 @@ export type CropPlan = {
   notes: string | null;
   status: string;
   actual_yield_quintal: number | null;
+  field_id: string | null;
   harvested_on: string | null;
   created_at: string;
 };
@@ -656,5 +657,31 @@ export const equipmentBookingsQuery = queryOptions({
       .order("created_at", { ascending: false });
     if (error) throw error;
     return data as EquipmentBooking[];
+  },
+});
+
+// ---- Phase 14: farm fields ----
+export type FarmField = {
+  id: string;
+  farmer_id: string;
+  name: string;
+  acres: number;
+  village: string | null;
+  district: string | null;
+  soil_type: string | null;
+  irrigation: string | null;
+  notes: string | null;
+  created_at: string;
+};
+
+export const farmFieldsQuery = queryOptions({
+  queryKey: ["farm_fields"],
+  queryFn: async () => {
+    const { data, error } = await supabase
+      .from("farm_fields")
+      .select("*")
+      .order("created_at", { ascending: true });
+    if (error) throw error;
+    return data as FarmField[];
   },
 });
