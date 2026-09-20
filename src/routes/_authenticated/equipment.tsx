@@ -1,13 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Tractor, Loader2, Trash2, CalendarDays, Check, X } from "lucide-react";
+import { Tractor, Loader2, Trash2, CalendarDays, Check, X, NotebookPen } from "lucide-react";
 import { toast } from "sonner";
 
 import { useAuth } from "@/lib/useAuth";
 import { useLang } from "@/lib/i18n";
 import { supabase } from "@/integrations/supabase/client";
-import { equipmentQuery, equipmentBookingsQuery, type Equipment } from "@/lib/queries";
+import { equipmentQuery, equipmentBookingsQuery, equipmentLogsQuery, type Equipment } from "@/lib/queries";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -41,7 +41,9 @@ function EquipmentPage() {
   const qc = useQueryClient();
   const equipment = useQuery(equipmentQuery);
   const bookings = useQuery(equipmentBookingsQuery);
+  const logs = useQuery(equipmentLogsQuery);
   const [bookFor, setBookFor] = useState<string | null>(null);
+  const [logFor, setLogFor] = useState<string | null>(null);
 
   const uid = user?.id ?? null;
   const all = equipment.data ?? [];
@@ -52,7 +54,39 @@ function EquipmentPage() {
   const refresh = () => {
     qc.invalidateQueries({ queryKey: ["equipment"] });
     qc.invalidateQueries({ queryKey: ["equipment_bookings"] });
+    qc.invalidateQueries({ queryKey: ["equipment_logs"] });
   };
+
+  const earningsFor = (equipmentId: string) => {
+    const done = myBookings.filter(
+      (b) => b.equipment_id === equipmentId && ["accepted", "completed"].includes(b.status),
+    );
+    return {
+      total: done.reduce((s, b) => s + b.total_amount, 0),
+      count: done.length,
+      days: done.reduce((s, b) => s + b.days, 0),
+    };
+  };
+
+  const addLog = useMutation({
+    mutationFn: async (fd: FormData) => {
+      if (!uid || !logFor) throw new Error("Not signed in");
+      const { error } = await supabase.from("equipment_logs").insert({
+        equipment_id: logFor,
+        owner_id: uid,
+        used_on: String(fd.get("used_on")) || undefined,
+        hours: fd.get("hours") ? Number(fd.get("hours")) : null,
+        note: String(fd.get("note") ?? "").trim() || null,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success(t("saved"));
+      setLogFor(null);
+      qc.invalidateQueries({ queryKey: ["equipment_logs"] });
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Could not save"),
+  });
 
   const addMachine = useMutation({
     mutationFn: async (fd: FormData) => {
