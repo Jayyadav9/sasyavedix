@@ -214,6 +214,67 @@ function MarketPage() {
         )}
       </div>
 
+      {crop !== "All" && advice && (
+        <section className="glass-card rounded-3xl p-5">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <span
+                className={`grid h-11 w-11 place-items-center rounded-2xl ${
+                  advice.signal === "sell"
+                    ? "gradient-field text-primary-foreground"
+                    : advice.signal === "wait"
+                      ? "gradient-harvest text-accent-foreground"
+                      : "bg-muted"
+                }`}
+              >
+                {advice.signal === "sell" ? (
+                  <TrendingUp className="h-5 w-5" />
+                ) : advice.signal === "wait" ? (
+                  <TrendingDown className="h-5 w-5" />
+                ) : (
+                  <Pause className="h-5 w-5" />
+                )}
+              </span>
+              <div>
+                <h2 className="font-display text-xl font-bold">
+                  {t("sellAdvisor")} — {crop}
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  {advice.signal === "sell"
+                    ? t("sellNow")
+                    : advice.signal === "wait"
+                      ? t("waitBetter")
+                      : t("holdSteady")}
+                  {" · "}₹{advice.latest.toLocaleString("en-IN")} · {advice.market}
+                </p>
+              </div>
+            </div>
+            {advice.msp != null && (
+              <div className="flex items-center gap-2 rounded-2xl bg-muted/60 px-4 py-2">
+                <Scale className="h-4 w-4 text-primary" />
+                <p className="text-sm">
+                  {t("mspLabel")} ₹{advice.msp.toLocaleString("en-IN")} —{" "}
+                  <span className={advice.aboveMsp ? "font-semibold text-primary" : "font-semibold text-destructive"}>
+                    {advice.aboveMsp
+                      ? lang === "hi"
+                        ? "ऊपर"
+                        : "above"
+                      : lang === "hi"
+                        ? "नीचे"
+                        : "below"}
+                  </span>
+                </p>
+              </div>
+            )}
+          </div>
+          <ul className="mt-3 list-inside list-disc space-y-1 text-sm text-muted-foreground">
+            {(lang === "hi" ? advice.reasons_hi : advice.reasons_en).map((r) => (
+              <li key={r}>{r}</li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       <div className="glass-card overflow-hidden rounded-3xl">
         {isLoading ? (
           <div className="space-y-2 p-5">
