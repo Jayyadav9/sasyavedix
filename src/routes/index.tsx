@@ -39,6 +39,7 @@ function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
+  const [role, setRole] = useState<"farmer" | "buyer">("farmer");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
