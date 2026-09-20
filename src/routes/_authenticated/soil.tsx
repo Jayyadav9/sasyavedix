@@ -60,6 +60,8 @@ function SoilPage() {
   const { lang } = useLang();
   const qc = useQueryClient();
   const tests = useQuery(soilTestsQuery);
+  const profile = useQuery(profileQuery);
+
   const [form, setForm] = useState(empty);
 
   const save = useMutation({
