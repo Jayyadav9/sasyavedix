@@ -210,8 +210,12 @@ function AlertsPage() {
             <Label htmlFor="target_price">{t("targetPrice")}</Label>
             <Input id="target_price" name="target_price" type="number" min="1" required className="mt-1" />
           </div>
-          <div className="flex items-end">
-            <Button type="submit" className="w-full" disabled={addAlert.isPending}>
+          <div className="flex items-end gap-2">
+            <label className="flex h-10 flex-1 items-center gap-2 rounded-xl border border-border bg-card px-3 text-xs">
+              <input type="checkbox" id="notify_email" name="notify_email" />
+              {t("emailMe")}
+            </label>
+            <Button type="submit" disabled={addAlert.isPending}>
               {t("addAlert")}
             </Button>
           </div>
