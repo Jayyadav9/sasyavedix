@@ -1,11 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { Search, ArrowUpDown, Loader2, RefreshCw } from "lucide-react";
+import { Search, ArrowUpDown, Loader2, RefreshCw, Scale, TrendingUp, TrendingDown, Pause } from "lucide-react";
 import { toast } from "sonner";
 
 import { useLang } from "@/lib/i18n";
-import { latestByCropMandi, marketPricesQuery, type MarketPrice } from "@/lib/queries";
+import {
+  latestByCropMandi,
+  marketPricesQuery,
+  mspQuery,
+  type MarketPrice,
+} from "@/lib/queries";
+import { sellAdvice } from "@/lib/sell-advice";
 import { syncMandiPrices } from "@/lib/mandi.functions";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -59,6 +65,7 @@ function Select({
 function MarketPage() {
   const { t, lang } = useLang();
   const { data, isLoading } = useQuery(marketPricesQuery);
+  const msp = useQuery(mspQuery);
   const qc = useQueryClient();
   const refresh = useMutation({
     mutationFn: () => syncMandiPrices(),
