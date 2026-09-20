@@ -92,3 +92,11 @@
 - Buyer spending summary on My Offers & Orders: orders placed, total spent,
   top crops by purchase value
 - Publish still pending — user declined once; only on explicit confirmation
+
+## Phase 11 — done
+- Field-job reminders: due/overdue calendar tasks auto-create notification-bell
+  entries (deduped per task, verified: bell badge lit up on the test account)
+- Cost per quintal: Expenses & Profit shows true cost of production once a
+  harvest is recorded (total cost ÷ actual yield), verified ₹94/q on 48 q
+- Buyers can view and print the sale invoice on their orders page (same
+  invoice as the farmer, seller name fetched under the deal-sharing policy)
