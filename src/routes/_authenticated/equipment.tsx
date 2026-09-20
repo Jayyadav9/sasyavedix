@@ -144,8 +144,9 @@ function EquipmentPage() {
           className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
           onSubmit={(e) => {
             e.preventDefault();
-            addMachine.mutate(e.currentTarget);
+            const fd = new FormData(e.currentTarget);
             e.currentTarget.reset();
+            addMachine.mutate(fd);
           }}
         >
           <div className="space-y-1.5">
