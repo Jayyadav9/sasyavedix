@@ -15,7 +15,8 @@ import {
   notificationsQuery,
   varietiesQuery,
   type CropTask,
-, farmFieldsQuery } from "@/lib/queries";
+  farmFieldsQuery,
+} from "@/lib/queries";
 import { CROP_TEMPLATES, TASK_KIND_LABEL, addDays, templateFor, type TaskKind } from "@/lib/calendar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -54,6 +55,7 @@ function CalendarPage() {
   const varieties = useQuery(varietiesQuery);
   const prices = useQuery(marketPricesQuery);
   const notifs = useQuery(notificationsQuery);
+  const fields = useQuery(farmFieldsQuery);
   const reminded = useRef(false);
 
   // Turn due/overdue field jobs into notification-bell reminders (once per task).
