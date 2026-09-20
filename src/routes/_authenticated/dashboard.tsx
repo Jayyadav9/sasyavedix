@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { Thermometer, TrendingUp, Sprout, Landmark, ArrowRight } from "lucide-react";
+import { Thermometer, TrendingUp, Sprout, Landmark, ArrowRight, Bell, ListChecks } from "lucide-react";
 import {
   Area,
   AreaChart,
@@ -15,9 +15,11 @@ import {
 import { useLang } from "@/lib/i18n";
 import { LOCATIONS, findLocation } from "@/lib/locations";
 import {
+  cropTasksQuery,
   latestByCropMandi,
   marketPricesQuery,
   myListingsQuery,
+  notificationsQuery,
   profileQuery,
   roleQuery,
   schemesQuery,
@@ -102,6 +104,12 @@ function Dashboard() {
   const prices = useQuery(marketPricesQuery);
   const schemes = useQuery(schemesQuery);
   const listings = useQuery(myListingsQuery);
+  const tasks = useQuery(cropTasksQuery);
+  const notifications = useQuery(notificationsQuery);
+
+  const todayIso = new Date().toISOString().slice(0, 10);
+  const dueTasks = (tasks.data ?? []).filter((tk) => !tk.done && tk.due_date <= todayIso);
+  const unread = (notifications.data ?? []).filter((n) => !n.read);
 
   const [locId, setLocId] = useState("indore");
   useEffect(() => {
@@ -192,8 +200,23 @@ function Dashboard() {
           </span>
         </Link>
       )}
-
-
+      {(dueTasks.length > 0 || unread.length > 0) && (
+        <section className="glass-card flex flex-wrap items-center gap-x-6 gap-y-2 rounded-3xl p-4 text-sm">
+          <span className="font-display font-semibold">{t("todayAtFarm")}</span>
+          {dueTasks.length > 0 && (
+            <Link to="/calendar" className="flex items-center gap-1.5 font-medium text-primary">
+              <ListChecks className="h-4 w-4" />
+              {dueTasks.length} {t("tasksDue")}
+            </Link>
+          )}
+          {unread.length > 0 && (
+            <Link to="/alerts" className="flex items-center gap-1.5 font-medium text-primary">
+              <Bell className="h-4 w-4" />
+              {unread.length} {t("unreadUpdates")}
+            </Link>
+          )}
+        </section>
+      )}
 
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
