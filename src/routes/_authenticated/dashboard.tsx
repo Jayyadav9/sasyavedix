@@ -140,9 +140,26 @@ function Dashboard() {
             year: "numeric",
           })}
         </p>
-        <h1 className="mt-1 font-display text-3xl font-bold sm:text-4xl">
-          {t("welcome")}, {name} 👨‍🌾
-        </h1>
+        <div className="mt-1 flex flex-wrap items-center justify-between gap-3">
+          <h1 className="font-display text-3xl font-bold sm:text-4xl">
+            {t("welcome")}, {name} 👨‍🌾
+          </h1>
+          <select
+            aria-label={t("location")}
+            value={locId}
+            onChange={(e) => {
+              setLocId(e.target.value);
+              window.localStorage.setItem("sasyavedix-location", e.target.value);
+            }}
+            className="h-9 rounded-xl border border-primary-foreground/30 bg-primary-foreground/15 px-3 text-sm font-medium text-primary-foreground"
+          >
+            {LOCATIONS.map((l) => (
+              <option key={l.id} value={l.id} className="text-foreground">
+                {l.name}
+              </option>
+            ))}
+          </select>
+        </div>
         <p className="mt-1 opacity-90">{t("welcomeSub")}</p>
       </header>
 
@@ -153,7 +170,9 @@ function Dashboard() {
           loading={weather.isLoading}
           value={weather.data ? `${Math.round(weather.data.current.temperature_2m)}°C` : "—"}
           hint={
-            weather.data ? `Humidity ${weather.data.current.relative_humidity_2m}% · Indore` : ""
+            weather.data
+              ? `Humidity ${weather.data.current.relative_humidity_2m}% · ${loc.name}`
+              : ""
           }
         />
         <StatCard
