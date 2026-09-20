@@ -1,13 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { Search, ArrowUpDown } from "lucide-react";
+import { Search, ArrowUpDown, Loader2, RefreshCw } from "lucide-react";
+import { toast } from "sonner";
 
 import { useLang } from "@/lib/i18n";
 import { latestByCropMandi, marketPricesQuery, type MarketPrice } from "@/lib/queries";
+import { syncMandiPrices } from "@/lib/mandi.functions";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
+
 
 export const Route = createFileRoute("/_authenticated/market")({
   head: () => ({
@@ -54,8 +57,35 @@ function Select({
 }
 
 function MarketPage() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const { data, isLoading } = useQuery(marketPricesQuery);
+  const qc = useQueryClient();
+  const refresh = useMutation({
+    mutationFn: () => syncMandiPrices(),
+    onSuccess: (res) => {
+      if (!res.configured) {
+        toast.info(
+          lang === "hi"
+            ? "लाइव मंडी फ़ीड अभी जुड़ी नहीं है।"
+            : "The live mandi feed is not connected yet.",
+        );
+        return;
+      }
+      if (res.inserted === 0) {
+        toast.info(
+          lang === "hi" ? "आज आपके जिलों के भाव नहीं मिले।" : "No fresh rates for your districts.",
+        );
+        return;
+      }
+      qc.invalidateQueries({ queryKey: ["market_prices"] });
+      toast.success(
+        lang === "hi" ? `${res.inserted} भाव अपडेट हुए` : `${res.inserted} rates updated`,
+      );
+    },
+    onError: () =>
+      toast.error(lang === "hi" ? "भाव नहीं मिल सके" : "Could not fetch today's rates"),
+  });
+
   const [search, setSearch] = useState("");
   const [crop, setCrop] = useState("All");
   const [variety, setVariety] = useState("All");
@@ -108,12 +138,23 @@ function MarketPage() {
 
   return (
     <div className="mx-auto max-w-6xl space-y-6">
-      <header>
-        <h1 className="font-display text-3xl font-bold">{t("marketPrices")}</h1>
-        <p className="text-muted-foreground">
-          {historyMode ? "Full price history" : "Latest price per crop and mandi"}
-        </p>
+      <header className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="font-display text-3xl font-bold">{t("marketPrices")}</h1>
+          <p className="text-muted-foreground">
+            {historyMode ? "Full price history" : "Latest price per crop and mandi"}
+          </p>
+        </div>
+        <Button variant="outline" onClick={() => refresh.mutate()} disabled={refresh.isPending}>
+          {refresh.isPending ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <RefreshCw className="mr-2 h-4 w-4" />
+          )}
+          {lang === "hi" ? "आज के भाव लाएं" : "Fetch today's rates"}
+        </Button>
       </header>
+
 
       <div className="glass-card space-y-4 rounded-3xl p-5">
         <div className="relative">

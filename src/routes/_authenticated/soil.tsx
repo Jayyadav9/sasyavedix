@@ -7,7 +7,9 @@ import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YA
 
 import { supabase } from "@/integrations/supabase/client";
 import { useLang } from "@/lib/i18n";
-import { soilTestsQuery, type SoilTest } from "@/lib/queries";
+import { profileQuery, soilTestsQuery, type SoilTest } from "@/lib/queries";
+import { SoilCard } from "@/components/soil-card";
+
 import {
   GUIDE_CROPS,
   NUTRIENT_LABELS,
@@ -58,6 +60,8 @@ function SoilPage() {
   const { lang } = useLang();
   const qc = useQueryClient();
   const tests = useQuery(soilTestsQuery);
+  const profile = useQuery(profileQuery);
+
   const [form, setForm] = useState(empty);
 
   const save = useMutation({
@@ -207,8 +211,11 @@ function SoilPage() {
             </div>
           ) : (
             <>
+              <SoilCard test={latest} farmer={profile.data?.full_name ?? "Farmer"} />
+
               <div className="glass-card rounded-3xl p-5">
                 <h2 className="font-display text-xl font-semibold">
+
                   {lang === "hi" ? "नवीनतम रिपोर्ट" : "Latest report"}{" "}
                   <span className="text-sm font-normal text-muted-foreground">
                     · {latest.sample_date} {latest.location ? `· ${latest.location}` : ""}
