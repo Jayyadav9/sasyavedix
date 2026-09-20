@@ -223,6 +223,7 @@ const dict = {
   declined: { en: "Declined", hi: "अस्वीकृत" },
   completedBooking: { en: "Completed", hi: "पूर्ण" },
   accept: { en: "Accept", hi: "स्वीकार करें" },
+  decline: { en: "Decline", hi: "अस्वीकार करें" },
   noEquipment: { en: "No machines listed yet — be the first to list yours.", hi: "अभी कोई मशीन लिस्ट नहीं — पहले अपनी मशीन जोड़ें।" },
   bookingSent: { en: "Booking request sent!", hi: "बुकिंग अनुरोध भेजा गया!" },
   cancel: { en: "Cancel", hi: "रद्द करें" },
