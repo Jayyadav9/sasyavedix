@@ -67,6 +67,18 @@ function SchemesPage() {
                   <dd>{s.eligibility}</dd>
                 </div>
               </dl>
+              <div className="mt-3 flex items-start gap-2 rounded-2xl bg-muted/50 px-3 py-2 text-sm">
+                {elig.likely ? (
+                  <CircleCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                ) : (
+                  <CircleHelp className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+                )}
+                <p>
+                  <span className="font-semibold">{t("checkEligibility")}: </span>
+                  {elig.likely && <span className="mr-1 font-semibold text-primary">{t("likelyEligible")} —</span>}
+                  {lang === "hi" ? elig.note_hi : elig.note_en}
+                </p>
+              </div>
               {s.link && (
                 <a
                   href={s.link}
@@ -78,7 +90,8 @@ function SchemesPage() {
                 </a>
               )}
             </article>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
