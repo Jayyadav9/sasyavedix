@@ -215,6 +215,39 @@ function MarketPage() {
         )}
       </div>
 
+      {msp.data && msp.data.length > 0 && (
+        <section className="glass-card rounded-3xl p-5">
+          <div className="mb-3 flex items-center gap-2">
+            <Landmark className="h-5 w-5 text-primary" />
+            <div>
+              <h2 className="font-display text-lg font-bold">{t("govtMsp")}</h2>
+              <p className="text-xs text-muted-foreground">{t("govtMspHint")}</p>
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {msp.data.map((m) => (
+              <a
+                key={m.id}
+                href={m.source_url ?? "https://farmer.gov.in/mspstatements.aspx"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center gap-2 rounded-2xl bg-muted/60 px-4 py-2 text-sm transition hover:bg-muted"
+              >
+                <span className="font-medium">{m.crop}</span>
+                <span className="font-display font-bold text-primary">
+                  ₹{Number(m.msp).toLocaleString("en-IN")}
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  {m.season} {m.year}
+                </span>
+                <ExternalLink className="h-3.5 w-3.5 text-muted-foreground opacity-0 transition group-hover:opacity-100" />
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+
       {crop !== "All" && advice && (
         <section className="glass-card rounded-3xl p-5">
           <div className="flex flex-wrap items-center justify-between gap-4">
