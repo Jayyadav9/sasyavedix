@@ -436,6 +436,30 @@ function OrdersPage() {
                   )}
                 </div>
 
+                {dispatchFor === o.id && (
+                  <form
+                    className="flex flex-wrap items-end gap-3 rounded-2xl border border-border bg-card/60 p-3"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      dispatchOrder.mutate({ order: o, form: e.currentTarget });
+                    }}
+                  >
+                    <p className="w-full text-sm font-semibold">{t("dispatchDetails")}</p>
+                    <div>
+                      <Label htmlFor={`v-${o.id}`}>{t("vehicleNo")}</Label>
+                      <Input id={`v-${o.id}`} name="vehicle_no" placeholder="MP 09 AB 1234" />
+                    </div>
+                    <div>
+                      <Label htmlFor={`d-${o.id}`}>{t("driverPhone")}</Label>
+                      <Input id={`d-${o.id}`} name="driver_phone" placeholder="98765 43210" />
+                    </div>
+                    <Button type="submit" size="sm" disabled={dispatchOrder.isPending}>
+                      <Truck className="mr-2 h-4 w-4" />
+                      {t("markDispatched")}
+                    </Button>
+                  </form>
+                )}
+
                 {rateFor === o.id && (
                   <form
                     className="flex flex-wrap items-end gap-3 rounded-2xl border border-border bg-card/60 p-3"
