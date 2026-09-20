@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { IndianRupee, Loader2, ReceiptIndianRupee, Trash2, TrendingUp, Wheat } from "lucide-react";
+import { Download, IndianRupee, Loader2, ReceiptIndianRupee, Trash2, TrendingUp, Wheat } from "lucide-react";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -108,9 +108,27 @@ function ExpensesPage() {
 
   return (
     <div className="mx-auto max-w-5xl space-y-8">
-      <header>
-        <h1 className="font-display text-3xl font-bold">{t("expenses")}</h1>
-        <p className="text-muted-foreground">{t("expensesHint")}</p>
+      <header className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h1 className="font-display text-3xl font-bold">{t("expenses")}</h1>
+          <p className="text-muted-foreground">{t("expensesHint")}</p>
+        </div>
+        {rows.length > 0 && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() =>
+              downloadCsv(
+                "sasyavedix-expenses.csv",
+                ["Crop", "Category", "Amount (INR)", "Date", "Acres", "Notes"],
+                rows.map((e) => [e.crop, catLabel(e.category), e.amount, e.spent_on, e.acres, e.notes]),
+              )
+            }
+          >
+            <Download className="mr-2 h-4 w-4" />
+            {t("downloadCSV")}
+          </Button>
+        )}
       </header>
 
       <section className="glass-card rounded-3xl p-5">
