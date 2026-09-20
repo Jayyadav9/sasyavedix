@@ -226,6 +226,7 @@ const dict = {
   decline: { en: "Decline", hi: "अस्वीकार करें" },
   noEquipment: { en: "No machines listed yet — be the first to list yours.", hi: "अभी कोई मशीन लिस्ट नहीं — पहले अपनी मशीन जोड़ें।" },
   bookingSent: { en: "Booking request sent!", hi: "बुकिंग अनुरोध भेजा गया!" },
+  cancel: { en: "Cancel", hi: "रद्द करें" },
   expenses: { en: "Expenses & Profit", hi: "खर्च और मुनाफा" },
   expensesHint: {
     en: "Track seed, fertiliser, diesel and labour costs per crop, and see profit after every sale.",
