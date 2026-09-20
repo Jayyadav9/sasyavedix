@@ -25,8 +25,13 @@
 - AI assistant: chat grounded in mandi prices, schemes, soil test and local weather
 - Analytics: price trend, mandi comparison, listings by crop, expected/sold value, activity counts
 
-## Phase 3 — next
+## Phase 4 — done (buyer portal + order tracking)
+- Buyer sign-up/login with role, buyer portal: browse open listings with photos and mandi prices
+- Offers: buyer submits price/quantity, farmer accepts or rejects
+- Order tracking: accepted -> dispatched -> delivered -> paid, listing auto-marked sold
+- Verified end to end in the browser with test farmer and buyer accounts
+
+## Phase 5 — next
 - Farmer profile page + onboarding (village, land size, default district)
 - Live mandi price API to replace sample data
-- Mark listings as sold / buyer enquiries
 - API and setup documentation

@@ -53,15 +53,13 @@ export const analyzeCropImage = createServerFn({ method: "POST" })
       model: lovable.responses("openai/gpt-6-astra"),
       output: Output.object({ schema: AnalysisSchema }),
       providerOptions,
+      system:
+        "You are an Indian agronomist analysing a farmer's crop photo. Judge leaf colour, spots, wilting, pests and nutrient deficiency. health_score is 0-100 (100 = perfect). status is a short label like Healthy, Mild stress, Fungal infection, Pest attack, Nutrient deficiency. urgency is one of Low, Medium, High. Give 3-5 practical, low-cost recommendations naming affordable inputs available in India with dosage per acre. " +
+        (data.lang === "hi"
+          ? "Write every text value in simple Hindi (Devanagari)."
+          : "Write every text value in simple English a smallholder farmer can follow."),
       messages: [
-        {
-          role: "system",
-          content:
-            "You are an Indian agronomist analysing a farmer's crop photo. Judge leaf colour, spots, wilting, pests and nutrient deficiency. health_score is 0-100 (100 = perfect). status is a short label like Healthy, Mild stress, Fungal infection, Pest attack, Nutrient deficiency. urgency is one of Low, Medium, High. Give 3-5 practical, low-cost recommendations naming affordable inputs available in India with dosage per acre. " +
-            (data.lang === "hi"
-              ? "Write every text value in simple Hindi (Devanagari)."
-              : "Write every text value in simple English a smallholder farmer can follow."),
-        },
+
         {
           role: "user",
           content: [
