@@ -100,3 +100,14 @@
   harvest is recorded (total cost ÷ actual yield), verified ₹94/q on 48 q
 - Buyers can view and print the sale invoice on their orders page (same
   invoice as the farmer, seller name fetched under the deal-sharing policy)
+
+## Phase 12 — done
+- Delivery tracking on orders: dispatch now captures vehicle number and driver
+  phone; dispatch/delivery dates are stamped automatically and shown on the
+  order card for both farmer and buyer (verified in browser)
+- Dashboard "Today on your farm" strip: field jobs due + new updates at a
+  glance, linking to the calendar and alerts pages
+- Demo data seeded across test accounts: listings, accepted offers, dispatched
+  and paid orders, payments — so analytics, invoices, ratings and tracking all
+  have realistic content
+- Publish still pending — only on explicit confirmation

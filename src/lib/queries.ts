@@ -238,6 +238,10 @@ export type Order = {
   payment_method: string | null;
   payment_ref: string | null;
   invoice_no?: string | null;
+  vehicle_no?: string | null;
+  driver_phone?: string | null;
+  dispatched_on?: string | null;
+  delivered_on?: string | null;
   created_at: string;
   updated_at: string;
 };

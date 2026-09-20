@@ -77,6 +77,7 @@ function OrdersPage() {
   const [invoiceFor, setInvoiceFor] = useState<string | null>(null);
   const [payFor, setPayFor] = useState<string | null>(null);
   const [rateFor, setRateFor] = useState<string | null>(null);
+  const [dispatchFor, setDispatchFor] = useState<string | null>(null);
   const [stars, setStars] = useState(5);
 
   const submitReview = useMutation({
@@ -202,6 +203,28 @@ function OrdersPage() {
     onError: (e) => toast.error(e instanceof Error ? e.message : "Could not update order"),
   });
 
+  const dispatchOrder = useMutation({
+    mutationFn: async ({ order, form }: { order: Order; form: HTMLFormElement }) => {
+      const fd = new FormData(form);
+      const { error } = await supabase
+        .from("orders")
+        .update({
+          status: "dispatched",
+          updated_at: new Date().toISOString(),
+          vehicle_no: String(fd.get("vehicle_no") ?? "").trim() || null,
+          driver_phone: String(fd.get("driver_phone") ?? "").trim() || null,
+        })
+        .eq("id", order.id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success(lang === "hi" ? "माल भेज दिया गया" : "Marked as dispatched");
+      setDispatchFor(null);
+      qc.invalidateQueries({ queryKey: ["orders"] });
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Could not update order"),
+  });
+
   return (
     <div className="mx-auto max-w-5xl space-y-8">
       <header className="flex flex-wrap items-start justify-between gap-3">
@@ -322,11 +345,36 @@ function OrdersPage() {
 
                 <OrderTrack status={o.status} />
 
+                {(o.dispatched_on || o.delivered_on || o.vehicle_no) && (
+                  <div className="flex flex-wrap gap-x-5 gap-y-1 rounded-2xl bg-muted/50 px-4 py-2 text-xs text-muted-foreground">
+                    {o.dispatched_on && (
+                      <span>
+                        {t("dispatchedOn")}: {new Date(o.dispatched_on).toLocaleDateString(lang === "hi" ? "hi-IN" : "en-IN")}
+                      </span>
+                    )}
+                    {o.delivered_on && (
+                      <span>
+                        {t("deliveredOn")}: {new Date(o.delivered_on).toLocaleDateString(lang === "hi" ? "hi-IN" : "en-IN")}
+                      </span>
+                    )}
+                    {o.vehicle_no && (
+                      <span>
+                        {t("vehicleNo")}: {o.vehicle_no}
+                      </span>
+                    )}
+                    {o.driver_phone && (
+                      <span>
+                        {t("driverPhone")}: {o.driver_phone}
+                      </span>
+                    )}
+                  </div>
+                )}
+
                 <div className="flex flex-wrap gap-2">
                   {o.status === "accepted" && (
                     <Button
                       size="sm"
-                      onClick={() => advance.mutate({ order: o, status: "dispatched" })}
+                      onClick={() => setDispatchFor(dispatchFor === o.id ? null : o.id)}
                     >
                       <Truck className="mr-2 h-4 w-4" />
                       {t("markDispatched")}
@@ -387,6 +435,30 @@ function OrdersPage() {
                     </Button>
                   )}
                 </div>
+
+                {dispatchFor === o.id && (
+                  <form
+                    className="flex flex-wrap items-end gap-3 rounded-2xl border border-border bg-card/60 p-3"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      dispatchOrder.mutate({ order: o, form: e.currentTarget });
+                    }}
+                  >
+                    <p className="w-full text-sm font-semibold">{t("dispatchDetails")}</p>
+                    <div>
+                      <Label htmlFor={`v-${o.id}`}>{t("vehicleNo")}</Label>
+                      <Input id={`v-${o.id}`} name="vehicle_no" placeholder="MP 09 AB 1234" />
+                    </div>
+                    <div>
+                      <Label htmlFor={`d-${o.id}`}>{t("driverPhone")}</Label>
+                      <Input id={`d-${o.id}`} name="driver_phone" placeholder="98765 43210" />
+                    </div>
+                    <Button type="submit" size="sm" disabled={dispatchOrder.isPending}>
+                      <Truck className="mr-2 h-4 w-4" />
+                      {t("markDispatched")}
+                    </Button>
+                  </form>
+                )}
 
                 {rateFor === o.id && (
                   <form
