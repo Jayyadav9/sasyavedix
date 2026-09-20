@@ -169,15 +169,23 @@ function ProfilePage() {
             aria-label="district"
             className="h-10 w-full rounded-xl border border-input bg-background px-3 text-sm"
             value={form.district}
-            onChange={(e) => set("district", e.target.value)}
+            onChange={(e) => {
+              const picked = LOCATIONS.find((l) => l.en === e.target.value);
+              setForm((f) => ({
+                ...f,
+                district: e.target.value,
+                state: picked ? picked.state : f.state,
+              }));
+            }}
           >
             <option value="">{hi ? "चुनें" : "Select"}</option>
             {LOCATIONS.map((l) => (
-              <option key={l.id} value={l.name}>
+              <option key={l.id} value={l.en}>
                 {hi ? l.hi : l.en}
               </option>
             ))}
           </select>
+
         </div>
 
         <div className="space-y-2">
