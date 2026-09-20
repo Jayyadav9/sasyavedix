@@ -215,7 +215,6 @@ const dict = {
   notAvailable: { en: "Not available", hi: "उपलब्ध नहीं" },
   bookNow: { en: "Book", hi: "बुक करें" },
   startDate: { en: "Start date", hi: "शुरुआती तारीख" },
-  days: { en: "Days", hi: "दिन" },
   totalAmount: { en: "Total", hi: "कुल" },
   bookingRequests: { en: "Bookings", hi: "बुकिंग" },
   noBookings: { en: "No bookings yet.", hi: "अभी कोई बुकिंग नहीं।" },
