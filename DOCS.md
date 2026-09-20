@@ -105,3 +105,7 @@ price history for 12 crop/mandi pairs, so every chart works before any live data
 - Calendar: due/overdue `crop_tasks` create `notifications` rows (kind `task`, body tagged `[task:<id>]` for dedupe).
 - Expenses: cost-per-quintal card from `farm_expenses` ÷ `crop_plans.actual_yield_quintal`.
 - Buyer orders page: invoice view (`Invoice` component + `payments` + seller profile readable via the deal-sharing policy).
+
+## Phase 18 additions
+- `/mandi-setup` page: step-by-step guide to the data.gov.in key, live feed status (`mandiFeedStatus` server fn), and a fetch button. Linked from Market Prices.
+- `DATA_GOV_IN_API_KEY` is now configured; real daily mandi rates (source `data.gov.in`) are synced into `market_prices`.

@@ -148,3 +148,7 @@
 ## Phase 18 — done
 - Real Cabinet-announced MSP 2026-27 (Rabi + Kharif) stored with official PIB source links; market page shows tappable Government MSP strip
 - Official sources cards on Market Prices: Agmarknet, e-NAM, Farmers Portal MSP, data.gov.in Mandi API, PIB (EN/HI)
+
+## Phase 18 — done
+- Mandi key setup page (/mandi-setup) with feed status + fetch button
+- data.gov.in key saved; live mandi rates syncing (285 rows on first fetch)
