@@ -279,12 +279,42 @@ function AssistantPage() {
           <Input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder={lang === "hi" ? "अपना सवाल लिखें…" : "Type your question…"}
+            placeholder={
+              listening
+                ? lang === "hi"
+                  ? "सुन रहा हूं…"
+                  : "Listening…"
+                : lang === "hi"
+                  ? "अपना सवाल लिखें या बोलें…"
+                  : "Type or speak your question…"
+            }
           />
+          {canSpeak && (
+            <Button
+              type="button"
+              variant={listening ? "default" : "outline"}
+              aria-label={lang === "hi" ? "बोलकर पूछें" : "Ask by voice"}
+              onClick={toggleMic}
+            >
+              {listening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+            </Button>
+          )}
+          <Button
+            type="button"
+            variant={voiceOn ? "default" : "outline"}
+            aria-label={lang === "hi" ? "जवाब सुनाएं" : "Read answers aloud"}
+            onClick={() => {
+              if (voiceOn) stopSpeaking();
+              setVoiceOn(!voiceOn);
+            }}
+          >
+            {voiceOn ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+          </Button>
           <Button type="submit" disabled={send.isPending || !input.trim()}>
             <Send className="h-4 w-4" />
           </Button>
         </form>
+
       </div>
     </div>
   );
