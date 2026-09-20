@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, CircleCheck, CircleHelp } from "lucide-react";
 
 import { useLang } from "@/lib/i18n";
-import { schemesQuery } from "@/lib/queries";
+import { profileQuery, schemesQuery } from "@/lib/queries";
+import { checkEligibility } from "@/lib/eligibility";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export const Route = createFileRoute("/_authenticated/schemes")({
@@ -24,6 +25,7 @@ export const Route = createFileRoute("/_authenticated/schemes")({
 function SchemesPage() {
   const { t, lang } = useLang();
   const { data, isLoading } = useQuery(schemesQuery);
+  const profile = useQuery(profileQuery);
 
   return (
     <div className="mx-auto max-w-5xl space-y-6">
