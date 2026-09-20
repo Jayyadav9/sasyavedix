@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { MessageSquare, Send, Trash2, UserRound } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/lib/useAuth";
 import { useLang } from "@/lib/i18n";
 import { communityPostsQuery, communityRepliesQuery, profileQuery } from "@/lib/queries";
 import { Button } from "@/components/ui/button";
@@ -30,7 +30,7 @@ function CommunityPage() {
   const qc = useQueryClient();
   const posts = useQuery(communityPostsQuery);
   const replies = useQuery(communityRepliesQuery);
-  const profile = useQuery(profileQuery(uid));
+  const profile = useQuery(profileQuery);
   const [body, setBody] = useState("");
   const [replyFor, setReplyFor] = useState<string | null>(null);
   const [replyText, setReplyText] = useState("");
