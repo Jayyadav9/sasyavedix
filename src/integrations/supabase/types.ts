@@ -734,7 +734,10 @@ export type Database = {
           buyer_note: string | null
           created_at: string
           crop: string
+          delivered_on: string | null
           delivery_date: string | null
+          dispatched_on: string | null
+          driver_phone: string | null
           farmer_id: string
           farmer_note: string | null
           id: string
@@ -750,13 +753,17 @@ export type Database = {
           total_amount: number
           updated_at: string
           variety: string | null
+          vehicle_no: string | null
         }
         Insert: {
           buyer_id: string
           buyer_note?: string | null
           created_at?: string
           crop: string
+          delivered_on?: string | null
           delivery_date?: string | null
+          dispatched_on?: string | null
+          driver_phone?: string | null
           farmer_id: string
           farmer_note?: string | null
           id?: string
@@ -772,13 +779,17 @@ export type Database = {
           total_amount: number
           updated_at?: string
           variety?: string | null
+          vehicle_no?: string | null
         }
         Update: {
           buyer_id?: string
           buyer_note?: string | null
           created_at?: string
           crop?: string
+          delivered_on?: string | null
           delivery_date?: string | null
+          dispatched_on?: string | null
+          driver_phone?: string | null
           farmer_id?: string
           farmer_note?: string | null
           id?: string
@@ -794,6 +805,7 @@ export type Database = {
           total_amount?: number
           updated_at?: string
           variety?: string | null
+          vehicle_no?: string | null
         }
         Relationships: [
           {
