@@ -2,13 +2,14 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState } from "react";
-import { Bot, Loader2, Send, User } from "lucide-react";
+import { Bot, Loader2, Mic, MicOff, Send, User, Volume2, VolumeX } from "lucide-react";
 import { toast } from "sonner";
 
 import { useLang } from "@/lib/i18n";
 import { askAssistant } from "@/lib/ai.functions";
 import { latestByCropMandi, marketPricesQuery, schemesQuery, soilTestsQuery } from "@/lib/queries";
 import { LOCATIONS, findLocation } from "@/lib/locations";
+import { listenOnce, speak, speechSupported, stopSpeaking } from "@/lib/speech";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
