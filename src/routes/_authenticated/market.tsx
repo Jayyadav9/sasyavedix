@@ -108,12 +108,23 @@ function MarketPage() {
 
   return (
     <div className="mx-auto max-w-6xl space-y-6">
-      <header>
-        <h1 className="font-display text-3xl font-bold">{t("marketPrices")}</h1>
-        <p className="text-muted-foreground">
-          {historyMode ? "Full price history" : "Latest price per crop and mandi"}
-        </p>
+      <header className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="font-display text-3xl font-bold">{t("marketPrices")}</h1>
+          <p className="text-muted-foreground">
+            {historyMode ? "Full price history" : "Latest price per crop and mandi"}
+          </p>
+        </div>
+        <Button variant="outline" onClick={() => refresh.mutate()} disabled={refresh.isPending}>
+          {refresh.isPending ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <RefreshCw className="mr-2 h-4 w-4" />
+          )}
+          {lang === "hi" ? "आज के भाव लाएं" : "Fetch today's rates"}
+        </Button>
       </header>
+
 
       <div className="glass-card space-y-4 rounded-3xl p-5">
         <div className="relative">
