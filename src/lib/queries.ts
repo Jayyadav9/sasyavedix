@@ -397,3 +397,25 @@ export const paymentsQuery = queryOptions({
     return (data ?? []) as Payment[];
   },
 });
+
+export type MspRate = {
+  id: string;
+  crop: string;
+  season: string;
+  msp: number;
+  year: string;
+};
+
+export const mspQuery = queryOptions({
+  queryKey: ["msp_rates"],
+  queryFn: async (): Promise<MspRate[]> => {
+    try {
+      const { data, error } = await supabase.from("msp_rates").select("*");
+      if (error) throw error;
+      cacheSave("msp_rates", data ?? []);
+      return (data ?? []) as MspRate[];
+    } catch {
+      return cacheRead<MspRate[]>("msp_rates") ?? [];
+    }
+  },
+});
