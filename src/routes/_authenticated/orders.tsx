@@ -1,13 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Handshake, IndianRupee, Loader2, PackageCheck, Truck } from "lucide-react";
+import { useState } from "react";
+import { FileText, Handshake, IndianRupee, Loader2, PackageCheck, Truck } from "lucide-react";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useLang } from "@/lib/i18n";
-import { offersQuery, ordersQuery, type Order } from "@/lib/queries";
+import { offersQuery, ordersQuery, paymentsQuery, profileQuery, type Order } from "@/lib/queries";
 import { OrderTrack } from "@/components/order-track";
+import { Invoice } from "@/components/invoice";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export const Route = createFileRoute("/_authenticated/orders")({
@@ -52,12 +56,51 @@ type OfferRow = {
 };
 
 function OrdersPage() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const qc = useQueryClient();
   const offers = useQuery(offersQuery);
   const orders = useQuery(ordersQuery);
+  const payments = useQuery(paymentsQuery);
+  const profile = useQuery(profileQuery);
+  const [invoiceFor, setInvoiceFor] = useState<string | null>(null);
+  const [payFor, setPayFor] = useState<string | null>(null);
 
   const pending = ((offers.data ?? []) as OfferRow[]).filter((o) => o.status === "pending");
+
+  const paidFor = (orderId: string) =>
+    (payments.data ?? [])
+      .filter((p) => p.order_id === orderId)
+      .reduce((s, p) => s + Number(p.amount), 0);
+
+  const recordPayment = useMutation({
+    mutationFn: async ({ order, form }: { order: Order; form: HTMLFormElement }) => {
+      const fd = new FormData(form);
+      const amount = Number(fd.get("amount"));
+      const { error } = await supabase.from("payments").insert({
+        order_id: order.id,
+        farmer_id: order.farmer_id,
+        buyer_id: order.buyer_id,
+        amount,
+        method: String(fd.get("method") ?? "upi"),
+        reference: String(fd.get("reference") ?? "").trim() || null,
+      });
+      if (error) throw error;
+      if (paidFor(order.id) + amount >= Number(order.total_amount)) {
+        await supabase
+          .from("orders")
+          .update({ status: "paid", payment_method: String(fd.get("method") ?? "upi") })
+          .eq("id", order.id);
+      }
+    },
+    onSuccess: () => {
+      toast.success(lang === "hi" ? "भुगतान दर्ज हुआ" : "Payment recorded");
+      setPayFor(null);
+      qc.invalidateQueries({ queryKey: ["payments"] });
+      qc.invalidateQueries({ queryKey: ["orders"] });
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Could not record the payment"),
+  });
+
 
   const respond = useMutation({
     mutationFn: async ({ offer, accept }: { offer: OfferRow; accept: boolean }) => {
@@ -234,15 +277,20 @@ function OrdersPage() {
                       {t("markDelivered")}
                     </Button>
                   )}
-                  {o.status === "delivered" && (
-                    <Button
-                      size="sm"
-                      onClick={() => advance.mutate({ order: o, status: "paid" })}
-                    >
+                  {(o.status === "delivered" || o.status === "dispatched") && (
+                    <Button size="sm" onClick={() => setPayFor(payFor === o.id ? null : o.id)}>
                       <IndianRupee className="mr-2 h-4 w-4" />
-                      {t("markPaid")}
+                      {t("recordPayment")}
                     </Button>
                   )}
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setInvoiceFor(invoiceFor === o.id ? null : o.id)}
+                  >
+                    <FileText className="mr-2 h-4 w-4" />
+                    {t("viewInvoice")}
+                  </Button>
                   {o.status !== "paid" && o.status !== "cancelled" && (
                     <Button
                       size="sm"
@@ -253,7 +301,72 @@ function OrdersPage() {
                     </Button>
                   )}
                 </div>
+
+                {(paidFor(o.id) > 0 || o.status === "paid") && (
+                  <p className="text-sm text-muted-foreground">
+                    {t("paid")} ₹{paidFor(o.id).toLocaleString("en-IN")} · {t("balance")} ₹
+                    {Math.max(Number(o.total_amount) - paidFor(o.id), 0).toLocaleString("en-IN")}
+                  </p>
+                )}
+
+                {payFor === o.id && (
+                  <form
+                    className="grid gap-3 rounded-2xl border border-border bg-card/60 p-3 sm:grid-cols-4"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      recordPayment.mutate({ order: o, form: e.currentTarget });
+                    }}
+                  >
+                    <div>
+                      <Label htmlFor={`amount-${o.id}`}>{t("amount")}</Label>
+                      <Input
+                        id={`amount-${o.id}`}
+                        name="amount"
+                        type="number"
+                        min="1"
+                        required
+                        defaultValue={Math.max(Number(o.total_amount) - paidFor(o.id), 0)}
+                        className="mt-1"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor={`method-${o.id}`}>{t("method")}</Label>
+                      <select
+                        id={`method-${o.id}`}
+                        name="method"
+                        className="mt-1 h-10 w-full rounded-xl border border-border bg-card px-3 text-sm"
+                      >
+                        <option value="upi">UPI</option>
+                        <option value="cash">{lang === "hi" ? "नकद" : "Cash"}</option>
+                        <option value="bank">{lang === "hi" ? "बैंक ट्रांसफर" : "Bank transfer"}</option>
+                        <option value="cheque">{lang === "hi" ? "चेक" : "Cheque"}</option>
+                      </select>
+                    </div>
+                    <div>
+                      <Label htmlFor={`reference-${o.id}`}>{t("reference")}</Label>
+                      <Input id={`reference-${o.id}`} name="reference" className="mt-1" />
+                    </div>
+                    <div className="flex items-end">
+                      <Button type="submit" className="w-full" disabled={recordPayment.isPending}>
+                        {recordPayment.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        {t("save")}
+                      </Button>
+                    </div>
+                  </form>
+                )}
+
+                {invoiceFor === o.id && (
+                  <Invoice
+                    order={o}
+                    payments={(payments.data ?? []).filter((p) => p.order_id === o.id)}
+                    sellerName={profile.data?.full_name ?? null}
+                    sellerPlace={
+                      [profile.data?.village, profile.data?.district].filter(Boolean).join(", ") || null
+                    }
+                  />
+                )}
               </li>
+
             ))}
           </ul>
         )}

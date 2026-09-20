@@ -16,6 +16,9 @@ import {
   PackageCheck,
   Handshake,
   UserRound,
+  CalendarDays,
+  Bell,
+  WifiOff,
 
 } from "lucide-react";
 import { useState, type ReactNode } from "react";
@@ -24,14 +27,18 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLang, type TKey } from "@/lib/i18n";
 import { roleQuery } from "@/lib/queries";
+import { useOnline } from "@/lib/offline";
+import { NotificationBell } from "@/components/notification-bell";
 import { Button } from "@/components/ui/button";
 
 const FARMER_NAV: { to: string; key: TKey; icon: typeof LayoutDashboard }[] = [
   { to: "/dashboard", key: "dashboard", icon: LayoutDashboard },
   { to: "/weather", key: "weather", icon: CloudSun },
+  { to: "/calendar", key: "cropCalendar", icon: CalendarDays },
   { to: "/sell", key: "sellCrop", icon: ShoppingBasket },
   { to: "/orders", key: "orders", icon: PackageCheck },
   { to: "/market", key: "marketPrices", icon: LineChart },
+  { to: "/alerts", key: "alerts", icon: Bell },
   { to: "/analysis", key: "cropAnalysis", icon: ScanLine },
   { to: "/varieties", key: "cropVarieties", icon: Sprout },
   { to: "/soil", key: "soilHealth", icon: FlaskConical },
@@ -45,15 +52,18 @@ const FARMER_NAV: { to: string; key: TKey; icon: typeof LayoutDashboard }[] = [
 const BUYER_NAV: { to: string; key: TKey; icon: typeof LayoutDashboard }[] = [
   { to: "/buyer/browse", key: "browseCrops", icon: ShoppingBasket },
   { to: "/buyer/offers", key: "myOffers", icon: Handshake },
+  { to: "/alerts", key: "alerts", icon: Bell },
   { to: "/market", key: "marketPrices", icon: LineChart },
   { to: "/weather", key: "weather", icon: CloudSun },
 ];
+
 
 export function AppShell({ children }: { children: ReactNode }) {
   const { t, lang, setLang } = useLang();
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [open, setOpen] = useState(false);
+  const online = useOnline();
   const role = useQuery(roleQuery);
   const NAV = role.isPending ? [] : role.data === "buyer" ? BUYER_NAV : FARMER_NAV;
 
@@ -141,14 +151,24 @@ export function AppShell({ children }: { children: ReactNode }) {
       )}
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-20 flex items-center gap-3 border-b border-border bg-background/85 px-4 py-3 backdrop-blur lg:hidden">
-          <Button variant="ghost" size="icon" onClick={() => setOpen(true)}>
+        <header className="sticky top-0 z-20 flex items-center gap-3 border-b border-border bg-background/85 px-4 py-3 backdrop-blur">
+          <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setOpen(true)}>
             <Menu className="h-5 w-5" />
           </Button>
-          <span className="font-display text-lg font-bold">{t("appName")}</span>
+          <span className="font-display text-lg font-bold lg:hidden">{t("appName")}</span>
+          <div className="ml-auto flex items-center gap-3">
+            {!online && (
+              <span className="flex items-center gap-1.5 rounded-full bg-muted px-3 py-1 text-xs font-semibold text-muted-foreground">
+                <WifiOff className="h-3.5 w-3.5" />
+                {t("offline")}
+              </span>
+            )}
+            <NotificationBell />
+          </div>
         </header>
         <main className="flex-1 px-4 py-6 sm:px-8 sm:py-8">{children}</main>
       </div>
+
     </div>
   );
 }

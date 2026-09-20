@@ -2,13 +2,14 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState } from "react";
-import { Bot, Loader2, Send, User } from "lucide-react";
+import { Bot, Loader2, Mic, MicOff, Send, User, Volume2, VolumeX } from "lucide-react";
 import { toast } from "sonner";
 
 import { useLang } from "@/lib/i18n";
 import { askAssistant } from "@/lib/ai.functions";
 import { latestByCropMandi, marketPricesQuery, schemesQuery, soilTestsQuery } from "@/lib/queries";
 import { LOCATIONS, findLocation } from "@/lib/locations";
+import { listenOnce, speak, speechSupported, stopSpeaking } from "@/lib/speech";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -43,7 +44,33 @@ function AssistantPage() {
   const [locId, setLocId] = useState("indore");
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Msg[]>([]);
+  const [listening, setListening] = useState(false);
+  const [voiceOn, setVoiceOn] = useState(false);
+  const stopListening = useRef<(() => void) | null>(null);
   const endRef = useRef<HTMLDivElement>(null);
+  const canSpeak = speechSupported();
+
+  function toggleMic() {
+    if (listening) {
+      stopListening.current?.();
+      setListening(false);
+      return;
+    }
+    const stop = listenOnce(
+      lang,
+      (text) => submit(text),
+      () => setListening(false),
+    );
+    if (!stop) {
+      toast.error(
+        lang === "hi" ? "यह ब्राउज़र आवाज़ नहीं सुन सकता।" : "This browser cannot listen to voice.",
+      );
+      return;
+    }
+    stopListening.current = stop;
+    setListening(true);
+  }
+
 
   useEffect(() => {
     const stored = window.localStorage.getItem("sasyavedix-location");
@@ -114,7 +141,10 @@ function AssistantPage() {
       })) as { answer: string };
       return res.answer;
     },
-    onSuccess: (answer) => setMessages((m) => [...m, { role: "assistant", content: answer }]),
+    onSuccess: (answer) => {
+      setMessages((m) => [...m, { role: "assistant", content: answer }]);
+      if (voiceOn) speak(answer, lang);
+    },
     onError: () => {
       setMessages((m) => m.slice(0, -1));
       toast.error(
@@ -249,12 +279,42 @@ function AssistantPage() {
           <Input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder={lang === "hi" ? "अपना सवाल लिखें…" : "Type your question…"}
+            placeholder={
+              listening
+                ? lang === "hi"
+                  ? "सुन रहा हूं…"
+                  : "Listening…"
+                : lang === "hi"
+                  ? "अपना सवाल लिखें या बोलें…"
+                  : "Type or speak your question…"
+            }
           />
+          {canSpeak && (
+            <Button
+              type="button"
+              variant={listening ? "default" : "outline"}
+              aria-label={lang === "hi" ? "बोलकर पूछें" : "Ask by voice"}
+              onClick={toggleMic}
+            >
+              {listening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+            </Button>
+          )}
+          <Button
+            type="button"
+            variant={voiceOn ? "default" : "outline"}
+            aria-label={lang === "hi" ? "जवाब सुनाएं" : "Read answers aloud"}
+            onClick={() => {
+              if (voiceOn) stopSpeaking();
+              setVoiceOn(!voiceOn);
+            }}
+          >
+            {voiceOn ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+          </Button>
           <Button type="submit" disabled={send.isPending || !input.trim()}>
             <Send className="h-4 w-4" />
           </Button>
         </form>
+
       </div>
     </div>
   );

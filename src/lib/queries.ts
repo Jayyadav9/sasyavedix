@@ -1,5 +1,6 @@
 import { queryOptions } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { cacheRead, cacheSave } from "@/lib/offline";
 
 export type MarketPrice = {
   id: string;
@@ -16,40 +17,78 @@ export type MarketPrice = {
 export const marketPricesQuery = queryOptions({
   queryKey: ["market_prices"],
   queryFn: async (): Promise<MarketPrice[]> => {
-    const { data, error } = await supabase
-      .from("market_prices")
-      .select("id, crop, variety, location, market, price, unit, observed_on, source")
-      .order("observed_on", { ascending: false })
-      .limit(1200);
-    if (error) throw error;
-    return (data ?? []) as MarketPrice[];
+    try {
+      const { data, error } = await supabase
+        .from("market_prices")
+        .select("id, crop, variety, location, market, price, unit, observed_on, source")
+        .order("observed_on", { ascending: false })
+        .limit(1200);
+      if (error) throw error;
+      const rows = (data ?? []) as MarketPrice[];
+      cacheSave("market_prices", rows);
+      return rows;
+    } catch (err) {
+      const hit = cacheRead<MarketPrice[]>("market_prices");
+      if (hit) return hit.value;
+      throw err;
+    }
   },
 });
 
+export type Variety = {
+  id: string;
+  crop: string;
+  name_en: string;
+  name_hi: string;
+  duration_days: number | null;
+  yield_quintal_per_acre: number | null;
+  season: string | null;
+  water_need: string | null;
+  notes_en: string | null;
+  notes_hi: string | null;
+};
+
 export const varietiesQuery = queryOptions({
   queryKey: ["crop_varieties"],
-  queryFn: async () => {
-    const { data, error } = await supabase
-      .from("crop_varieties")
-      .select("*")
-      .order("crop", { ascending: true });
-    if (error) throw error;
-    return data ?? [];
+  queryFn: async (): Promise<Variety[]> => {
+    try {
+      const { data, error } = await supabase
+        .from("crop_varieties")
+        .select("*")
+        .order("crop", { ascending: true });
+      if (error) throw error;
+      const rows = (data ?? []) as Variety[];
+      cacheSave("crop_varieties", rows);
+      return rows;
+    } catch (err) {
+      const hit = cacheRead<Variety[]>("crop_varieties");
+      if (hit) return hit.value;
+      throw err;
+    }
   },
 });
+
 
 export const schemesQuery = queryOptions({
   queryKey: ["schemes"],
   queryFn: async () => {
-    const { data, error } = await supabase
-      .from("schemes")
-      .select("*")
-      .eq("active", true)
-      .order("created_at", { ascending: true });
-    if (error) throw error;
-    return data ?? [];
+    try {
+      const { data, error } = await supabase
+        .from("schemes")
+        .select("*")
+        .eq("active", true)
+        .order("created_at", { ascending: true });
+      if (error) throw error;
+      cacheSave("schemes", data ?? []);
+      return data ?? [];
+    } catch (err) {
+      const hit = cacheRead<never[]>("schemes");
+      if (hit) return hit.value;
+      throw err;
+    }
   },
 });
+
 
 export const profileQuery = queryOptions({
   queryKey: ["profile"],
@@ -198,6 +237,7 @@ export type Order = {
   delivery_date: string | null;
   payment_method: string | null;
   payment_ref: string | null;
+  invoice_no?: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -238,3 +278,122 @@ export const ORDER_LABELS: Record<string, { en: string; hi: string }> = {
   paid: { en: "Payment received", hi: "भुगतान प्राप्त" },
   cancelled: { en: "Cancelled", hi: "रद्द" },
 };
+
+// ---------------- notifications, alerts, calendar, payments ----------------
+
+export type Notification = {
+  id: string;
+  kind: string;
+  title_en: string;
+  title_hi: string;
+  body_en: string | null;
+  body_hi: string | null;
+  link: string | null;
+  read: boolean;
+  created_at: string;
+};
+
+export const notificationsQuery = queryOptions({
+  queryKey: ["notifications"],
+  queryFn: async (): Promise<Notification[]> => {
+    const { data, error } = await supabase
+      .from("notifications")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(50);
+    if (error) throw error;
+    return (data ?? []) as Notification[];
+  },
+  refetchInterval: 60_000,
+});
+
+export type PriceAlert = {
+  id: string;
+  crop: string;
+  market: string | null;
+  direction: string;
+  target_price: number;
+  active: boolean;
+  created_at: string;
+};
+
+export const priceAlertsQuery = queryOptions({
+  queryKey: ["price_alerts"],
+  queryFn: async (): Promise<PriceAlert[]> => {
+    const { data, error } = await supabase
+      .from("price_alerts")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (error) throw error;
+    return (data ?? []) as PriceAlert[];
+  },
+});
+
+export type CropPlan = {
+  id: string;
+  crop: string;
+  variety: string | null;
+  sowing_date: string;
+  harvest_date: string | null;
+  area_acres: number | null;
+  notes: string | null;
+  status: string;
+  created_at: string;
+};
+
+export const cropPlansQuery = queryOptions({
+  queryKey: ["crop_plans"],
+  queryFn: async (): Promise<CropPlan[]> => {
+    const { data, error } = await supabase
+      .from("crop_plans")
+      .select("*")
+      .order("sowing_date", { ascending: false });
+    if (error) throw error;
+    return (data ?? []) as CropPlan[];
+  },
+});
+
+export type CropTask = {
+  id: string;
+  plan_id: string;
+  kind: string;
+  title_en: string;
+  title_hi: string;
+  due_date: string;
+  done: boolean;
+  done_on: string | null;
+};
+
+export const cropTasksQuery = queryOptions({
+  queryKey: ["crop_tasks"],
+  queryFn: async (): Promise<CropTask[]> => {
+    const { data, error } = await supabase
+      .from("crop_tasks")
+      .select("id, plan_id, kind, title_en, title_hi, due_date, done, done_on")
+      .order("due_date", { ascending: true });
+    if (error) throw error;
+    return (data ?? []) as CropTask[];
+  },
+});
+
+export type Payment = {
+  id: string;
+  order_id: string;
+  amount: number;
+  method: string;
+  reference: string | null;
+  paid_on: string;
+  note: string | null;
+};
+
+export const paymentsQuery = queryOptions({
+  queryKey: ["payments"],
+  queryFn: async (): Promise<Payment[]> => {
+    const { data, error } = await supabase
+      .from("payments")
+      .select("id, order_id, amount, method, reference, paid_on, note")
+      .order("paid_on", { ascending: false });
+    if (error) throw error;
+    return (data ?? []) as Payment[];
+  },
+});
