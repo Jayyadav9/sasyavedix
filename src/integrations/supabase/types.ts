@@ -231,6 +231,159 @@ export type Database = {
         }
         Relationships: []
       }
+      offers: {
+        Row: {
+          buyer_id: string
+          created_at: string
+          farmer_id: string
+          id: string
+          listing_id: string
+          message: string | null
+          price_per_quintal: number
+          quantity: number
+          status: string
+        }
+        Insert: {
+          buyer_id: string
+          created_at?: string
+          farmer_id: string
+          id?: string
+          listing_id: string
+          message?: string | null
+          price_per_quintal: number
+          quantity: number
+          status?: string
+        }
+        Update: {
+          buyer_id?: string
+          created_at?: string
+          farmer_id?: string
+          id?: string
+          listing_id?: string
+          message?: string | null
+          price_per_quintal?: number
+          quantity?: number
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "offers_buyer_id_fkey"
+            columns: ["buyer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "offers_farmer_id_fkey"
+            columns: ["farmer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "offers_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "crop_listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          buyer_id: string
+          buyer_note: string | null
+          created_at: string
+          crop: string
+          delivery_date: string | null
+          farmer_id: string
+          farmer_note: string | null
+          id: string
+          listing_id: string | null
+          offer_id: string | null
+          payment_method: string | null
+          payment_ref: string | null
+          pickup_location: string | null
+          price_per_quintal: number
+          quantity: number
+          status: string
+          total_amount: number
+          updated_at: string
+          variety: string | null
+        }
+        Insert: {
+          buyer_id: string
+          buyer_note?: string | null
+          created_at?: string
+          crop: string
+          delivery_date?: string | null
+          farmer_id: string
+          farmer_note?: string | null
+          id?: string
+          listing_id?: string | null
+          offer_id?: string | null
+          payment_method?: string | null
+          payment_ref?: string | null
+          pickup_location?: string | null
+          price_per_quintal: number
+          quantity: number
+          status?: string
+          total_amount: number
+          updated_at?: string
+          variety?: string | null
+        }
+        Update: {
+          buyer_id?: string
+          buyer_note?: string | null
+          created_at?: string
+          crop?: string
+          delivery_date?: string | null
+          farmer_id?: string
+          farmer_note?: string | null
+          id?: string
+          listing_id?: string | null
+          offer_id?: string | null
+          payment_method?: string | null
+          payment_ref?: string | null
+          pickup_location?: string | null
+          price_per_quintal?: number
+          quantity?: number
+          status?: string
+          total_amount?: number
+          updated_at?: string
+          variety?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_buyer_id_fkey"
+            columns: ["buyer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orders_farmer_id_fkey"
+            columns: ["farmer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orders_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "crop_listings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orders_offer_id_fkey"
+            columns: ["offer_id"]
+            isOneToOne: false
+            referencedRelation: "offers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
@@ -365,15 +518,42 @@ export type Database = {
           },
         ]
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "farmer" | "buyer" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -500,6 +680,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["farmer", "buyer", "admin"],
+    },
   },
 } as const
