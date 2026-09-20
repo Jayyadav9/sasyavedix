@@ -64,6 +64,13 @@
       "when": 1789890410834,
       "tag": "0008_phase9_reviews_expenses",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1789890701007,
+      "tag": "0009_restrict_buyer_profile_reads",
+      "breakpoints": true
     }
   ]
 }
