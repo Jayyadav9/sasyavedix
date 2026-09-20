@@ -13,17 +13,22 @@ import {
   LogOut,
   Leaf,
   Menu,
+  PackageCheck,
+  Handshake,
 } from "lucide-react";
 import { useState, type ReactNode } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useLang, type TKey } from "@/lib/i18n";
+import { roleQuery } from "@/lib/queries";
 import { Button } from "@/components/ui/button";
 
-const NAV: { to: string; key: TKey; icon: typeof LayoutDashboard }[] = [
+const FARMER_NAV: { to: string; key: TKey; icon: typeof LayoutDashboard }[] = [
   { to: "/dashboard", key: "dashboard", icon: LayoutDashboard },
   { to: "/weather", key: "weather", icon: CloudSun },
   { to: "/sell", key: "sellCrop", icon: ShoppingBasket },
+  { to: "/orders", key: "orders", icon: PackageCheck },
   { to: "/market", key: "marketPrices", icon: LineChart },
   { to: "/analysis", key: "cropAnalysis", icon: ScanLine },
   { to: "/varieties", key: "cropVarieties", icon: Sprout },
@@ -33,11 +38,20 @@ const NAV: { to: string; key: TKey; icon: typeof LayoutDashboard }[] = [
   { to: "/analytics", key: "analytics", icon: BarChart3 },
 ];
 
+const BUYER_NAV: { to: string; key: TKey; icon: typeof LayoutDashboard }[] = [
+  { to: "/buyer/browse", key: "browseCrops", icon: ShoppingBasket },
+  { to: "/buyer/offers", key: "myOffers", icon: Handshake },
+  { to: "/market", key: "marketPrices", icon: LineChart },
+  { to: "/weather", key: "weather", icon: CloudSun },
+];
+
 export function AppShell({ children }: { children: ReactNode }) {
   const { t, lang, setLang } = useLang();
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [open, setOpen] = useState(false);
+  const role = useQuery(roleQuery);
+  const NAV = role.data === "buyer" ? BUYER_NAV : FARMER_NAV;
 
   async function signOut() {
     await supabase.auth.signOut();
