@@ -58,7 +58,7 @@ function FieldsPage() {
   const addField = useMutation({
     mutationFn: async (f: FormData) => {
       const { error } = await supabase.from("farm_fields").insert({
-        farmer_id: uid,
+        farmer_id: uid as string,
         name: String(f.get("name")),
         acres: Number(f.get("acres")),
         village: String(f.get("village")) || null,

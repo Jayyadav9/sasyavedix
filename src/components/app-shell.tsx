@@ -23,6 +23,7 @@ import {
   Wallet,
   ReceiptIndianRupee,
   Tractor,
+  MapPin,
 } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -50,6 +51,7 @@ const FARMER_NAV: { to: string; key: TKey; icon: typeof LayoutDashboard }[] = [
   { to: "/finance", key: "finance", icon: Wallet },
   { to: "/expenses", key: "expenses", icon: ReceiptIndianRupee },
   { to: "/equipment", key: "equipment", icon: Tractor },
+    { to: "/fields", key: "fields", icon: MapPin },
   { to: "/assistant", key: "aiAssistant", icon: Bot },
   { to: "/analytics", key: "analytics", icon: BarChart3 },
   { to: "/profile", key: "myProfile", icon: UserRound },
