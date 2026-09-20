@@ -117,6 +117,25 @@ function CalendarPage() {
     },
   });
 
+  const recordHarvest = useMutation({
+    mutationFn: async ({ id, form }: { id: string; form: HTMLFormElement }) => {
+      const fd = new FormData(form);
+      const qty = Number(fd.get("actual_yield"));
+      if (!qty || qty <= 0) throw new Error("Enter the harvested quantity");
+      const { error } = await supabase
+        .from("crop_plans")
+        .update({ actual_yield_quintal: qty, harvested_on: TODAY(), status: "harvested" })
+        .eq("id", id);
+      if (error) throw error;
+      setHarvestFor(null);
+    },
+    onSuccess: () => {
+      toast.success(lang === "hi" ? "फसल की कटाई दर्ज हुई" : "Harvest recorded");
+      qc.invalidateQueries({ queryKey: ["crop_plans"] });
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Could not save"),
+  });
+
   const all = tasks.data ?? [];
   const today = TODAY();
   const open = all.filter((x) => !x.done);
