@@ -283,6 +283,39 @@ function CalendarPage() {
                   <p className="mt-1 text-xs text-muted-foreground">
                     {doneCount}/{planTasks.length} {t("done")}
                   </p>
+                  {(() => {
+                    if (!p.area_acres) return null;
+                    const vs = (varieties.data ?? []).filter(
+                      (x) => x.crop.toLowerCase() === p.crop.toLowerCase(),
+                    );
+                    const v =
+                      (p.variety
+                        ? vs.find(
+                            (x) => x.name_en.toLowerCase() === String(p.variety).toLowerCase(),
+                          )
+                        : null) ?? vs[0];
+                    const yieldQ =
+                      v?.yield_quintal_per_acre != null
+                        ? Number(v.yield_quintal_per_acre) * Number(p.area_acres)
+                        : null;
+                    if (yieldQ == null) return null;
+                    const mandi = latestByCropMandi(prices.data ?? [])
+                      .filter((x) => x.crop.toLowerCase() === p.crop.toLowerCase())
+                      .sort((a, b) => b.price - a.price)[0];
+                    return (
+                      <p className="mt-2 flex items-center gap-1.5 rounded-xl bg-muted/50 px-3 py-1.5 text-xs font-medium">
+                        <Wheat className="h-3.5 w-3.5 text-primary" />
+                        {t("expectedYield")}: ~{Math.round(yieldQ).toLocaleString("en-IN")}{" "}
+                        {t("quintal")}
+                        {mandi && (
+                          <span className="text-primary">
+                            · {t("expectedValue")}: ₹
+                            {Math.round(yieldQ * mandi.price).toLocaleString("en-IN")}
+                          </span>
+                        )}
+                      </p>
+                    );
+                  })()}
                 </li>
               );
             })}
