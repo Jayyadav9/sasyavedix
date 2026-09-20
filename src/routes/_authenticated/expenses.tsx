@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/useAuth";
 import { useLang } from "@/lib/i18n";
-import { farmExpensesQuery, ordersQuery, type FarmExpense } from "@/lib/queries";
+import { farmExpensesQuery, ordersQuery, cropPlansQuery, type FarmExpense } from "@/lib/queries";
 import { downloadCsv } from "@/lib/csv";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -52,6 +52,7 @@ function ExpensesPage() {
   const qc = useQueryClient();
   const expenses = useQuery(farmExpensesQuery);
   const orders = useQuery(ordersQuery);
+  const plans = useQuery(cropPlansQuery);
   const [cropFilter, setCropFilter] = useState("all");
 
   const addExpense = useMutation({
@@ -104,6 +105,14 @@ function ExpensesPage() {
   })();
 
   const profit = soldValue - totalCost;
+
+  // Cost of production per quintal, once an actual harvest is recorded.
+  const harvested = (plans.data ?? []).filter(
+    (p) => p.actual_yield_quintal != null && (cropFilter === "all" || p.crop === cropFilter),
+  );
+  const yieldTotal = harvested.reduce((s, p) => s + Number(p.actual_yield_quintal), 0);
+  const costPerQuintal = yieldTotal > 0 ? totalCost / yieldTotal : null;
+
   const catLabel = (id: string) =>
     CATEGORIES.find((c) => c.id === id)?.[lang === "hi" ? "hi" : "en"] ?? id;
 
@@ -189,7 +198,7 @@ function ExpensesPage() {
         </form>
       </section>
 
-      <section className="grid gap-3 sm:grid-cols-3">
+      <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <div className="glass-card rounded-3xl p-5">
           <p className="flex items-center gap-2 text-sm text-muted-foreground">
             <IndianRupee className="h-4 w-4" /> {t("totalCost")}
@@ -222,6 +231,28 @@ function ExpensesPage() {
               {t("profitPerAcre")}: ₹
               {Math.round(profit / acresTotal).toLocaleString("en-IN")} · {acresTotal}{" "}
               {lang === "hi" ? "एकड़" : "acres"}
+            </p>
+          )}
+        </div>
+        <div className="glass-card rounded-3xl p-5">
+          <p className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Wheat className="h-4 w-4" /> {t("costPerQuintal")}
+          </p>
+          {costPerQuintal != null ? (
+            <>
+              <p className="mt-1 font-display text-3xl font-bold">
+                ₹{Math.round(costPerQuintal).toLocaleString("en-IN")}
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {t("harvested")}: {yieldTotal.toLocaleString("en-IN")}{" "}
+                {lang === "hi" ? "क्विंटल" : "quintal"}
+              </p>
+            </>
+          ) : (
+            <p className="mt-1 text-sm text-muted-foreground">
+              {lang === "hi"
+                ? "कटाई दर्ज करने के बाद दिखेगा"
+                : "Record a harvest on the Crop Calendar to see this"}
             </p>
           )}
         </div>
