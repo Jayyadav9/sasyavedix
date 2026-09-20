@@ -213,7 +213,14 @@ function AssistantPage() {
                     : "border border-border bg-card/60"
                 }`}
               >
-                {m.content}
+                {m.content.split(/(\*\*[^*]+\*\*)/g).map((part, j) =>
+                  part.startsWith("**") && part.endsWith("**") ? (
+                    <strong key={j}>{part.slice(2, -2)}</strong>
+                  ) : (
+                    <span key={j}>{part}</span>
+                  ),
+                )}
+
               </div>
               {m.role === "user" && (
                 <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-muted">

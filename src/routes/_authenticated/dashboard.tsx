@@ -129,7 +129,16 @@ function Dashboard() {
   const name = profile.data?.full_name ?? "Farmer";
   const now = new Date();
 
+  if (role.isPending || role.data === "buyer") {
+    return (
+      <div className="grid min-h-[60vh] place-items-center text-muted-foreground">
+        <span className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+      </div>
+    );
+  }
+
   return (
+
     <div className="mx-auto max-w-6xl space-y-7">
       <header className="rounded-3xl gradient-field px-6 py-7 text-primary-foreground shadow-[var(--shadow-field)]">
         <p className="text-sm opacity-85">
