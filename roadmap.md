@@ -111,3 +111,8 @@
   and paid orders, payments — so analytics, invoices, ratings and tracking all
   have realistic content
 - Publish still pending — only on explicit confirmation
+
+## Phase 13 — done
+- Equipment rental marketplace: owners list machines (kind, rate/day, village, district), toggle availability, delete.
+- Farmers book by start date + days; total auto-calculated; owner accepts/declines/completes, farmer can cancel.
+- Notifications to owner on new booking, to farmer on accept/decline (trigger notify_booking).
