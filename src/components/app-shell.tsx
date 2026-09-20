@@ -21,6 +21,7 @@ import {
   WifiOff,
   Users,
   Wallet,
+  ReceiptIndianRupee,
 } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -46,6 +47,7 @@ const FARMER_NAV: { to: string; key: TKey; icon: typeof LayoutDashboard }[] = [
   { to: "/schemes", key: "schemes", icon: Landmark },
   { to: "/groups", key: "groups", icon: Users },
   { to: "/finance", key: "finance", icon: Wallet },
+  { to: "/expenses", key: "expenses", icon: ReceiptIndianRupee },
   { to: "/assistant", key: "aiAssistant", icon: Bot },
   { to: "/analytics", key: "analytics", icon: BarChart3 },
   { to: "/profile", key: "myProfile", icon: UserRound },
