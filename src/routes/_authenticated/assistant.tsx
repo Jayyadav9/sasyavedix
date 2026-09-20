@@ -44,7 +44,33 @@ function AssistantPage() {
   const [locId, setLocId] = useState("indore");
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Msg[]>([]);
+  const [listening, setListening] = useState(false);
+  const [voiceOn, setVoiceOn] = useState(false);
+  const stopListening = useRef<(() => void) | null>(null);
   const endRef = useRef<HTMLDivElement>(null);
+  const canSpeak = speechSupported();
+
+  function toggleMic() {
+    if (listening) {
+      stopListening.current?.();
+      setListening(false);
+      return;
+    }
+    const stop = listenOnce(
+      lang,
+      (text) => submit(text),
+      () => setListening(false),
+    );
+    if (!stop) {
+      toast.error(
+        lang === "hi" ? "यह ब्राउज़र आवाज़ नहीं सुन सकता।" : "This browser cannot listen to voice.",
+      );
+      return;
+    }
+    stopListening.current = stop;
+    setListening(true);
+  }
+
 
   useEffect(() => {
     const stored = window.localStorage.getItem("sasyavedix-location");
