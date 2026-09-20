@@ -237,6 +237,7 @@ export type Order = {
   delivery_date: string | null;
   payment_method: string | null;
   payment_ref: string | null;
+  invoice_no?: string | null;
   created_at: string;
   updated_at: string;
 };
