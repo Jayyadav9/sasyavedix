@@ -155,7 +155,7 @@ function Dashboard() {
           >
             {LOCATIONS.map((l) => (
               <option key={l.id} value={l.id} className="text-foreground">
-                {l.name}
+                {l[lang]}
               </option>
             ))}
           </select>
@@ -171,7 +171,7 @@ function Dashboard() {
           value={weather.data ? `${Math.round(weather.data.current.temperature_2m)}°C` : "—"}
           hint={
             weather.data
-              ? `Humidity ${weather.data.current.relative_humidity_2m}% · ${loc.name}`
+              ? `Humidity ${weather.data.current.relative_humidity_2m}% · ${loc[lang]}`
               : ""
           }
         />
