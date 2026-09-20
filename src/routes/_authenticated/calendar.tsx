@@ -15,6 +15,7 @@ import {
   notificationsQuery,
   varietiesQuery,
   type CropTask,
+  farmFieldsQuery,
 } from "@/lib/queries";
 import { CROP_TEMPLATES, TASK_KIND_LABEL, addDays, templateFor, type TaskKind } from "@/lib/calendar";
 import { Button } from "@/components/ui/button";
@@ -54,6 +55,7 @@ function CalendarPage() {
   const varieties = useQuery(varietiesQuery);
   const prices = useQuery(marketPricesQuery);
   const notifs = useQuery(notificationsQuery);
+  const fields = useQuery(farmFieldsQuery);
   const reminded = useRef(false);
 
   // Turn due/overdue field jobs into notification-bell reminders (once per task).
@@ -106,6 +108,7 @@ function CalendarPage() {
           sowing_date: sowing,
           harvest_date: addDays(sowing, tpl.durationDays),
           area_acres: fd.get("area_acres") ? Number(fd.get("area_acres")) : null,
+          field_id: String(fd.get("field_id") ?? "") || null,
         })
         .select("id")
         .single();
@@ -265,6 +268,21 @@ function CalendarPage() {
           <div>
             <Label htmlFor="area_acres">{t("area")}</Label>
             <Input id="area_acres" name="area_acres" type="number" step="0.1" min="0" className="mt-1" />
+          </div>
+          <div>
+            <Label htmlFor="field_id">{t("selectField")}</Label>
+            <select
+              id="field_id"
+              name="field_id"
+              className="mt-1 h-10 w-full rounded-xl border border-border bg-card px-3 text-sm"
+            >
+              <option value="">—</option>
+              {(fields.data ?? []).map((f) => (
+                <option key={f.id} value={f.id}>
+                  {f.name}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="flex items-end">
             <Button type="submit" className="w-full" disabled={createPlan.isPending}>

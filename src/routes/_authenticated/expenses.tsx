@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/useAuth";
 import { useLang } from "@/lib/i18n";
-import { farmExpensesQuery, ordersQuery, cropPlansQuery, type FarmExpense } from "@/lib/queries";
+import { farmExpensesQuery, farmFieldsQuery, ordersQuery, cropPlansQuery, type FarmExpense } from "@/lib/queries";
 import { downloadCsv } from "@/lib/csv";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -53,6 +53,7 @@ function ExpensesPage() {
   const expenses = useQuery(farmExpensesQuery);
   const orders = useQuery(ordersQuery);
   const plans = useQuery(cropPlansQuery);
+  const fields = useQuery(farmFieldsQuery);
   const [cropFilter, setCropFilter] = useState("all");
 
   const addExpense = useMutation({
@@ -67,6 +68,7 @@ function ExpensesPage() {
         spent_on: String(fd.get("spent_on") ?? "") || new Date().toISOString().slice(0, 10),
         acres: fd.get("acres") ? Number(fd.get("acres")) : null,
         notes: String(fd.get("notes") ?? "").trim() || null,
+        field_id: String(fd.get("field_id") ?? "") || null,
       });
       if (error) throw error;
       form.reset();
@@ -188,6 +190,21 @@ function ExpensesPage() {
           <div>
             <Label htmlFor="acres">{t("area")}</Label>
             <Input id="acres" name="acres" type="number" step="0.1" min="0" className="mt-1" />
+          </div>
+          <div>
+            <Label htmlFor="field_id">{t("selectField")}</Label>
+            <select
+              id="field_id"
+              name="field_id"
+              className="mt-1 h-10 w-full rounded-xl border border-border bg-card px-3 text-sm"
+            >
+              <option value="">—</option>
+              {(fields.data ?? []).map((f) => (
+                <option key={f.id} value={f.id}>
+                  {f.name}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="flex items-end">
             <Button type="submit" className="w-full" disabled={addExpense.isPending}>

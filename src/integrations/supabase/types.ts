@@ -127,6 +127,7 @@ export type Database = {
           created_at: string
           crop: string
           farmer_id: string
+          field_id: string | null
           harvest_date: string | null
           harvested_on: string | null
           id: string
@@ -141,6 +142,7 @@ export type Database = {
           created_at?: string
           crop: string
           farmer_id: string
+          field_id?: string | null
           harvest_date?: string | null
           harvested_on?: string | null
           id?: string
@@ -155,6 +157,7 @@ export type Database = {
           created_at?: string
           crop?: string
           farmer_id?: string
+          field_id?: string | null
           harvest_date?: string | null
           harvested_on?: string | null
           id?: string
@@ -169,6 +172,13 @@ export type Database = {
             columns: ["farmer_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crop_plans_field_id_fkey"
+            columns: ["field_id"]
+            isOneToOne: false
+            referencedRelation: "farm_fields"
             referencedColumns: ["id"]
           },
         ]
@@ -415,6 +425,7 @@ export type Database = {
           created_at: string
           crop: string
           farmer_id: string
+          field_id: string | null
           id: string
           notes: string | null
           spent_on: string
@@ -426,6 +437,7 @@ export type Database = {
           created_at?: string
           crop: string
           farmer_id: string
+          field_id?: string | null
           id?: string
           notes?: string | null
           spent_on?: string
@@ -437,6 +449,7 @@ export type Database = {
           created_at?: string
           crop?: string
           farmer_id?: string
+          field_id?: string | null
           id?: string
           notes?: string | null
           spent_on?: string
@@ -444,6 +457,60 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "farm_expenses_farmer_id_fkey"
+            columns: ["farmer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "farm_expenses_field_id_fkey"
+            columns: ["field_id"]
+            isOneToOne: false
+            referencedRelation: "farm_fields"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      farm_fields: {
+        Row: {
+          acres: number
+          created_at: string
+          district: string | null
+          farmer_id: string
+          id: string
+          irrigation: string | null
+          name: string
+          notes: string | null
+          soil_type: string | null
+          village: string | null
+        }
+        Insert: {
+          acres: number
+          created_at?: string
+          district?: string | null
+          farmer_id: string
+          id?: string
+          irrigation?: string | null
+          name: string
+          notes?: string | null
+          soil_type?: string | null
+          village?: string | null
+        }
+        Update: {
+          acres?: number
+          created_at?: string
+          district?: string | null
+          farmer_id?: string
+          id?: string
+          irrigation?: string | null
+          name?: string
+          notes?: string | null
+          soil_type?: string | null
+          village?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "farm_fields_farmer_id_fkey"
             columns: ["farmer_id"]
             isOneToOne: false
             referencedRelation: "profiles"

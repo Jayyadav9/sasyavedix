@@ -116,3 +116,7 @@
 - Equipment rental marketplace: owners list machines (kind, rate/day, village, district), toggle availability, delete.
 - Farmers book by start date + days; total auto-calculated; owner accepts/declines/completes, farmer can cancel.
 - Notifications to owner on new booking, to farmer on accept/decline (trigger notify_booking).
+
+## Phase 14 — done
+- My Fields page: register fields (name, acres, village, district, soil type, irrigation), per-field stats (active plans, harvests, total spent)
+- Crop plans and expenses can be linked to a field (optional picker in both forms)
