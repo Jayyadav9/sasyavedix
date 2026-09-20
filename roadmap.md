@@ -125,3 +125,18 @@
 - Community feed (/community): post questions/tips, reply threads, delete own posts
 - In-order chat: Chat button on each order, live message thread, notifications to the other party
 - Equipment earnings & usage log: per-machine earnings/bookings/days + dated usage log entries
+
+## Phase 16 — done (hardening + polish)
+- Reviews are no longer readable by every signed-in user: raw rows restricted to the
+  two parties of the deal; public trust badges now use a new aggregate-only
+  rating_summary() function (average + count, no identities or comments)
+- Listing photos in the private bucket are only readable while the listing is open,
+  by the listing owner, or by a buyer who made an offer on it
+- Community page got its own page title / social preview metadata (all routes covered)
+- Security scan re-run: no critical findings; remaining warnings are the expected
+  SECURITY DEFINER helper/trigger functions
+
+## Open
+- data.gov.in API key not supplied — mandi prices still use the 60-day sample history
+- RESEND_API_KEY not supplied — price alert emails not connected (in-app alerts work)
+- Publish pending — only on explicit confirmation
