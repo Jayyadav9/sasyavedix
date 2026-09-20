@@ -1,14 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/lib/useAuth";
+import { useLang } from "@/lib/i18n";
+import { LOCATIONS } from "@/lib/locations";
 import {
   cropPlansQuery,
   farmExpensesQuery,
   farmFieldsQuery,
-  LOCATIONS,
   type FarmField,
 } from "@/lib/queries";
 import { toast } from "sonner";
@@ -23,9 +23,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { formatINR } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/fields")({
+  head: () => ({
+    meta: [
+      { title: "My Fields — SasyaVediX" },
+      {
+        name: "description",
+        content:
+          "Register your farm fields with soil type and irrigation, and track plans and expenses per field.",
+      },
+    ],
+  }),
   component: FieldsPage,
 });
 
