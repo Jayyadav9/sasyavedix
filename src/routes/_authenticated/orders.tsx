@@ -77,6 +77,7 @@ function OrdersPage() {
   const [invoiceFor, setInvoiceFor] = useState<string | null>(null);
   const [payFor, setPayFor] = useState<string | null>(null);
   const [rateFor, setRateFor] = useState<string | null>(null);
+  const [dispatchFor, setDispatchFor] = useState<string | null>(null);
   const [stars, setStars] = useState(5);
 
   const submitReview = useMutation({
@@ -197,6 +198,28 @@ function OrdersPage() {
     },
     onSuccess: () => {
       toast.success("Order updated");
+      qc.invalidateQueries({ queryKey: ["orders"] });
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Could not update order"),
+  });
+
+  const dispatchOrder = useMutation({
+    mutationFn: async ({ order, form }: { order: Order; form: HTMLFormElement }) => {
+      const fd = new FormData(form);
+      const { error } = await supabase
+        .from("orders")
+        .update({
+          status: "dispatched",
+          updated_at: new Date().toISOString(),
+          vehicle_no: String(fd.get("vehicle_no") ?? "").trim() || null,
+          driver_phone: String(fd.get("driver_phone") ?? "").trim() || null,
+        })
+        .eq("id", order.id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success(lang === "hi" ? "माल भेज दिया गया" : "Marked as dispatched");
+      setDispatchFor(null);
       qc.invalidateQueries({ queryKey: ["orders"] });
     },
     onError: (e) => toast.error(e instanceof Error ? e.message : "Could not update order"),
