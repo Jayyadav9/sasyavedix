@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { Search, ArrowUpDown, Loader2, RefreshCw, Scale, TrendingUp, TrendingDown, Pause, ExternalLink, Landmark } from "lucide-react";
@@ -158,14 +158,22 @@ function MarketPage() {
             {historyMode ? "Full price history" : "Latest price per crop and mandi"}
           </p>
         </div>
-        <Button variant="outline" onClick={() => refresh.mutate()} disabled={refresh.isPending}>
-          {refresh.isPending ? (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          ) : (
-            <RefreshCw className="mr-2 h-4 w-4" />
-          )}
-          {lang === "hi" ? "आज के भाव लाएं" : "Fetch today's rates"}
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" onClick={() => refresh.mutate()} disabled={refresh.isPending}>
+            {refresh.isPending ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <RefreshCw className="mr-2 h-4 w-4" />
+            )}
+            {lang === "hi" ? "आज के भाव लाएं" : "Fetch today's rates"}
+          </Button>
+          <Button variant="ghost" asChild>
+            <Link to="/mandi-setup">
+              <Landmark className="mr-2 h-4 w-4" />
+              {lang === "hi" ? "असली भाव जोड़ें" : "Connect live rates"}
+            </Link>
+          </Button>
+        </div>
       </header>
 
 

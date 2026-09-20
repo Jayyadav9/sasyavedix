@@ -23,6 +23,7 @@ import { Route as AuthenticatedExpensesRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedFieldsRouteImport } from './routes/_authenticated/fields'
 import { Route as AuthenticatedFinanceRouteImport } from './routes/_authenticated/finance'
 import { Route as AuthenticatedGroupsRouteImport } from './routes/_authenticated/groups'
+import { Route as AuthenticatedMandiSetupRouteImport } from './routes/_authenticated/mandi-setup'
 import { Route as AuthenticatedMarketRouteImport } from './routes/_authenticated/market'
 import { Route as AuthenticatedOrdersRouteImport } from './routes/_authenticated/orders'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
@@ -103,6 +104,11 @@ const AuthenticatedGroupsRoute = AuthenticatedGroupsRouteImport.update({
   path: '/groups',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedMandiSetupRoute = AuthenticatedMandiSetupRouteImport.update({
+  id: '/mandi-setup',
+  path: '/mandi-setup',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedMarketRoute = AuthenticatedMarketRouteImport.update({
   id: '/market',
   path: '/market',
@@ -170,6 +176,7 @@ export interface FileRoutesByFullPath {
   '/fields': typeof AuthenticatedFieldsRoute
   '/finance': typeof AuthenticatedFinanceRoute
   '/groups': typeof AuthenticatedGroupsRoute
+  '/mandi-setup': typeof AuthenticatedMandiSetupRoute
   '/market': typeof AuthenticatedMarketRoute
   '/orders': typeof AuthenticatedOrdersRoute
   '/profile': typeof AuthenticatedProfileRoute
@@ -195,6 +202,7 @@ export interface FileRoutesByTo {
   '/fields': typeof AuthenticatedFieldsRoute
   '/finance': typeof AuthenticatedFinanceRoute
   '/groups': typeof AuthenticatedGroupsRoute
+  '/mandi-setup': typeof AuthenticatedMandiSetupRoute
   '/market': typeof AuthenticatedMarketRoute
   '/orders': typeof AuthenticatedOrdersRoute
   '/profile': typeof AuthenticatedProfileRoute
@@ -222,6 +230,7 @@ export interface FileRoutesById {
   '/_authenticated/fields': typeof AuthenticatedFieldsRoute
   '/_authenticated/finance': typeof AuthenticatedFinanceRoute
   '/_authenticated/groups': typeof AuthenticatedGroupsRoute
+  '/_authenticated/mandi-setup': typeof AuthenticatedMandiSetupRoute
   '/_authenticated/market': typeof AuthenticatedMarketRoute
   '/_authenticated/orders': typeof AuthenticatedOrdersRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
@@ -249,6 +258,7 @@ export interface FileRouteTypes {
     | '/fields'
     | '/finance'
     | '/groups'
+    | '/mandi-setup'
     | '/market'
     | '/orders'
     | '/profile'
@@ -274,6 +284,7 @@ export interface FileRouteTypes {
     | '/fields'
     | '/finance'
     | '/groups'
+    | '/mandi-setup'
     | '/market'
     | '/orders'
     | '/profile'
@@ -300,6 +311,7 @@ export interface FileRouteTypes {
     | '/_authenticated/fields'
     | '/_authenticated/finance'
     | '/_authenticated/groups'
+    | '/_authenticated/mandi-setup'
     | '/_authenticated/market'
     | '/_authenticated/orders'
     | '/_authenticated/profile'
@@ -417,6 +429,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedGroupsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/mandi-setup': {
+      id: '/_authenticated/mandi-setup'
+      path: '/mandi-setup'
+      fullPath: '/mandi-setup'
+      preLoaderRoute: typeof AuthenticatedMandiSetupRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/market': {
       id: '/_authenticated/market'
       path: '/market'
@@ -503,6 +522,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedFieldsRoute: typeof AuthenticatedFieldsRoute
   AuthenticatedFinanceRoute: typeof AuthenticatedFinanceRoute
   AuthenticatedGroupsRoute: typeof AuthenticatedGroupsRoute
+  AuthenticatedMandiSetupRoute: typeof AuthenticatedMandiSetupRoute
   AuthenticatedMarketRoute: typeof AuthenticatedMarketRoute
   AuthenticatedOrdersRoute: typeof AuthenticatedOrdersRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
@@ -528,6 +548,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedFieldsRoute: AuthenticatedFieldsRoute,
   AuthenticatedFinanceRoute: AuthenticatedFinanceRoute,
   AuthenticatedGroupsRoute: AuthenticatedGroupsRoute,
+  AuthenticatedMandiSetupRoute: AuthenticatedMandiSetupRoute,
   AuthenticatedMarketRoute: AuthenticatedMarketRoute,
   AuthenticatedOrdersRoute: AuthenticatedOrdersRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,

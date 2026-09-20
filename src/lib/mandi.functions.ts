@@ -27,6 +27,31 @@ function toIsoDate(value: string | undefined): string {
 
 const DISTRICTS = new Map(LOCATIONS.map((l) => [l.en.toLowerCase(), l]));
 
+/** Tells the setup page whether the government feed key is saved and how much
+ * live data has already landed in market_prices. */
+export const mandiFeedStatus = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const configured = Boolean(process.env["DATA_GOV_IN_API_KEY"]);
+    const { count } = await context.supabase
+      .from("market_prices")
+      .select("id", { count: "exact", head: true })
+      .eq("source", "data.gov.in");
+    const { data: latest } = await context.supabase
+      .from("market_prices")
+      .select("observed_on")
+      .eq("source", "data.gov.in")
+      .order("observed_on", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    return {
+      configured,
+      liveRows: count ?? 0,
+      lastDate: latest?.observed_on ?? null,
+      districts: LOCATIONS.map((l) => l.en),
+    };
+  });
+
 export const syncMandiPrices = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async () => {
