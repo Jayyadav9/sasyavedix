@@ -7,12 +7,13 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useLang } from "@/lib/i18n";
 import {
-  avgRating,
   browseListingsQuery,
   latestByCropMandi,
   marketPricesQuery,
-  reviewsQuery,
+  ratingSummaryQuery,
+  summaryFor,
 } from "@/lib/queries";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
