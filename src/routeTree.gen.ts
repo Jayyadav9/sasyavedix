@@ -16,6 +16,7 @@ import { Route as AuthenticatedAnalysisRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedAnalyticsRouteImport } from './routes/_authenticated/analytics'
 import { Route as AuthenticatedAssistantRouteImport } from './routes/_authenticated/assistant'
 import { Route as AuthenticatedCalendarRouteImport } from './routes/_authenticated/calendar'
+import { Route as AuthenticatedCommunityRouteImport } from './routes/_authenticated/community'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedEquipmentRouteImport } from './routes/_authenticated/equipment'
 import { Route as AuthenticatedExpensesRouteImport } from './routes/_authenticated/expenses'
@@ -65,6 +66,11 @@ const AuthenticatedAssistantRoute = AuthenticatedAssistantRouteImport.update({
 const AuthenticatedCalendarRoute = AuthenticatedCalendarRouteImport.update({
   id: '/calendar',
   path: '/calendar',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedCommunityRoute = AuthenticatedCommunityRouteImport.update({
+  id: '/community',
+  path: '/community',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
@@ -157,6 +163,7 @@ export interface FileRoutesByFullPath {
   '/analytics': typeof AuthenticatedAnalyticsRoute
   '/assistant': typeof AuthenticatedAssistantRoute
   '/calendar': typeof AuthenticatedCalendarRoute
+  '/community': typeof AuthenticatedCommunityRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/equipment': typeof AuthenticatedEquipmentRoute
   '/expenses': typeof AuthenticatedExpensesRoute
@@ -181,6 +188,7 @@ export interface FileRoutesByTo {
   '/analytics': typeof AuthenticatedAnalyticsRoute
   '/assistant': typeof AuthenticatedAssistantRoute
   '/calendar': typeof AuthenticatedCalendarRoute
+  '/community': typeof AuthenticatedCommunityRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/equipment': typeof AuthenticatedEquipmentRoute
   '/expenses': typeof AuthenticatedExpensesRoute
@@ -207,6 +215,7 @@ export interface FileRoutesById {
   '/_authenticated/analytics': typeof AuthenticatedAnalyticsRoute
   '/_authenticated/assistant': typeof AuthenticatedAssistantRoute
   '/_authenticated/calendar': typeof AuthenticatedCalendarRoute
+  '/_authenticated/community': typeof AuthenticatedCommunityRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/equipment': typeof AuthenticatedEquipmentRoute
   '/_authenticated/expenses': typeof AuthenticatedExpensesRoute
@@ -233,6 +242,7 @@ export interface FileRouteTypes {
     | '/analytics'
     | '/assistant'
     | '/calendar'
+    | '/community'
     | '/dashboard'
     | '/equipment'
     | '/expenses'
@@ -257,6 +267,7 @@ export interface FileRouteTypes {
     | '/analytics'
     | '/assistant'
     | '/calendar'
+    | '/community'
     | '/dashboard'
     | '/equipment'
     | '/expenses'
@@ -282,6 +293,7 @@ export interface FileRouteTypes {
     | '/_authenticated/analytics'
     | '/_authenticated/assistant'
     | '/_authenticated/calendar'
+    | '/_authenticated/community'
     | '/_authenticated/dashboard'
     | '/_authenticated/equipment'
     | '/_authenticated/expenses'
@@ -354,6 +366,13 @@ declare module '@tanstack/react-router' {
       path: '/calendar'
       fullPath: '/calendar'
       preLoaderRoute: typeof AuthenticatedCalendarRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/community': {
+      id: '/_authenticated/community'
+      path: '/community'
+      fullPath: '/community'
+      preLoaderRoute: typeof AuthenticatedCommunityRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/dashboard': {
@@ -477,6 +496,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAnalyticsRoute: typeof AuthenticatedAnalyticsRoute
   AuthenticatedAssistantRoute: typeof AuthenticatedAssistantRoute
   AuthenticatedCalendarRoute: typeof AuthenticatedCalendarRoute
+  AuthenticatedCommunityRoute: typeof AuthenticatedCommunityRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedEquipmentRoute: typeof AuthenticatedEquipmentRoute
   AuthenticatedExpensesRoute: typeof AuthenticatedExpensesRoute
@@ -501,6 +521,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAnalyticsRoute: AuthenticatedAnalyticsRoute,
   AuthenticatedAssistantRoute: AuthenticatedAssistantRoute,
   AuthenticatedCalendarRoute: AuthenticatedCalendarRoute,
+  AuthenticatedCommunityRoute: AuthenticatedCommunityRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedEquipmentRoute: AuthenticatedEquipmentRoute,
   AuthenticatedExpensesRoute: AuthenticatedExpensesRoute,
