@@ -14,6 +14,80 @@ export type Database = {
   }
   public: {
     Tables: {
+      community_posts: {
+        Row: {
+          author_id: string
+          author_name: string | null
+          body: string
+          created_at: string
+          id: string
+        }
+        Insert: {
+          author_id: string
+          author_name?: string | null
+          body: string
+          created_at?: string
+          id?: string
+        }
+        Update: {
+          author_id?: string
+          author_name?: string | null
+          body?: string
+          created_at?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_posts_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_replies: {
+        Row: {
+          author_id: string
+          author_name: string | null
+          body: string
+          created_at: string
+          id: string
+          post_id: string
+        }
+        Insert: {
+          author_id: string
+          author_name?: string | null
+          body: string
+          created_at?: string
+          id?: string
+          post_id: string
+        }
+        Update: {
+          author_id?: string
+          author_name?: string | null
+          body?: string
+          created_at?: string
+          id?: string
+          post_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_replies_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "community_replies_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "community_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       crop_analysis: {
         Row: {
           created_at: string
@@ -410,6 +484,51 @@ export type Database = {
           },
           {
             foreignKeyName: "equipment_bookings_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      equipment_logs: {
+        Row: {
+          created_at: string
+          equipment_id: string
+          hours: number | null
+          id: string
+          note: string | null
+          owner_id: string
+          used_on: string
+        }
+        Insert: {
+          created_at?: string
+          equipment_id: string
+          hours?: number | null
+          id?: string
+          note?: string | null
+          owner_id: string
+          used_on?: string
+        }
+        Update: {
+          created_at?: string
+          equipment_id?: string
+          hours?: number | null
+          id?: string
+          note?: string | null
+          owner_id?: string
+          used_on?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "equipment_logs_equipment_id_fkey"
+            columns: ["equipment_id"]
+            isOneToOne: false
+            referencedRelation: "equipment"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "equipment_logs_owner_id_fkey"
             columns: ["owner_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -899,6 +1018,48 @@ export type Database = {
             columns: ["listing_id"]
             isOneToOne: false
             referencedRelation: "crop_listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      order_messages: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          order_id: string
+          sender_id: string
+          sender_name: string | null
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          order_id: string
+          sender_id: string
+          sender_name?: string | null
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          order_id?: string
+          sender_id?: string
+          sender_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_messages_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]

@@ -24,6 +24,7 @@ import {
   ReceiptIndianRupee,
   Tractor,
   MapPin,
+  MessageSquare,
 } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -48,6 +49,7 @@ const FARMER_NAV: { to: string; key: TKey; icon: typeof LayoutDashboard }[] = [
   { to: "/soil", key: "soilHealth", icon: FlaskConical },
   { to: "/schemes", key: "schemes", icon: Landmark },
   { to: "/groups", key: "groups", icon: Users },
+  { to: "/community", key: "community", icon: MessageSquare },
   { to: "/finance", key: "finance", icon: Wallet },
   { to: "/expenses", key: "expenses", icon: ReceiptIndianRupee },
   { to: "/equipment", key: "equipment", icon: Tractor },

@@ -99,6 +99,13 @@
       "when": 1789891859734,
       "tag": "0013_farm_fields",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1789892263765,
+      "tag": "0014_0014_community_chat_equipment_logs",
+      "breakpoints": true
     }
   ]
 }

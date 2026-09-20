@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Download, FileText, Handshake, IndianRupee, Loader2, PackageCheck, Star, Truck } from "lucide-react";
+import { Download, FileText, Handshake, IndianRupee, Loader2, MessageCircle, PackageCheck, Send, Star, Truck } from "lucide-react";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -13,6 +13,7 @@ import {
   paymentsQuery,
   profileQuery,
   reviewsQuery,
+  orderMessagesQuery,
   type Order,
 } from "@/lib/queries";
 import { OrderTrack } from "@/components/order-track";
@@ -78,6 +79,7 @@ function OrdersPage() {
   const [payFor, setPayFor] = useState<string | null>(null);
   const [rateFor, setRateFor] = useState<string | null>(null);
   const [dispatchFor, setDispatchFor] = useState<string | null>(null);
+  const [chatFor, setChatFor] = useState<string | null>(null);
   const [stars, setStars] = useState(5);
 
   const submitReview = useMutation({
@@ -403,6 +405,14 @@ function OrdersPage() {
                     <FileText className="mr-2 h-4 w-4" />
                     {t("viewInvoice")}
                   </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setChatFor(chatFor === o.id ? null : o.id)}
+                  >
+                    <MessageCircle className="mr-2 h-4 w-4" />
+                    {t("chat")}
+                  </Button>
                   {["dispatched", "delivered", "paid"].includes(o.status) &&
                     uid &&
                     (() => {
@@ -561,12 +571,82 @@ function OrdersPage() {
                     }
                   />
                 )}
+
+                {chatFor === o.id && uid && (
+                  <OrderChat orderId={o.id} uid={uid} senderName={profile.data?.full_name ?? null} />
+                )}
               </li>
 
             ))}
           </ul>
         )}
       </section>
+    </div>
+  );
+}
+
+function OrderChat({ orderId, uid, senderName }: { orderId: string; uid: string; senderName: string | null }) {
+  const { t } = useLang();
+  const qc = useQueryClient();
+  const messages = useQuery(orderMessagesQuery(orderId));
+  const [text, setText] = useState("");
+
+  const send = useMutation({
+    mutationFn: async (body: string) => {
+      const { error } = await supabase
+        .from("order_messages")
+        .insert({ order_id: orderId, sender_id: uid, sender_name: senderName, body });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      setText("");
+      qc.invalidateQueries({ queryKey: ["order_messages", orderId] });
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Could not send"),
+  });
+
+  return (
+    <div className="mt-3 space-y-2 rounded-xl border bg-muted/30 p-3">
+      <div className="max-h-64 space-y-2 overflow-y-auto">
+        {(messages.data ?? []).length === 0 && (
+          <p className="py-2 text-center text-xs text-muted-foreground">{t("noMessages")}</p>
+        )}
+        {(messages.data ?? []).map((m) => {
+          const mine = m.sender_id === uid;
+          return (
+            <div key={m.id} className={`flex ${mine ? "justify-end" : "justify-start"}`}>
+              <div
+                className={`max-w-[80%] rounded-2xl px-3 py-2 text-sm ${
+                  mine ? "bg-primary text-primary-foreground" : "bg-muted"
+                }`}
+              >
+                {!mine && <p className="text-xs font-semibold opacity-70">{m.sender_name ?? "—"}</p>}
+                <p className="whitespace-pre-wrap">{m.body}</p>
+                <p className="mt-0.5 text-right text-[10px] opacity-60">
+                  {new Date(m.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                </p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <form
+        className="flex gap-2"
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (text.trim()) send.mutate(text.trim());
+        }}
+      >
+        <Input
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder={t("typeMessage")}
+          aria-label={t("typeMessage")}
+        />
+        <Button size="sm" type="submit" disabled={!text.trim() || send.isPending}>
+          <Send className="h-4 w-4" />
+        </Button>
+      </form>
     </div>
   );
 }

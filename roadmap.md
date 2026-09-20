@@ -120,3 +120,8 @@
 ## Phase 14 — done
 - My Fields page: register fields (name, acres, village, district, soil type, irrigation), per-field stats (active plans, harvests, total spent)
 - Crop plans and expenses can be linked to a field (optional picker in both forms)
+
+## Phase 15 — done
+- Community feed (/community): post questions/tips, reply threads, delete own posts
+- In-order chat: Chat button on each order, live message thread, notifications to the other party
+- Equipment earnings & usage log: per-machine earnings/bookings/days + dated usage log entries

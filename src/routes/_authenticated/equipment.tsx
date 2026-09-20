@@ -1,13 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Tractor, Loader2, Trash2, CalendarDays, Check, X } from "lucide-react";
+import { Tractor, Loader2, Trash2, CalendarDays, Check, X, NotebookPen } from "lucide-react";
 import { toast } from "sonner";
 
 import { useAuth } from "@/lib/useAuth";
 import { useLang } from "@/lib/i18n";
 import { supabase } from "@/integrations/supabase/client";
-import { equipmentQuery, equipmentBookingsQuery, type Equipment } from "@/lib/queries";
+import { equipmentQuery, equipmentBookingsQuery, equipmentLogsQuery, type Equipment } from "@/lib/queries";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -41,7 +41,9 @@ function EquipmentPage() {
   const qc = useQueryClient();
   const equipment = useQuery(equipmentQuery);
   const bookings = useQuery(equipmentBookingsQuery);
+  const logs = useQuery(equipmentLogsQuery);
   const [bookFor, setBookFor] = useState<string | null>(null);
+  const [logFor, setLogFor] = useState<string | null>(null);
 
   const uid = user?.id ?? null;
   const all = equipment.data ?? [];
@@ -52,7 +54,39 @@ function EquipmentPage() {
   const refresh = () => {
     qc.invalidateQueries({ queryKey: ["equipment"] });
     qc.invalidateQueries({ queryKey: ["equipment_bookings"] });
+    qc.invalidateQueries({ queryKey: ["equipment_logs"] });
   };
+
+  const earningsFor = (equipmentId: string) => {
+    const done = myBookings.filter(
+      (b) => b.equipment_id === equipmentId && ["accepted", "completed"].includes(b.status),
+    );
+    return {
+      total: done.reduce((s, b) => s + b.total_amount, 0),
+      count: done.length,
+      days: done.reduce((s, b) => s + b.days, 0),
+    };
+  };
+
+  const addLog = useMutation({
+    mutationFn: async (fd: FormData) => {
+      if (!uid || !logFor) throw new Error("Not signed in");
+      const { error } = await supabase.from("equipment_logs").insert({
+        equipment_id: logFor,
+        owner_id: uid,
+        used_on: String(fd.get("used_on")) || new Date().toISOString().slice(0, 10),
+        hours: fd.get("hours") ? Number(fd.get("hours")) : null,
+        note: String(fd.get("note") ?? "").trim() || null,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success(lang === "hi" ? "रजिस्टर में जुड़ गया" : "Log entry saved");
+      setLogFor(null);
+      qc.invalidateQueries({ queryKey: ["equipment_logs"] });
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Could not save"),
+  });
 
   const addMachine = useMutation({
     mutationFn: async (fd: FormData) => {
@@ -190,28 +224,93 @@ function EquipmentPage() {
         {mine.length > 0 && (
           <div className="space-y-2 pt-2">
             <h3 className="text-sm font-medium text-muted-foreground">{t("myMachines")}</h3>
-            {mine.map((m) => (
-              <div key={m.id} className="flex flex-wrap items-center gap-3 rounded-xl border bg-background/60 p-3">
-                <span className="font-medium">{m.name}</span>
-                <span className="text-xs text-muted-foreground capitalize">{m.kind}</span>
-                <span className="text-sm">₹{m.rate_per_day}/{t("days").toLowerCase().slice(0, lang === "hi" ? 3 : 3)}</span>
-                <button
-                  type="button"
-                  onClick={() => toggleAvailable.mutate(m)}
-                  className={`ml-auto rounded-full px-3 py-1 text-xs font-medium ${m.available ? "bg-primary/15 text-primary" : "bg-muted text-muted-foreground"}`}
-                >
-                  {m.available ? t("available") : t("notAvailable")}
-                </button>
-                <button
-                  type="button"
-                  aria-label={t("delete")}
-                  onClick={() => removeMachine.mutate(m.id)}
-                  className="text-muted-foreground hover:text-destructive"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </button>
-              </div>
-            ))}
+            {mine.map((m) => {
+              const earn = earningsFor(m.id);
+              const machineLogs = (logs.data ?? []).filter((l) => l.equipment_id === m.id);
+              return (
+                <div key={m.id} className="space-y-2 rounded-xl border bg-background/60 p-3">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <span className="font-medium">{m.name}</span>
+                    <span className="text-xs text-muted-foreground capitalize">{m.kind}</span>
+                    <span className="text-sm">₹{m.rate_per_day}/{t("days").toLowerCase().slice(0, lang === "hi" ? 3 : 3)}</span>
+                    <button
+                      type="button"
+                      onClick={() => toggleAvailable.mutate(m)}
+                      className={`ml-auto rounded-full px-3 py-1 text-xs font-medium ${m.available ? "bg-primary/15 text-primary" : "bg-muted text-muted-foreground"}`}
+                    >
+                      {m.available ? t("available") : t("notAvailable")}
+                    </button>
+                    <button
+                      type="button"
+                      aria-label={t("delete")}
+                      onClick={() => removeMachine.mutate(m.id)}
+                      className="text-muted-foreground hover:text-destructive"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+
+                  <div className="flex flex-wrap gap-4 rounded-lg bg-muted/40 px-3 py-2 text-xs">
+                    <span>{t("earnings")}: <strong>₹{earn.total.toLocaleString("en-IN")}</strong></span>
+                    <span>{t("bookingsCount")}: <strong>{earn.count}</strong></span>
+                    <span>{t("daysBooked")}: <strong>{earn.days}</strong></span>
+                    <button
+                      type="button"
+                      className="ml-auto inline-flex items-center gap-1 font-medium text-primary"
+                      onClick={() => setLogFor(logFor === m.id ? null : m.id)}
+                    >
+                      <NotebookPen className="h-3.5 w-3.5" /> {t("usageLog")}
+                    </button>
+                  </div>
+
+                  {logFor === m.id && (
+                    <div className="space-y-2 rounded-lg border p-3">
+                      <form
+                        className="grid gap-2 sm:grid-cols-4"
+                        onSubmit={(e) => {
+                          e.preventDefault();
+                          const fd = new FormData(e.currentTarget);
+                          e.currentTarget.reset();
+                          addLog.mutate(fd);
+                        }}
+                      >
+                        <div className="space-y-1">
+                          <Label htmlFor={`uo-${m.id}`}>{t("usedOn")}</Label>
+                          <Input id={`uo-${m.id}`} name="used_on" type="date" defaultValue={new Date().toISOString().slice(0, 10)} />
+                        </div>
+                        <div className="space-y-1">
+                          <Label htmlFor={`hr-${m.id}`}>{t("hours")}</Label>
+                          <Input id={`hr-${m.id}`} name="hours" type="number" min="0" step="0.5" placeholder="4" />
+                        </div>
+                        <div className="space-y-1 sm:col-span-2">
+                          <Label htmlFor={`nt-${m.id}`}>{t("notes")}</Label>
+                          <Input id={`nt-${m.id}`} name="note" placeholder={lang === "hi" ? "जैसे: रामू के खेत में जुताई" : "e.g. ploughing at Ramesh's field"} />
+                        </div>
+                        <div className="sm:col-span-4">
+                          <Button size="sm" type="submit" disabled={addLog.isPending}>
+                            {addLog.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                            {t("addLog")}
+                          </Button>
+                        </div>
+                      </form>
+                      {machineLogs.length === 0 ? (
+                        <p className="text-xs text-muted-foreground">{t("noLogs")}</p>
+                      ) : (
+                        <ul className="space-y-1 text-xs">
+                          {machineLogs.map((l) => (
+                            <li key={l.id} className="flex flex-wrap gap-2">
+                              <span className="font-medium">{l.used_on}</span>
+                              {l.hours != null && <span>{l.hours} {t("hours").toLowerCase()}</span>}
+                              {l.note && <span className="text-muted-foreground">· {l.note}</span>}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         )}
       </section>
