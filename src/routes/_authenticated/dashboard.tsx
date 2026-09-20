@@ -33,13 +33,14 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
   component: Dashboard,
 });
 
-function useWeather() {
+function useWeather(loc: (typeof LOCATIONS)[number]) {
   return useQuery({
-    queryKey: ["weather", "indore"],
+    queryKey: ["weather", loc.id],
     staleTime: 15 * 60 * 1000,
     queryFn: async () => {
       const res = await fetch(
-        "https://api.open-meteo.com/v1/forecast?latitude=22.72&longitude=75.86&current=temperature_2m,relative_humidity_2m,precipitation&timezone=auto",
+        `https://api.open-meteo.com/v1/forecast?latitude=${loc.lat}&longitude=${loc.lon}` +
+          "&current=temperature_2m,relative_humidity_2m,precipitation&timezone=auto",
       );
       if (!res.ok) throw new Error("weather unavailable");
       return (await res.json()) as {
