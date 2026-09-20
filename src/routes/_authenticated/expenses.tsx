@@ -62,7 +62,7 @@ function ExpensesPage() {
         crop: String(fd.get("crop") ?? "").trim() || "Crop",
         category: String(fd.get("category") ?? "other"),
         amount: Number(fd.get("amount")),
-        spent_on: String(fd.get("spent_on") ?? "") || undefined,
+        spent_on: String(fd.get("spent_on") ?? "") || new Date().toISOString().slice(0, 10),
         acres: fd.get("acres") ? Number(fd.get("acres")) : null,
         notes: String(fd.get("notes") ?? "").trim() || null,
       });
