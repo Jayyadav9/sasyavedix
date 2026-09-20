@@ -15,6 +15,13 @@
       "when": 1789885871094,
       "tag": "0001_soil_tests_and_crop_image_policies",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1789886479963,
+      "tag": "0002_buyer_roles_offers_orders",
+      "breakpoints": true
     }
   ]
 }

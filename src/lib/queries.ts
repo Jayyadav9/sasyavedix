@@ -139,3 +139,102 @@ export const soilTestsQuery = queryOptions({
     return (data ?? []) as SoilTest[];
   },
 });
+
+// ---------------- roles, offers, orders ----------------
+
+export type Role = "farmer" | "buyer" | "admin";
+
+export const roleQuery = queryOptions({
+  queryKey: ["user_role"],
+  queryFn: async (): Promise<Role> => {
+    const { data: auth } = await supabase.auth.getUser();
+    if (!auth.user) return "farmer";
+    const { data, error } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", auth.user.id);
+    if (error) throw error;
+    const roles = (data ?? []).map((r) => r.role as Role);
+    return roles.includes("buyer") ? "buyer" : "farmer";
+  },
+  staleTime: 5 * 60 * 1000,
+});
+
+export type Offer = {
+  id: string;
+  listing_id: string;
+  buyer_id: string;
+  farmer_id: string;
+  price_per_quintal: number;
+  quantity: number;
+  message: string | null;
+  status: string;
+  created_at: string;
+};
+
+export const offersQuery = queryOptions({
+  queryKey: ["offers"],
+  queryFn: async () => {
+    const { data, error } = await supabase
+      .from("offers")
+      .select("*, crop_listings(crop, variety, location, quantity, expected_price, image_url)")
+      .order("created_at", { ascending: false });
+    if (error) throw error;
+    return data ?? [];
+  },
+});
+
+export type Order = {
+  id: string;
+  crop: string;
+  variety: string | null;
+  quantity: number;
+  price_per_quintal: number;
+  total_amount: number;
+  status: string;
+  farmer_id: string;
+  buyer_id: string;
+  pickup_location: string | null;
+  delivery_date: string | null;
+  payment_method: string | null;
+  payment_ref: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export const ordersQuery = queryOptions({
+  queryKey: ["orders"],
+  queryFn: async (): Promise<Order[]> => {
+    const { data, error } = await supabase
+      .from("orders")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (error) throw error;
+    return (data ?? []) as Order[];
+  },
+});
+
+/** Open listings from every farmer — visible to buyers via RLS. */
+export const browseListingsQuery = queryOptions({
+  queryKey: ["browse_listings"],
+  queryFn: async () => {
+    const { data, error } = await supabase
+      .from("crop_listings")
+      .select("*")
+      .eq("status", "open")
+      .order("created_at", { ascending: false });
+    if (error) throw error;
+    return data ?? [];
+  },
+});
+
+export const ORDER_FLOW = ["accepted", "dispatched", "delivered", "paid"] as const;
+export type OrderStatus = (typeof ORDER_FLOW)[number];
+
+export const ORDER_LABELS: Record<string, { en: string; hi: string }> = {
+  accepted: { en: "Offer accepted", hi: "प्रस्ताव स्वीकृत" },
+  dispatched: { en: "Dispatched", hi: "भेजा गया" },
+  delivered: { en: "Delivered", hi: "पहुँच गया" },
+  paid: { en: "Payment received", hi: "भुगतान प्राप्त" },
+  cancelled: { en: "Cancelled", hi: "रद्द" },
+};

@@ -1,5 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { Thermometer, TrendingUp, Sprout, Landmark, ArrowRight } from "lucide-react";
 import {
   Area,
@@ -12,11 +13,13 @@ import {
 } from "recharts";
 
 import { useLang } from "@/lib/i18n";
+import { LOCATIONS, findLocation } from "@/lib/locations";
 import {
   latestByCropMandi,
   marketPricesQuery,
   myListingsQuery,
   profileQuery,
+  roleQuery,
   schemesQuery,
 } from "@/lib/queries";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -33,13 +36,14 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
   component: Dashboard,
 });
 
-function useWeather() {
+function useWeather(loc: (typeof LOCATIONS)[number]) {
   return useQuery({
-    queryKey: ["weather", "indore"],
+    queryKey: ["weather", loc.id],
     staleTime: 15 * 60 * 1000,
     queryFn: async () => {
       const res = await fetch(
-        "https://api.open-meteo.com/v1/forecast?latitude=22.72&longitude=75.86&current=temperature_2m,relative_humidity_2m,precipitation&timezone=auto",
+        `https://api.open-meteo.com/v1/forecast?latitude=${loc.lat}&longitude=${loc.lon}` +
+          "&current=temperature_2m,relative_humidity_2m,precipitation&timezone=auto",
       );
       if (!res.ok) throw new Error("weather unavailable");
       return (await res.json()) as {
@@ -92,11 +96,24 @@ function StatCard({
 
 function Dashboard() {
   const { t, lang } = useLang();
+  const navigate = useNavigate();
+  const role = useQuery(roleQuery);
   const profile = useQuery(profileQuery);
   const prices = useQuery(marketPricesQuery);
   const schemes = useQuery(schemesQuery);
   const listings = useQuery(myListingsQuery);
-  const weather = useWeather();
+
+  const [locId, setLocId] = useState("indore");
+  useEffect(() => {
+    const stored = window.localStorage.getItem("sasyavedix-location");
+    if (stored && LOCATIONS.some((l) => l.id === stored)) setLocId(stored);
+  }, []);
+  const loc = findLocation(locId);
+  const weather = useWeather(loc);
+
+  useEffect(() => {
+    if (role.data === "buyer") navigate({ to: "/buyer/browse" });
+  }, [role.data, navigate]);
 
   const latest = prices.data ? latestByCropMandi(prices.data) : [];
   const best = [...latest].sort((a, b) => b.price - a.price)[0];
@@ -123,9 +140,26 @@ function Dashboard() {
             year: "numeric",
           })}
         </p>
-        <h1 className="mt-1 font-display text-3xl font-bold sm:text-4xl">
-          {t("welcome")}, {name} 👨‍🌾
-        </h1>
+        <div className="mt-1 flex flex-wrap items-center justify-between gap-3">
+          <h1 className="font-display text-3xl font-bold sm:text-4xl">
+            {t("welcome")}, {name} 👨‍🌾
+          </h1>
+          <select
+            aria-label={t("location")}
+            value={locId}
+            onChange={(e) => {
+              setLocId(e.target.value);
+              window.localStorage.setItem("sasyavedix-location", e.target.value);
+            }}
+            className="h-9 rounded-xl border border-primary-foreground/30 bg-primary-foreground/15 px-3 text-sm font-medium text-primary-foreground"
+          >
+            {LOCATIONS.map((l) => (
+              <option key={l.id} value={l.id} className="text-foreground">
+                {l[lang]}
+              </option>
+            ))}
+          </select>
+        </div>
         <p className="mt-1 opacity-90">{t("welcomeSub")}</p>
       </header>
 
@@ -136,7 +170,9 @@ function Dashboard() {
           loading={weather.isLoading}
           value={weather.data ? `${Math.round(weather.data.current.temperature_2m)}°C` : "—"}
           hint={
-            weather.data ? `Humidity ${weather.data.current.relative_humidity_2m}% · Indore` : ""
+            weather.data
+              ? `Humidity ${weather.data.current.relative_humidity_2m}% · ${loc[lang]}`
+              : ""
           }
         />
         <StatCard

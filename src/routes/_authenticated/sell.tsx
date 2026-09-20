@@ -44,6 +44,7 @@ function SellPage() {
     quality_grade: "A",
     notes: "",
   });
+  const [photo, setPhoto] = useState<File | null>(null);
 
   const cropOptions = [...new Set((prices.data ?? []).map((p) => p.crop))];
   const suggested = form.crop
@@ -56,6 +57,17 @@ function SellPage() {
     mutationFn: async () => {
       const { data: auth } = await supabase.auth.getUser();
       if (!auth.user) throw new Error("Not signed in");
+
+      let imagePath: string | null = null;
+      if (photo) {
+        const path = `listings/${auth.user.id}/${Date.now()}-${photo.name.replace(/\s+/g, "-")}`;
+        const { error: upErr } = await supabase.storage
+          .from("crop-images")
+          .upload(path, photo, { upsert: false });
+        if (upErr) throw upErr;
+        imagePath = path;
+      }
+
       const { error } = await supabase.from("crop_listings").insert({
         farmer_id: auth.user.id,
         crop: form.crop,
@@ -65,6 +77,7 @@ function SellPage() {
         location: form.location,
         harvest_date: form.harvest_date || null,
         quality_grade: form.quality_grade,
+        image_url: imagePath,
         notes: form.notes || null,
       });
       if (error) throw error;
@@ -192,6 +205,19 @@ function SellPage() {
                 ))}
               </select>
             </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <Label htmlFor="photo">{t("photo")}</Label>
+            <Input
+              id="photo"
+              type="file"
+              accept="image/*"
+              onChange={(e) => setPhoto(e.target.files?.[0] ?? null)}
+            />
+            <p className="text-xs text-muted-foreground">
+              Buyers see this photo with your listing.
+            </p>
           </div>
 
           <div className="space-y-1.5">
