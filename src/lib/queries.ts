@@ -35,24 +35,39 @@ export const marketPricesQuery = queryOptions({
   },
 });
 
+export type Variety = {
+  id: string;
+  crop: string;
+  name_en: string;
+  name_hi: string;
+  duration_days: number | null;
+  yield_quintal_per_acre: number | null;
+  season: string | null;
+  water_need: string | null;
+  notes_en: string | null;
+  notes_hi: string | null;
+};
+
 export const varietiesQuery = queryOptions({
   queryKey: ["crop_varieties"],
-  queryFn: async () => {
+  queryFn: async (): Promise<Variety[]> => {
     try {
       const { data, error } = await supabase
         .from("crop_varieties")
         .select("*")
         .order("crop", { ascending: true });
       if (error) throw error;
-      cacheSave("crop_varieties", data ?? []);
-      return data ?? [];
+      const rows = (data ?? []) as Variety[];
+      cacheSave("crop_varieties", rows);
+      return rows;
     } catch (err) {
-      const hit = cacheRead<NonNullable<Awaited<ReturnType<typeof supabase.from>> extends never ? never : unknown>[]>("crop_varieties");
-      if (hit) return hit.value as never[];
+      const hit = cacheRead<Variety[]>("crop_varieties");
+      if (hit) return hit.value;
       throw err;
     }
   },
 });
+
 
 export const schemesQuery = queryOptions({
   queryKey: ["schemes"],
