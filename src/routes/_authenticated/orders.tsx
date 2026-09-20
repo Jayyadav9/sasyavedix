@@ -56,12 +56,51 @@ type OfferRow = {
 };
 
 function OrdersPage() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const qc = useQueryClient();
   const offers = useQuery(offersQuery);
   const orders = useQuery(ordersQuery);
+  const payments = useQuery(paymentsQuery);
+  const profile = useQuery(profileQuery);
+  const [invoiceFor, setInvoiceFor] = useState<string | null>(null);
+  const [payFor, setPayFor] = useState<string | null>(null);
 
   const pending = ((offers.data ?? []) as OfferRow[]).filter((o) => o.status === "pending");
+
+  const paidFor = (orderId: string) =>
+    (payments.data ?? [])
+      .filter((p) => p.order_id === orderId)
+      .reduce((s, p) => s + Number(p.amount), 0);
+
+  const recordPayment = useMutation({
+    mutationFn: async ({ order, form }: { order: Order; form: HTMLFormElement }) => {
+      const fd = new FormData(form);
+      const amount = Number(fd.get("amount"));
+      const { error } = await supabase.from("payments").insert({
+        order_id: order.id,
+        farmer_id: order.farmer_id,
+        buyer_id: order.buyer_id,
+        amount,
+        method: String(fd.get("method") ?? "upi"),
+        reference: String(fd.get("reference") ?? "").trim() || null,
+      });
+      if (error) throw error;
+      if (paidFor(order.id) + amount >= Number(order.total_amount)) {
+        await supabase
+          .from("orders")
+          .update({ status: "paid", payment_method: String(fd.get("method") ?? "upi") })
+          .eq("id", order.id);
+      }
+    },
+    onSuccess: () => {
+      toast.success(lang === "hi" ? "भुगतान दर्ज हुआ" : "Payment recorded");
+      setPayFor(null);
+      qc.invalidateQueries({ queryKey: ["payments"] });
+      qc.invalidateQueries({ queryKey: ["orders"] });
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Could not record the payment"),
+  });
+
 
   const respond = useMutation({
     mutationFn: async ({ offer, accept }: { offer: OfferRow; accept: boolean }) => {
