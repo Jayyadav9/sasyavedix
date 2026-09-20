@@ -33,6 +33,8 @@ const dict = {
   soilHealth: { en: "Soil Health", hi: "मृदा स्वास्थ्य" },
   schemes: { en: "Government Schemes", hi: "सरकारी योजनाएं" },
   analytics: { en: "Analytics", hi: "विश्लेषण" },
+  myProfile: { en: "My Profile", hi: "मेरी प्रोफ़ाइल" },
+
 
   welcome: { en: "Welcome", hi: "स्वागत है" },
   welcomeSub: {
