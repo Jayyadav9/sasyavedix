@@ -60,12 +60,53 @@ function BuyerOffersPage() {
     onError: (e) => toast.error(e instanceof Error ? e.message : "Could not update order"),
   });
 
+  const myOrders = orders.data ?? [];
+  const activeOrders = myOrders.filter((o) => o.status !== "cancelled");
+  const totalSpent = activeOrders
+    .filter((o) => o.status === "delivered" || o.status === "paid")
+    .reduce((s, o) => s + Number(o.total_amount), 0);
+  const byCrop = new Map<string, number>();
+  for (const o of activeOrders) byCrop.set(o.crop, (byCrop.get(o.crop) ?? 0) + Number(o.total_amount));
+  const topCrops = [...byCrop.entries()].sort((a, b) => b[1] - a[1]).slice(0, 4);
+
   return (
     <div className="mx-auto max-w-5xl space-y-8">
       <header>
         <h1 className="font-display text-3xl font-bold">{t("myOffers")}</h1>
         <p className="text-muted-foreground">Your offers to farmers and the orders they became.</p>
       </header>
+
+      {activeOrders.length > 0 && (
+        <section className="grid gap-4 sm:grid-cols-3">
+          <div className="glass-card rounded-3xl p-5">
+            <p className="flex items-center gap-2 text-sm text-muted-foreground">
+              <PackageCheck className="h-4 w-4" />
+              {t("ordersPlaced")}
+            </p>
+            <p className="mt-1 font-display text-3xl font-bold">{activeOrders.length}</p>
+          </div>
+          <div className="glass-card rounded-3xl p-5">
+            <p className="flex items-center gap-2 text-sm text-muted-foreground">
+              <IndianRupee className="h-4 w-4" />
+              {t("totalSpent")}
+            </p>
+            <p className="mt-1 font-display text-3xl font-bold text-primary">
+              ₹{totalSpent.toLocaleString("en-IN")}
+            </p>
+          </div>
+          <div className="glass-card rounded-3xl p-5">
+            <p className="text-sm text-muted-foreground">{t("purchasesByCrop")}</p>
+            <ul className="mt-1 space-y-1 text-sm font-semibold">
+              {topCrops.map(([crop, amt]) => (
+                <li key={crop} className="flex justify-between gap-2">
+                  <span>{crop}</span>
+                  <span className="text-primary">₹{Math.round(amt).toLocaleString("en-IN")}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
 
       <section>
         <h2 className="mb-3 flex items-center gap-2 font-display text-xl font-bold">
