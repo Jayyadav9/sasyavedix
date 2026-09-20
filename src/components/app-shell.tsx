@@ -51,7 +51,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [open, setOpen] = useState(false);
   const role = useQuery(roleQuery);
-  const NAV = role.data === "buyer" ? BUYER_NAV : FARMER_NAV;
+  const NAV = role.isPending ? [] : role.data === "buyer" ? BUYER_NAV : FARMER_NAV;
 
   async function signOut() {
     await supabase.auth.signOut();
