@@ -7,7 +7,9 @@ import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YA
 
 import { supabase } from "@/integrations/supabase/client";
 import { useLang } from "@/lib/i18n";
-import { soilTestsQuery, type SoilTest } from "@/lib/queries";
+import { profileQuery, soilTestsQuery, type SoilTest } from "@/lib/queries";
+import { SoilCard } from "@/components/soil-card";
+
 import {
   GUIDE_CROPS,
   NUTRIENT_LABELS,
@@ -210,6 +212,7 @@ function SoilPage() {
               <SoilCard test={latest} farmer={profile.data?.full_name ?? "Farmer"} />
 
               <div className="glass-card rounded-3xl p-5">
+                <h2 className="font-display text-xl font-semibold">
 
                   {lang === "hi" ? "नवीनतम रिपोर्ट" : "Latest report"}{" "}
                   <span className="text-sm font-normal text-muted-foreground">
