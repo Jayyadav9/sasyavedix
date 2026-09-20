@@ -1,5 +1,6 @@
 import { queryOptions } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { cacheRead, cacheSave } from "@/lib/offline";
 
 export type MarketPrice = {
   id: string;
@@ -16,40 +17,63 @@ export type MarketPrice = {
 export const marketPricesQuery = queryOptions({
   queryKey: ["market_prices"],
   queryFn: async (): Promise<MarketPrice[]> => {
-    const { data, error } = await supabase
-      .from("market_prices")
-      .select("id, crop, variety, location, market, price, unit, observed_on, source")
-      .order("observed_on", { ascending: false })
-      .limit(1200);
-    if (error) throw error;
-    return (data ?? []) as MarketPrice[];
+    try {
+      const { data, error } = await supabase
+        .from("market_prices")
+        .select("id, crop, variety, location, market, price, unit, observed_on, source")
+        .order("observed_on", { ascending: false })
+        .limit(1200);
+      if (error) throw error;
+      const rows = (data ?? []) as MarketPrice[];
+      cacheSave("market_prices", rows);
+      return rows;
+    } catch (err) {
+      const hit = cacheRead<MarketPrice[]>("market_prices");
+      if (hit) return hit.value;
+      throw err;
+    }
   },
 });
 
 export const varietiesQuery = queryOptions({
   queryKey: ["crop_varieties"],
   queryFn: async () => {
-    const { data, error } = await supabase
-      .from("crop_varieties")
-      .select("*")
-      .order("crop", { ascending: true });
-    if (error) throw error;
-    return data ?? [];
+    try {
+      const { data, error } = await supabase
+        .from("crop_varieties")
+        .select("*")
+        .order("crop", { ascending: true });
+      if (error) throw error;
+      cacheSave("crop_varieties", data ?? []);
+      return data ?? [];
+    } catch (err) {
+      const hit = cacheRead<NonNullable<Awaited<ReturnType<typeof supabase.from>> extends never ? never : unknown>[]>("crop_varieties");
+      if (hit) return hit.value as never[];
+      throw err;
+    }
   },
 });
 
 export const schemesQuery = queryOptions({
   queryKey: ["schemes"],
   queryFn: async () => {
-    const { data, error } = await supabase
-      .from("schemes")
-      .select("*")
-      .eq("active", true)
-      .order("created_at", { ascending: true });
-    if (error) throw error;
-    return data ?? [];
+    try {
+      const { data, error } = await supabase
+        .from("schemes")
+        .select("*")
+        .eq("active", true)
+        .order("created_at", { ascending: true });
+      if (error) throw error;
+      cacheSave("schemes", data ?? []);
+      return data ?? [];
+    } catch (err) {
+      const hit = cacheRead<never[]>("schemes");
+      if (hit) return hit.value;
+      throw err;
+    }
   },
 });
+
 
 export const profileQuery = queryOptions({
   queryKey: ["profile"],
