@@ -224,7 +224,6 @@ const dict = {
   completedBooking: { en: "Completed", hi: "पूर्ण" },
   accept: { en: "Accept", hi: "स्वीकार करें" },
   decline: { en: "Decline", hi: "अस्वीकार करें" },
-  cancel: { en: "Cancel", hi: "रद्द करें" },
   noEquipment: { en: "No machines listed yet — be the first to list yours.", hi: "अभी कोई मशीन लिस्ट नहीं — पहले अपनी मशीन जोड़ें।" },
   bookingSent: { en: "Booking request sent!", hi: "बुकिंग अनुरोध भेजा गया!" },
   expenses: { en: "Expenses & Profit", hi: "खर्च और मुनाफा" },
