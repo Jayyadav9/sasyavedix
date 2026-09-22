@@ -99,7 +99,7 @@ The goal is to reduce the need for multiple disconnected platforms and provide f
 🔗 Try the Live AppExperience the full-stack AgriTech platform in action! 
 You can explore the dashboard, view live mandi data prototypes, and test the AI crop analysis tools.Live Demo: Click here to launch the application :
 
-https://sasyavedix.lovable.app/
+https://pixel-perfect-snapshot-git-main-jayyadav9.vercel.app/
 
 🚀Test Accounts:Farmer View: Use the guest login to view farm management tools, soil reports, and AI assistance.
 Buyer View: Switch roles to browse the digital marketplace and submit crop offers.💡 Note: The live version connects to a sandbox database and uses mock environment keys for secure testing.
